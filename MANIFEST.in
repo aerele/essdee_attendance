@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include essdee_attendance *.css
+recursive-include essdee_attendance *.csv
+recursive-include essdee_attendance *.html
+recursive-include essdee_attendance *.ico
+recursive-include essdee_attendance *.js
+recursive-include essdee_attendance *.json
+recursive-include essdee_attendance *.md
+recursive-include essdee_attendance *.png
+recursive-include essdee_attendance *.py
+recursive-include essdee_attendance *.svg
+recursive-include essdee_attendance *.txt
+recursive-exclude essdee_attendance *.pyc
