@@ -1,0 +1,43 @@
+{
+ "actions": [],
+ "creation": "2020-12-10 06:36:31.908973",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "no_of_hours"
+ ],
+ "fields": [
+  {
+   "default": "8",
+   "description": "Total number of hours per shift",
+   "fieldname": "no_of_hours",
+   "fieldtype": "Int",
+   "label": "No of Hours"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2020-12-10 12:54:49.898116",
+ "modified_by": "Administrator",
+ "module": "Essdee Attendance",
+ "name": "Essdee Attendance Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

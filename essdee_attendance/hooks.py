@@ -142,4 +142,4 @@ app_license = "MIT"
 # exempt linked doctypes from being automatically cancelled
 #
 # auto_cancel_exempted_doctypes = ["Auto Repeat"]
-
+after_install = "essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.make_custom_field"
