@@ -102,23 +102,23 @@ app_license = "MIT"
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
+scheduler_events = {
 # 	"all": [
 # 		"essdee_attendance.tasks.all"
 # 	],
-# 	"daily": [
-# 		"essdee_attendance.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"essdee_attendance.tasks.hourly"
-# 	],
+	"daily": [
+		"essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.submit_all_record"
+	],
+	"hourly": [
+		"essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.mark_attendance"
+	],
 # 	"weekly": [
 # 		"essdee_attendance.tasks.weekly"
 # 	]
 # 	"monthly": [
 # 		"essdee_attendance.tasks.monthly"
 # 	]
-# }
+}
 
 # Testing
 # -------

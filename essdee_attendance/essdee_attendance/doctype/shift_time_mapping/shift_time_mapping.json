@@ -6,7 +6,6 @@
  "engine": "InnoDB",
  "field_order": [
   "in_time",
-  "out_time",
   "shift"
  ],
  "fields": [
@@ -15,12 +14,6 @@
    "fieldtype": "Time",
    "in_list_view": 1,
    "label": "In Time"
-  },
-  {
-   "fieldname": "out_time",
-   "fieldtype": "Time",
-   "in_list_view": 1,
-   "label": "Out Time"
   },
   {
    "fieldname": "shift",
@@ -33,7 +26,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2020-12-12 16:10:20.838226",
+ "modified": "2020-12-14 14:45:01.241215",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Shift Time Mapping",

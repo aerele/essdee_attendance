@@ -5,21 +5,19 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "no_of_hours"
+  "mark_attendance"
  ],
  "fields": [
   {
-   "default": "8",
-   "description": "Total number of hours per shift",
-   "fieldname": "no_of_hours",
-   "fieldtype": "Int",
-   "label": "No of Hours"
+   "fieldname": "mark_attendance",
+   "fieldtype": "Button",
+   "label": "Mark Attendance"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2020-12-10 12:54:49.898116",
+ "modified": "2020-12-15 00:33:37.284866",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Attendance Settings",
