@@ -33,6 +33,12 @@ frappe.query_reports["Weekly Employee Report"] = {
 			"fieldtype": "Link",
 			"options": "Employee"
 		},
+		{
+			"fieldname":"summarized_view",
+			"label": __("Summarized View"),
+			"fieldtype": "Check",
+			"Default": 0,
+		}
 
 	]
 };

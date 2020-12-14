@@ -4,24 +4,48 @@
 from __future__ import unicode_literals
 import frappe
 from frappe import _
+from frappe.utils import add_days, getdate, cstr
 
 default_hour_per_shift = frappe.db.get_single_value('Essdee Attendance Settings', 'no_of_hours')
+
+day_abbr = [
+	"Mon",
+	"Tue",
+	"Wed",
+	"Thu",
+	"Fri",
+	"Sat",
+	"Sun"
+]
 
 def execute(filters=None):
 	columns, data = [], []
 	if filters:
-		columns = get_columns()
+		get_columns(filters, columns)
 		get_data(filters, data)
 	return columns, data
 
-def get_columns():
-	return [
-		_("Employee") + ":Link/Employee:120",
-		_("Name") + ":Data:200",
-		_("Shift") + ":Float:100",
-		_("Rate") + ":Currency:70",
-		_("Amount") + ":Currency:150"
+def get_columns(filters, columns):
+	columns += [
+		_("Employee") + ":Link/Employee:120", _("Employee Name") + ":Data/:120"
 	]
+	week_date_list = []
+	from_date = getdate(filters['from_date'])
+	to_date = getdate(filters['to_date'])
+	date_range = (to_date - from_date).days
+	for date in range(date_range+1):
+		day_name = day_abbr[from_date.weekday()]
+		week_date_list.append(cstr(from_date.strftime("%d-%m-%Y"))+ " " +day_name +"::120")
+		from_date = add_days(from_date, 1)
+	if not filters.summarized_view:
+		columns += week_date_list
+	else:
+		columns += [
+			_("Total Shift") + ":Float:100",
+			_("Rate") + ":Currency:70",
+			_("Amount") + ":Currency:150"
+		]
+	return columns
 
 def get_data(filters, data):
 	if 'employee' in filters:
@@ -41,7 +65,7 @@ def get_employee_specific_data(employee_detail, filters):
 		if total_shift:
 			return {
 				'employee': employee_detail['name'],
-				'name': employee_detail['employee_name'],
-				'shift': total_shift,
+				'employee_name': employee_detail['employee_name'],
+				'total_shift': total_shift,
 				'rate': employee_detail['rate'],
 				'amount': total_shift * employee_detail['rate']}
