@@ -5,19 +5,19 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "mark_attendance"
+  "update_attendance"
  ],
  "fields": [
   {
-   "fieldname": "mark_attendance",
+   "fieldname": "update_attendance",
    "fieldtype": "Button",
-   "label": "Mark Attendance"
+   "label": "Update Attendance"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2020-12-15 00:33:37.284866",
+ "modified": "2020-12-16 07:59:38.251910",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Attendance Settings",

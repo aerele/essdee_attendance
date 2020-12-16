@@ -5,12 +5,12 @@ frappe.ui.form.on('Essdee Attendance Settings', {
 	// refresh: function(frm) {
 
 	// }
-	mark_attendance: function() {
+	update_attendance: function() {
 		frappe.call({
-			method: "essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.mark_attendance",
+			method: "essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.update_attendance",
 			freeze: true,
 			callback: function(r) {
-				frappe.msgprint(__("Attendance marked successfully"))
+				frappe.msgprint(__("Attendance updated successfully"))
 			}
 		})
 	}

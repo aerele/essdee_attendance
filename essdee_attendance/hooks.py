@@ -106,11 +106,11 @@ scheduler_events = {
 # 	"all": [
 # 		"essdee_attendance.tasks.all"
 # 	],
+	# "hourly": [
+	# 	"essdee_attendance.tasks.hourly"
+	# ],
 	"daily": [
-		"essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.submit_all_record"
-	],
-	"hourly": [
-		"essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.mark_attendance"
+		"essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.update_attendance"
 	],
 # 	"weekly": [
 # 		"essdee_attendance.tasks.weekly"
