@@ -143,3 +143,4 @@ scheduler_events = {
 #
 # auto_cancel_exempted_doctypes = ["Auto Repeat"]
 after_install = "essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.make_custom_field"
+doctype_js = {"Employee" : "public/js/employee.js"}

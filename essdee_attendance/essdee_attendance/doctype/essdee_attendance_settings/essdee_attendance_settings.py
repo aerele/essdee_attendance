@@ -8,6 +8,10 @@ from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 from frappe.model.document import Document
 from frappe.utils import cint, nowdate, getdate
 from datetime import timedelta, datetime
+from frappe.core.page.background_jobs.background_jobs import get_info
+from frappe.utils.background_jobs import enqueue
+from zk import ZK
+from frappe import _, msgprint
 
 class EssdeeAttendanceSettings(Document):
 	pass
@@ -97,3 +101,55 @@ def calculate_total_shift(shift_doc, logs):
 			if in_log:
 				total_shift += row.shift
 	return total_shift
+
+def sync_device(ip, port=4370, timeout=30):
+	zk = ZK(ip, port=port, timeout=timeout)
+	conn = zk.connect()
+	return conn
+
+@frappe.whitelist()
+def sync_now():
+	enqueued_jobs = [d.get("job_name") for d in get_info()]
+	if 'sync employees' in enqueued_jobs:
+		frappe.throw(
+			_("Sync already in progress. Please wait for sometime.")
+		)
+	else:
+		enqueue(
+			sync_all_employees,
+			queue="default",
+			timeout=6000,
+			event="sync_employee_record",
+			job_name='sync employees'
+		)
+		frappe.throw(
+			_("Sync job added to queue. Please check after sometime.")
+		)
+
+def sync_all_employees():
+	try:
+		employee_record = frappe.get_all('Employee',{'name','employee_name'})
+		settings = frappe.get_single('Essdee Attendance Settings')
+		for device in settings.device_details:
+			conn = sync_device(ip = device.ip)
+			if conn:
+				for record in employee_record:
+					conn.set_user(uid= record['name'], name= record['employee_name'], user_id= record['name'])
+				conn.disconnect()
+	except:
+		error_message = frappe.get_traceback()
+		frappe.log_error(error_message, "Employee Records Sync Error")
+		raise
+
+@frappe.whitelist()
+def delete_employee(employee):
+	try:
+		settings = frappe.get_single('Essdee Attendance Settings')
+		for device in settings.device_details:
+			conn = sync_device(ip = device.ip)
+			if conn:
+				conn.delete_user(uid= employee)
+				conn.disconnect()
+		msgprint(_('Successfully deleted the linked user'))
+	except Exception as e:
+		raise e

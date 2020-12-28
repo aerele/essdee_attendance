@@ -5,19 +5,46 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "update_attendance"
+  "update_attendance",
+  "sync_employees",
+  "user_management_section",
+  "device_details",
+  "sync_now"
  ],
  "fields": [
   {
    "fieldname": "update_attendance",
    "fieldtype": "Button",
    "label": "Update Attendance"
+  },
+  {
+   "depends_on": "sync_employees",
+   "fieldname": "user_management_section",
+   "fieldtype": "Section Break",
+   "label": "User Management"
+  },
+  {
+   "fieldname": "sync_now",
+   "fieldtype": "Button",
+   "label": "Sync Now"
+  },
+  {
+   "default": "0",
+   "fieldname": "sync_employees",
+   "fieldtype": "Check",
+   "label": "Sync Employees"
+  },
+  {
+   "fieldname": "device_details",
+   "fieldtype": "Table",
+   "label": "Device Details",
+   "options": "Device Details"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2020-12-16 07:59:38.251910",
+ "modified": "2020-12-26 14:24:53.449765",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Attendance Settings",

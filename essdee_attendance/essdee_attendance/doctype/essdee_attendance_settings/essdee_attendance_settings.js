@@ -13,5 +13,10 @@ frappe.ui.form.on('Essdee Attendance Settings', {
 				frappe.msgprint(__("Attendance updated successfully"))
 			}
 		})
+	},
+	sync_now: function() {
+		frappe.call({
+			method: "essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.sync_now"
+		})
 	}
 });
