@@ -102,23 +102,23 @@ app_license = "MIT"
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
+scheduler_events = {
 # 	"all": [
 # 		"essdee_attendance.tasks.all"
 # 	],
-# 	"daily": [
-# 		"essdee_attendance.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"essdee_attendance.tasks.hourly"
-# 	],
+	# "hourly": [
+	# 	"essdee_attendance.tasks.hourly"
+	# ],
+	"daily": [
+		"essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.update_attendance"
+	],
 # 	"weekly": [
 # 		"essdee_attendance.tasks.weekly"
 # 	]
 # 	"monthly": [
 # 		"essdee_attendance.tasks.monthly"
 # 	]
-# }
+}
 
 # Testing
 # -------
@@ -142,4 +142,4 @@ app_license = "MIT"
 # exempt linked doctypes from being automatically cancelled
 #
 # auto_cancel_exempted_doctypes = ["Auto Repeat"]
-
+after_install = "essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.make_custom_field"

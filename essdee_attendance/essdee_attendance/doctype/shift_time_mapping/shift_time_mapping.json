@@ -1,0 +1,53 @@
+{
+ "actions": [],
+ "creation": "2020-12-12 14:14:33.464491",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "in_time",
+  "shift",
+  "allowed_early_entry",
+  "allowed_late_entry"
+ ],
+ "fields": [
+  {
+   "fieldname": "in_time",
+   "fieldtype": "Time",
+   "in_list_view": 1,
+   "label": "In Time"
+  },
+  {
+   "fieldname": "shift",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Shift",
+   "precision": "2"
+  },
+  {
+   "fieldname": "allowed_early_entry",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Allowed Early Entry (In Mins)"
+  },
+  {
+   "fieldname": "allowed_late_entry",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Allowed Late Entry (In Mins)"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2020-12-16 07:15:10.314826",
+ "modified_by": "Administrator",
+ "module": "Essdee Attendance",
+ "name": "Shift Time Mapping",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
