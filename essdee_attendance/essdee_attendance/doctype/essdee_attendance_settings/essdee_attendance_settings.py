@@ -71,8 +71,7 @@ def update_attendance():
 			if cint(shift_doc.sd_enable_essdee_attendance):
 				filters = {
 					'attendance': attendance['name'],
-					'employee': employee['name'],
-					'log_type': 'IN'
+					'employee': employee['name']
 				}
 				logs = frappe.db.get_list('Employee Checkin', fields="*", filters=filters, order_by="time")
 				total_shift = calculate_total_shift(shift_doc, logs)
