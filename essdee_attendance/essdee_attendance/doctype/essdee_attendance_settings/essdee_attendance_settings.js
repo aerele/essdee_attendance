@@ -14,9 +14,18 @@ frappe.ui.form.on('Essdee Attendance Settings', {
 			}
 		})
 	},
-	sync_now: function() {
+	sync_all: function() {
 		frappe.call({
-			method: "essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.sync_now"
+			method: "essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.sync_records"
+		})
+	}
+});
+
+frappe.ui.form.on("Device Details", {
+	sync_now: function(frm, cdt, cdn) {
+		frappe.call({
+			method: "essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.sync_records",
+			args: {row:frm.selected_doc}
 		})
 	}
 });

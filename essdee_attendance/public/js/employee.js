@@ -10,7 +10,7 @@ frappe.ui.form.on("Employee", {
         frappe.call({
 			method: "essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.delete_employee",
 			freeze: true,
-            args: {employee: frm.doc.name},
+            args: {id: frm.doc.attendance_device_id, work_location: frm.doc.work_location},
         }
         )
     }

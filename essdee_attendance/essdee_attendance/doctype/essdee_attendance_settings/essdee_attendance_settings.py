@@ -4,6 +4,7 @@
 
 from __future__ import unicode_literals
 import frappe
+import json
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 from frappe.model.document import Document
 from frappe.utils import cint, nowdate, getdate
@@ -12,6 +13,7 @@ from frappe.core.page.background_jobs.background_jobs import get_info
 from frappe.utils.background_jobs import enqueue
 from zk import ZK
 from frappe import _, msgprint
+from six import string_types
 
 class EssdeeAttendanceSettings(Document):
 	pass
@@ -19,7 +21,7 @@ class EssdeeAttendanceSettings(Document):
 def make_custom_field():
 	custom_fields = {
 		'Employee': [
-		{
+			{
 			"fieldname": "sd_shift_rate",
 			"fieldtype": "Currency",
 			"label": "Shift Rate",
@@ -27,6 +29,13 @@ def make_custom_field():
 			"insert_after": "date_of_joining",
 			"reqd": 1,
 			"precision": 2
+			},
+			{
+			"fieldname": "work_location",
+			"fieldtype": "Table",
+			"label": "Work Location",
+			"options": "Work Location",
+			"insert_after": "attendance_device_id"
 			}		
 		],
 		'Attendance': [
@@ -108,48 +117,63 @@ def sync_device(ip, port=4370, timeout=30):
 	return conn
 
 @frappe.whitelist()
-def sync_now():
+def sync_records(row=None):
 	enqueued_jobs = [d.get("job_name") for d in get_info()]
-	if 'sync employees' in enqueued_jobs:
+	if 'sync_records' in enqueued_jobs:
 		frappe.throw(
 			_("Sync already in progress. Please wait for sometime.")
 		)
 	else:
 		enqueue(
-			sync_all_employees,
+			sync_all,
 			queue="default",
 			timeout=6000,
-			event="sync_employee_record",
-			job_name='sync employees'
+			event= 'sync_records',
+			job_name= 'sync_records',
+			row=row
 		)
 		frappe.throw(
 			_("Sync job added to queue. Please check after sometime.")
 		)
 
-def sync_all_employees():
+def sync_all(row = None):
 	try:
-		employee_record = frappe.get_all('Employee',{'name','employee_name'})
-		settings = frappe.get_single('Essdee Attendance Settings')
-		for device in settings.device_details:
-			conn = sync_device(ip = device.ip)
+		if row:
+			if isinstance(row, string_types):
+				row = frappe._dict(json.loads(row))
+			employee_record = frappe.get_all('Employee', filters = [["Work Location", "sd_location", "=", row.location]], fields = ['attendance_device_id','employee_name'])
+			conn = sync_device(ip = row.ip)
 			if conn:
 				for record in employee_record:
-					conn.set_user(uid= record['name'], name= record['employee_name'], user_id= record['name'])
+					conn.set_user(uid= record['attendance_device_id'], name= record['employee_name'], user_id= record['attendance_device_id'])
 				conn.disconnect()
+		else:
+			settings = frappe.get_single('Essdee Attendance Settings')
+			for device in settings.device_details:
+				employee_record = frappe.get_all('Employee', filters = [["Work Location", "sd_location", "=", device.location]], fields = ['attendance_device_id','employee_name'])
+				conn = sync_device(ip = device.ip)
+				if conn:
+					for record in employee_record:
+						conn.set_user(uid= record['attendance_device_id'], name= record['employee_name'], user_id= record['attendance_device_id'])
+					conn.disconnect()
 	except:
 		error_message = frappe.get_traceback()
 		frappe.log_error(error_message, "Employee Records Sync Error")
 		raise
 
 @frappe.whitelist()
-def delete_employee(employee):
+def delete_employee(id, work_location):
 	try:
+		if isinstance(work_location, string_types):
+			work_location = json.loads(work_location)
 		settings = frappe.get_single('Essdee Attendance Settings')
-		for device in settings.device_details:
-			conn = sync_device(ip = device.ip)
-			if conn:
-				conn.delete_user(uid= employee)
-				conn.disconnect()
+		for row in work_location:
+			for device in settings.device_details:
+				if device.location == row['sd_location']:
+					conn = sync_device(ip = device.ip)
+					if conn:
+						conn.delete_user(uid= id)
+						conn.disconnect()
 		msgprint(_('Successfully deleted the linked user'))
 	except Exception as e:
 		raise e

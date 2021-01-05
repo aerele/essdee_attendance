@@ -9,7 +9,7 @@
   "sync_employees",
   "user_management_section",
   "device_details",
-  "sync_now"
+  "sync_all"
  ],
  "fields": [
   {
@@ -24,11 +24,6 @@
    "label": "User Management"
   },
   {
-   "fieldname": "sync_now",
-   "fieldtype": "Button",
-   "label": "Sync Now"
-  },
-  {
    "default": "0",
    "fieldname": "sync_employees",
    "fieldtype": "Check",
@@ -39,12 +34,17 @@
    "fieldtype": "Table",
    "label": "Device Details",
    "options": "Device Details"
+  },
+  {
+   "fieldname": "sync_all",
+   "fieldtype": "Button",
+   "label": "Sync All"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2020-12-26 14:24:53.449765",
+ "modified": "2021-01-05 10:51:38.985429",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Attendance Settings",
