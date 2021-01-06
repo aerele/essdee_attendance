@@ -190,6 +190,23 @@ def delete_employee(id, work_location):
 	except Exception as e:
 		raise e
 
+@frappe.whitelist()
+def enroll_user(id, work_location):
+	try:
+		if isinstance(work_location, string_types):
+			work_location = json.loads(work_location)
+		settings = frappe.get_single('Essdee Attendance Settings')
+		for row in work_location:
+			for device in settings.device_details:
+				if device.location == row['sd_location']:
+					conn = sync_device(ip = device.ip)
+					if conn:
+						conn.enroll_user(id)
+						conn.disconnect()
+		msgprint(_('Successfully enrolled'))
+	except Exception as e:
+		raise e
+
 
 def json_pack(data):
 	return {
