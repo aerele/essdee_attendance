@@ -19,8 +19,8 @@ day_abbr = [
 def execute(filters=None):
 	columns, data = [], []
 	if filters:
-		get_columns(filters, columns)
-		get_data(filters, data)
+		columns = get_columns(filters, columns)
+		data = get_data(filters, data)
 	return columns, data
 
 def get_columns(filters, columns):
@@ -35,17 +35,21 @@ def get_columns(filters, columns):
 		day_name = day_abbr[from_date.weekday()]
 		week_date_list.append(cstr(from_date.strftime("%d-%m-%Y"))+ " " +day_name +"::120")
 		from_date = add_days(from_date, 1)
-	if not filters.summarized_view:
+	if not filters.summarized_view or filters.show_time_logs:
 		columns += week_date_list
-	else:
+	if filters.summarized_view:
 		columns += [
 			_("Total Shift") + ":Float:100",
 			_("Rate") + ":Currency:70",
 			_("Amount") + ":Currency:150"
 		]
+	if filters.summarized_view and filters.show_time_logs:
+		columns = []
 	return columns
 
 def get_data(filters, data):
+	if filters.summarized_view and filters.show_time_logs:
+		return []
 	if 'employee' in filters:
 		employee_details = frappe.db.get_values('Employee',filters['employee'], \
 			fieldname=['name', 'employee_name','sd_shift_rate'], as_dict=True)
@@ -74,8 +78,17 @@ def get_employee_specific_data(employee_detail, filters):
 		date_range = (to_date - from_date).days
 		data = [employee_detail['name'],employee_detail['employee_name']]
 		for idx in range(date_range+1):
-			shift = frappe.db.get_value('Attendance',{'attendance_date': from_date, \
-				'employee':employee_detail['name'], 'status':'Present', 'docstatus': 1}, ['sd_no_of_shifts'])
-			data.append(shift if shift else 0)
+			if filters.show_time_logs:
+				time_log = ''
+				attendance = frappe.db.get_value('Attendance',{'attendance_date': from_date, \
+					'employee':employee_detail['name'], 'status':'Present', 'docstatus': 1})
+				if attendance:
+					employee_checkin_list = frappe.get_list('Employee Checkin',{'attendance':attendance},'time')
+					time_log = ', '.join([data['time'].strftime("%H:%M") for data in employee_checkin_list])
+				data.append(time_log)
+			else:
+				shift = frappe.db.get_value('Attendance',{'attendance_date': from_date, \
+					'employee':employee_detail['name'], 'status':'Present', 'docstatus': 1}, ['sd_no_of_shifts'])
+				data.append(shift if shift else 0)
 			from_date = add_days(from_date, 1)
 		return data

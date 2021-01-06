@@ -38,6 +38,12 @@ frappe.query_reports["Weekly Employee Report"] = {
 			"label": __("Summarized View"),
 			"fieldtype": "Check",
 			"Default": 0,
+		},
+		{
+			"fieldname":"show_time_logs",
+			"label": __("Show Time Logs"),
+			"fieldtype": "Check",
+			"Default": 0,
 		}
 
 	]
