@@ -14,6 +14,7 @@ from frappe.utils.background_jobs import enqueue
 from zk import ZK
 from frappe import _, msgprint
 from six import string_types
+from itertools import groupby
 
 class EssdeeAttendanceSettings(Document):
 	pass
@@ -36,6 +37,13 @@ def make_custom_field():
 			"label": "Work Location",
 			"options": "Work Location",
 			"insert_after": "attendance_device_id"
+			},
+			{
+			"fieldname": "finger_print_details",
+			"fieldtype": "Table",
+			"label": "Finger Print Details",
+			"options": "Finger Print Details",
+			"insert_after": "work_location"
 			}		
 		],
 		'Attendance': [
@@ -177,3 +185,20 @@ def delete_employee(id, work_location):
 		msgprint(_('Successfully deleted the linked user'))
 	except Exception as e:
 		raise e
+
+def sync_fingerprint(conn):
+	templates = conn.get_templates()
+	for key, value in groupby(templates, key=lambda x: (x['uid'], x['uid'])):
+		for data in value:
+			if data['valid']:
+				data['fid'] = 'FID '+str(data['fid'])
+				doc = frappe.get_doc('Employee',{'attendance_device_id':key})
+				existing_labels = []
+				for val in doc.finger_print_details:
+					existing_labels.append(val.label)
+				if not data['fid'] in existing_labels:
+					doc.append("finger_print_details",{
+						"label":data['fid'],
+						"data": data['template']
+					})
+				doc.save()
