@@ -106,9 +106,9 @@ scheduler_events = {
 # 	"all": [
 # 		"essdee_attendance.tasks.all"
 # 	],
-	# "hourly": [
-	# 	"essdee_attendance.tasks.hourly"
-	# ],
+	"hourly": [
+		"essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.sync_attendance_log"
+	],
 	"daily": [
 		"essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.update_attendance"
 	],

@@ -15,6 +15,8 @@ from zk import ZK
 from frappe import _, msgprint
 from six import string_types
 from itertools import groupby
+import codecs
+from erpnext.hr.doctype.employee_checkin.employee_checkin import add_log_based_on_employee_field
 
 class EssdeeAttendanceSettings(Document):
 	pass
@@ -154,6 +156,7 @@ def sync_all(row = None):
 			if conn:
 				for record in employee_record:
 					conn.set_user(uid= record['attendance_device_id'], name= record['employee_name'], user_id= record['attendance_device_id'])
+				sync_fingerprint(conn)
 				conn.disconnect()
 		else:
 			settings = frappe.get_single('Essdee Attendance Settings')
@@ -163,6 +166,7 @@ def sync_all(row = None):
 				if conn:
 					for record in employee_record:
 						conn.set_user(uid= record['attendance_device_id'], name= record['employee_name'], user_id= record['attendance_device_id'])
+					sync_fingerprint(conn)
 					conn.disconnect()
 	except:
 		error_message = frappe.get_traceback()
@@ -186,8 +190,19 @@ def delete_employee(id, work_location):
 	except Exception as e:
 		raise e
 
+
+def json_pack(data):
+	return {
+		"size": data.size,
+		"uid": data.uid,
+		"fid": data.fid,
+		"valid": data.valid,
+		"template": codecs.encode(data.template, 'hex').decode('ascii')
+	}
+
 def sync_fingerprint(conn):
-	templates = conn.get_templates()
+	templates_obj = conn.get_templates()
+	templates = [json_pack(t) for t in templates_obj]
 	for key, value in groupby(templates, key=lambda x: (x['uid'], x['uid'])):
 		for data in value:
 			if data['valid']:
@@ -202,3 +217,37 @@ def sync_fingerprint(conn):
 						"data": data['template']
 					})
 				doc.save()
+
+def sync_attendance_log():
+	settings = frappe.get_single('Essdee Attendance Settings')
+	for device in settings.device_details:
+		attendances = fetch_attendance(device)
+		if attendances:
+			for log in attendances:
+				employee = frappe.db.get_value('Employee',{'attendance_device_id': log['user_id']})
+				checkin_record = frappe.db.get_value('Employee Checkin',
+								{
+									'employee':employee,
+									'time':log['timestamp'],
+									'device_id': device.device_id
+								})
+				if not checkin_record:
+					add_log_based_on_employee_field(log['user_id'], log['timestamp'], device.device_id)
+
+def fetch_attendance(device):
+	attendances = []
+	conn = None
+	try:
+		conn = sync_device(ip = device.ip)
+		if conn:
+			conn.disable_device()
+			attendances = conn.get_attendance()
+			conn.enable_device()
+	except:
+		error_message = device.ip +' exception when fetching from device...'
+		frappe.log_error(error_message, 'Device fetch failed.')
+		raise
+	finally:
+		if conn:
+			conn.disconnect()
+	return list(map(lambda x: x.__dict__, attendances))
