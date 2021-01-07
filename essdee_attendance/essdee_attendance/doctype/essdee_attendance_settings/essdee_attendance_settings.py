@@ -21,7 +21,6 @@ def make_custom_field():
 			"label": "Shift Rate",
 			"description": "Allocate rate per shift",
 			"insert_after": "date_of_joining",
-			"reqd": 1,
 			"precision": 2
 			}		
 		],
@@ -31,7 +30,6 @@ def make_custom_field():
 			"fieldtype": "Float",
 			"label": "No of Shifts",
 			"insert_after": "shift",
-			"reqd": 1,
 			"precision": 2
 			}	
 		],
