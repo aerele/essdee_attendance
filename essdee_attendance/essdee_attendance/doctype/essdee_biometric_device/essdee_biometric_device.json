@@ -1,0 +1,96 @@
+{
+ "actions": [],
+ "autoname": "field:device_id",
+ "creation": "2021-01-09 15:51:12.485934",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "device_id",
+  "ip",
+  "punch_direction",
+  "column_break_3",
+  "location",
+  "combined_shift_type",
+  "clear_from_device_on_fetch",
+  "sync_now"
+ ],
+ "fields": [
+  {
+   "fieldname": "device_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Device ID",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "ip",
+   "fieldtype": "Data",
+   "label": "IP",
+   "reqd": 1
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Link",
+   "label": "Location",
+   "options": "Essdee Location",
+   "reqd": 1
+  },
+  {
+   "fieldname": "sync_now",
+   "fieldtype": "Button",
+   "label": "Sync Now"
+  },
+  {
+   "fieldname": "combined_shift_type",
+   "fieldtype": "Table MultiSelect",
+   "label": "Combined Shift Type",
+   "options": "Combined Shift Type",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "punch_direction",
+   "fieldtype": "Select",
+   "label": "Punch Direction",
+   "options": "\nIN\nOUT\nAUTO\nNone",
+   "reqd": 1
+  },
+  {
+   "default": "False",
+   "fieldname": "clear_from_device_on_fetch",
+   "fieldtype": "Select",
+   "label": "Clear from Device on Fetch",
+   "options": "\nTrue\nFalse",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2021-01-11 06:40:27.567890",
+ "modified_by": "Administrator",
+ "module": "Essdee Attendance",
+ "name": "Essdee Biometric Device",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

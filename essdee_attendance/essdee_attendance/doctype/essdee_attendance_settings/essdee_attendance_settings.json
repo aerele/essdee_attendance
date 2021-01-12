@@ -5,29 +5,25 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "update_attendance",
-  "sync_employees",
+  "update_shift_to_attendance",
+  "sync_biometric_device",
+  "column_break_2",
+  "update_shift_daily",
+  "sync_attendance_logs",
   "user_management_section",
   "device_details",
-  "sync_all"
+  "sync_all",
+  "biometric_attendance_sync_config_section",
+  "import_start_date",
+  "column_break_11",
+  "pull_frequency"
  ],
  "fields": [
   {
-   "fieldname": "update_attendance",
-   "fieldtype": "Button",
-   "label": "Update Attendance"
-  },
-  {
-   "depends_on": "sync_employees",
+   "depends_on": "sync_biometric_device",
    "fieldname": "user_management_section",
    "fieldtype": "Section Break",
    "label": "User Management"
-  },
-  {
-   "default": "0",
-   "fieldname": "sync_employees",
-   "fieldtype": "Check",
-   "label": "Sync Employees"
   },
   {
    "fieldname": "device_details",
@@ -39,12 +35,64 @@
    "fieldname": "sync_all",
    "fieldtype": "Button",
    "label": "Sync All"
+  },
+  {
+   "default": "1",
+   "depends_on": "sync_biometric_device",
+   "description": "Sync device attendance logs at every hour",
+   "fieldname": "sync_attendance_logs",
+   "fieldtype": "Check",
+   "label": "Sync Attendance Logs"
+  },
+  {
+   "default": "1",
+   "description": "Update worked shifts to the attendance at the end of every day",
+   "fieldname": "update_shift_daily",
+   "fieldtype": "Check",
+   "label": "Update Shift Daily"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "update_shift_to_attendance",
+   "fieldtype": "Button",
+   "label": "Update Shift to Attendance"
+  },
+  {
+   "default": "0",
+   "fieldname": "sync_biometric_device",
+   "fieldtype": "Check",
+   "label": "Sync Biometric Device"
+  },
+  {
+   "depends_on": "eval: doc.sync_biometric_device && doc.sync_attendance_logs",
+   "fieldname": "biometric_attendance_sync_config_section",
+   "fieldtype": "Section Break",
+   "label": "Biometric Attendance Sync Config"
+  },
+  {
+   "fieldname": "import_start_date",
+   "fieldtype": "Date",
+   "label": "Import Start Date"
+  },
+  {
+   "fieldname": "column_break_11",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "60",
+   "description": "(In mins)",
+   "fieldname": "pull_frequency",
+   "fieldtype": "Int",
+   "label": "Pull Frequency"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2021-01-05 10:51:38.985429",
+ "modified": "2021-01-11 07:02:21.885860",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Attendance Settings",
