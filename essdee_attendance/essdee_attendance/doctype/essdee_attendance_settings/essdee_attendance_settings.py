@@ -16,7 +16,6 @@ from frappe import _, msgprint
 from six import string_types
 from itertools import groupby
 import codecs
-from erpnext.hr.doctype.employee_checkin.employee_checkin import add_log_based_on_employee_field
 
 class EssdeeAttendanceSettings(Document):
 	pass
@@ -83,8 +82,17 @@ def make_custom_field():
 	}
 	create_custom_fields(custom_fields, ignore_validate=frappe.flags.in_patch, update=True)
 
-@frappe.whitelist()
 def update_attendance():
+	enabled = frappe.db.get_single_value('Essdee Attendance Settings', 'update_shift_daily')
+	if enabled:
+		update_shift_to_attendance()
+	else:
+		frappe.log_error(
+			_("Daily update of shifts to the attendance is not enabled in essdee attendance settings")
+		)
+
+@frappe.whitelist()
+def update_shift_to_attendance():
 	employees = frappe.get_all('Employee',  fields=['name', 'default_shift', 'company'])
 	for employee in employees:
 		attendance_list = frappe.db.get_list('Attendance', {'employee':employee['name'], \
@@ -127,7 +135,7 @@ def sync_device(ip, port=4370, timeout=30):
 	return conn
 
 @frappe.whitelist()
-def sync_records(row=None):
+def sync_records(doc=None):
 	enqueued_jobs = [d.get("job_name") for d in get_info()]
 	if 'sync_records' in enqueued_jobs:
 		frappe.throw(
@@ -140,19 +148,19 @@ def sync_records(row=None):
 			timeout=6000,
 			event= 'sync_records',
 			job_name= 'sync_records',
-			row=row
+			doc=doc
 		)
 		frappe.throw(
 			_("Sync job added to queue. Please check after sometime.")
 		)
 
-def sync_all(row = None):
+def sync_all(doc = None):
 	try:
-		if row:
-			if isinstance(row, string_types):
-				row = frappe._dict(json.loads(row))
-			employee_record = frappe.get_all('Employee', filters = [["Work Location", "sd_location", "=", row.location]], fields = ['attendance_device_id','employee_name'])
-			conn = sync_device(ip = row.ip)
+		if doc:
+			if isinstance(doc, string_types):
+				doc = frappe._dict(json.loads(doc))
+			employee_record = frappe.get_all('Employee', filters = [["Work Location", "sd_location", "=", doc.location]], fields = ['attendance_device_id','employee_name'])
+			conn = sync_device(ip = doc.ip)
 			if conn:
 				for record in employee_record:
 					conn.set_user(uid= record['attendance_device_id'], name= record['employee_name'], user_id= record['attendance_device_id'])
@@ -161,8 +169,9 @@ def sync_all(row = None):
 		else:
 			settings = frappe.get_single('Essdee Attendance Settings')
 			for device in settings.device_details:
-				employee_record = frappe.get_all('Employee', filters = [["Work Location", "sd_location", "=", device.location]], fields = ['attendance_device_id','employee_name'])
-				conn = sync_device(ip = device.ip)
+				device_doc = frappe.get_doc('Essdee Biometric Device', device.device_id)
+				employee_record = frappe.get_all('Employee', filters = [["Work Location", "sd_location", "=", device_doc.location]], fields = ['attendance_device_id','employee_name'])
+				conn = sync_device(ip = device_doc.ip)
 				if conn:
 					for record in employee_record:
 						conn.set_user(uid= record['attendance_device_id'], name= record['employee_name'], user_id= record['attendance_device_id'])
@@ -181,8 +190,9 @@ def delete_employee(id, work_location):
 		settings = frappe.get_single('Essdee Attendance Settings')
 		for row in work_location:
 			for device in settings.device_details:
-				if device.location == row['sd_location']:
-					conn = sync_device(ip = device.ip)
+				device_doc = frappe.get_doc('Essdee Biometric Device', device.device_id)
+				if device_doc.location == row['sd_location']:
+					conn = sync_device(ip = device_doc.ip)
 					if conn:
 						conn.delete_user(uid= id)
 						conn.disconnect()
@@ -198,8 +208,9 @@ def enroll_user(id, work_location):
 		settings = frappe.get_single('Essdee Attendance Settings')
 		for row in work_location:
 			for device in settings.device_details:
-				if device.location == row['sd_location']:
-					conn = sync_device(ip = device.ip)
+				device_doc = frappe.get_doc('Essdee Biometric Device', device.device_id)
+				if device_doc.location == row['sd_location']:
+					conn = sync_device(ip = device_doc.ip)
 					if conn:
 						conn.enroll_user(id)
 						conn.disconnect()
@@ -234,37 +245,3 @@ def sync_fingerprint(conn):
 						"data": data['template']
 					})
 				doc.save()
-
-def sync_attendance_log():
-	settings = frappe.get_single('Essdee Attendance Settings')
-	for device in settings.device_details:
-		attendances = fetch_attendance(device)
-		if attendances:
-			for log in attendances:
-				employee = frappe.db.get_value('Employee',{'attendance_device_id': log['user_id']})
-				checkin_record = frappe.db.get_value('Employee Checkin',
-								{
-									'employee':employee,
-									'time':log['timestamp'],
-									'device_id': device.device_id
-								})
-				if not checkin_record:
-					add_log_based_on_employee_field(log['user_id'], log['timestamp'], device.device_id)
-
-def fetch_attendance(device):
-	attendances = []
-	conn = None
-	try:
-		conn = sync_device(ip = device.ip)
-		if conn:
-			conn.disable_device()
-			attendances = conn.get_attendance()
-			conn.enable_device()
-	except:
-		error_message = device.ip +' exception when fetching from device...'
-		frappe.log_error(error_message, 'Device fetch failed.')
-		raise
-	finally:
-		if conn:
-			conn.disconnect()
-	return list(map(lambda x: x.__dict__, attendances))
