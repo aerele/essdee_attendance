@@ -142,41 +142,36 @@ def sync_records(doc=None):
 			_("Sync already in progress. Please wait for sometime.")
 		)
 	else:
+		device_details = []
+		if doc:
+			if isinstance(doc, string_types):
+				device_details.append(frappe._dict(json.loads(doc)))
+		else:
+			settings = frappe.get_single('Essdee Attendance Settings')
+			for device in settings.device_details:
+				device_details.append(frappe.get_doc('Essdee Biometric Device', device.device_id))
 		enqueue(
 			sync_all,
 			queue="default",
 			timeout=6000,
 			event= 'sync_records',
 			job_name= 'sync_records',
-			doc=doc
+			device_details= device_details
 		)
 		frappe.throw(
 			_("Sync job added to queue. Please check after sometime.")
 		)
 
-def sync_all(doc = None):
+def sync_all(device_details):
 	try:
-		if doc:
-			if isinstance(doc, string_types):
-				doc = frappe._dict(json.loads(doc))
-			employee_record = frappe.get_all('Employee', filters = [["Work Location", "sd_location", "=", doc.location]], fields = ['attendance_device_id','employee_name'])
-			conn = sync_device(ip = doc.ip)
+		for detail in device_details:
+			employee_record = frappe.get_all('Employee', filters = [["Work Location", "sd_location", "=", detail.location]], fields = ['attendance_device_id','employee_name'])
+			conn = sync_device(ip = detail.ip)
 			if conn:
 				for record in employee_record:
 					conn.set_user(uid= record['attendance_device_id'], name= record['employee_name'], user_id= record['attendance_device_id'])
 				sync_fingerprint(conn)
 				conn.disconnect()
-		else:
-			settings = frappe.get_single('Essdee Attendance Settings')
-			for device in settings.device_details:
-				device_doc = frappe.get_doc('Essdee Biometric Device', device.device_id)
-				employee_record = frappe.get_all('Employee', filters = [["Work Location", "sd_location", "=", device_doc.location]], fields = ['attendance_device_id','employee_name'])
-				conn = sync_device(ip = device_doc.ip)
-				if conn:
-					for record in employee_record:
-						conn.set_user(uid= record['attendance_device_id'], name= record['employee_name'], user_id= record['attendance_device_id'])
-					sync_fingerprint(conn)
-					conn.disconnect()
 	except:
 		error_message = frappe.get_traceback()
 		frappe.log_error(error_message, "Employee Records Sync Error")
