@@ -202,6 +202,8 @@ def update_shift_last_sync_timestamp(shift_type_device_mapping):
 						frappe.db.sql("""update `tabShift Type`
 							set last_sync_of_checkin = %s
 							where name = %s""", (str(min_pull_timestamp), shift))
+						status.set(f'{shift}_sync_timestamp', str(min_pull_timestamp))
+				
 				except:
 					error_logger.exception('Exception in update_shift_last_sync_timestamp, for shift:'+shift)
 
