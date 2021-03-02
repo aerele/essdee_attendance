@@ -131,10 +131,11 @@ def pull_process_and_push_data(settings, device, device_attendance_logs=None):
 						{
 							'employee':employee,
 							'time':device_attendance_log['timestamp'],
-							'device_id': device.device_id
+							'device_id': device.device_id,
+							'log_type': punch_direction
 						})
 		if not checkin_record:
-			add_log_based_on_employee_field(device_attendance_log['user_id'], device_attendance_log['timestamp'], device.device_id)
+			add_log_based_on_employee_field(device_attendance_log['user_id'], device_attendance_log['timestamp'], device.device_id, punch_direction)
 
 
 def fetch_attendance(device):

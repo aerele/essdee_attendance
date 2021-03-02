@@ -169,7 +169,7 @@ def sync_all(device_details):
 			conn = sync_device(ip = detail.ip)
 			if conn:
 				for record in employee_record:
-					conn.set_user(uid= record['attendance_device_id'], name= record['employee_name'], user_id= record['attendance_device_id'])
+					conn.set_user(uid= int(record['attendance_device_id']), name= record['employee_name'], user_id= record['attendance_device_id'])
 				sync_fingerprint(conn)
 				conn.disconnect()
 	except:
@@ -189,7 +189,7 @@ def delete_employee(id, work_location):
 				if device_doc.location == row['sd_location']:
 					conn = sync_device(ip = device_doc.ip)
 					if conn:
-						conn.delete_user(uid= id)
+						conn.delete_user(uid= int(id))
 						conn.disconnect()
 		msgprint(_('Successfully deleted the linked user'))
 	except Exception as e:
@@ -207,7 +207,7 @@ def enroll_user(id, work_location):
 				if device_doc.location == row['sd_location']:
 					conn = sync_device(ip = device_doc.ip)
 					if conn:
-						conn.enroll_user(id)
+						test = conn.enroll_user(int(id))
 						conn.disconnect()
 		msgprint(_('Successfully enrolled'))
 	except Exception as e:
@@ -226,17 +226,19 @@ def json_pack(data):
 def sync_fingerprint(conn):
 	templates_obj = conn.get_templates()
 	templates = [json_pack(t) for t in templates_obj]
-	for key, value in groupby(templates, key=lambda x: (x['uid'], x['uid'])):
+	for key, value in groupby(templates, key=lambda x: (x['uid'])):
 		for data in value:
 			if data['valid']:
 				data['fid'] = 'FID '+str(data['fid'])
-				doc = frappe.get_doc('Employee',{'attendance_device_id':key})
-				existing_labels = []
-				for val in doc.finger_print_details:
-					existing_labels.append(val.label)
-				if not data['fid'] in existing_labels:
-					doc.append("finger_print_details",{
-						"label":data['fid'],
-						"data": data['template']
-					})
-				doc.save()
+				emp = frappe.db.get_value('Employee',{'attendance_device_id':key}, 'name')
+				if emp:
+					doc = frappe.get_doc('Employee',emp)
+					existing_labels = []
+					for val in doc.finger_print_details:
+						existing_labels.append(val.label)
+					if not data['fid'] in existing_labels:
+						doc.append("finger_print_details",{
+							"label":data['fid'],
+							"data": data['template']
+						})
+					doc.save()
