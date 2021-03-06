@@ -43,15 +43,16 @@ status = pickledb.load('/'.join([logs_directory, 'status.json']), True)
 
 
 def sync_attendance_log():
-	settings = frappe.get_single('Essdee Attendance Settings')
-	if settings.sync_attendance_logs:
+	enabled = frappe.db.get_single_value('Essdee Attendance Settings', 'sync_attendance_logs')
+	if enabled:
 		try:
 			last_lift_off_timestamp = _safe_convert_date(status.get('lift_off_timestamp'), "%Y-%m-%d %H:%M:%S.%f")
 			if (last_lift_off_timestamp and last_lift_off_timestamp < datetime.datetime.now() - datetime.timedelta(minutes=settings.pull_frequency)) or not last_lift_off_timestamp:
 				status.set('lift_off_timestamp', str(datetime.datetime.now()))
 				info_logger.info("Cleared for lift off!")
-				for device in settings.device_details:
-					device_doc = frappe.get_doc('Essdee Biometric Device', device.device_id)
+				device_list = frappe.db.get_all("Essdee Biometric Device", fields = ["device_id"])
+				for device in device_list:
+					device_doc = frappe.get_doc("Essdee Biometric Device", device['device_id'])
 					device_attendance_logs = None
 					info_logger.info("Processing Device: "+ device_doc.device_id)
 					dump_file = logs_directory+'/'+device_doc.ip.replace('.', '_')+'_last_fetch_dump.json'
@@ -69,7 +70,7 @@ def sync_attendance_log():
 						info_logger.info("Successfully processed Device: "+ device_doc.device_id)
 					except:
 						error_logger.exception('exception when calling pull_process_and_push_data function for device'+json.dumps(device_doc, default=str))
-				shift_type_device_map_list = shift_type_device_map(settings.device_details)
+				shift_type_device_map_list = shift_type_device_map(device_list)
 				if shift_type_device_map_list:
 					update_shift_last_sync_timestamp(shift_type_device_map_list)
 				status.set('mission_accomplished_timestamp', str(datetime.datetime.now()))
@@ -172,7 +173,7 @@ def shift_type_device_map(device_details):
 	shift_type_list = frappe.get_all('Shift Type')
 	device_list= []
 	for device in device_details:
-		device_list.append(device.device_id)
+		device_list.append(device['device_id'])
 	for shift_type in shift_type_list:
 		mapped_devices = frappe.get_list('Combined Shift Type',
 					{'shift_type':shift_type['name'],'parent':['in',device_list]},'parent') 
