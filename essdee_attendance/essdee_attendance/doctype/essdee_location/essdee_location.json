@@ -6,7 +6,8 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "location"
+  "location",
+  "sync_now"
  ],
  "fields": [
   {
@@ -16,11 +17,17 @@
    "label": "Location",
    "reqd": 1,
    "unique": 1
+  },
+  {
+   "depends_on": "eval: !doc.__islocal",
+   "fieldname": "sync_now",
+   "fieldtype": "Button",
+   "label": "Sync Now"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-01-02 14:45:04.909946",
+ "modified": "2021-03-05 13:28:57.406762",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Location",

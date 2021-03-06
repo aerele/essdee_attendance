@@ -6,13 +6,9 @@
  "engine": "InnoDB",
  "field_order": [
   "update_shift_to_attendance",
-  "sync_biometric_device",
+  "sync_attendance_logs",
   "column_break_2",
   "update_shift_daily",
-  "sync_attendance_logs",
-  "user_management_section",
-  "device_details",
-  "sync_all",
   "biometric_attendance_sync_config_section",
   "import_start_date",
   "column_break_11",
@@ -20,25 +16,7 @@
  ],
  "fields": [
   {
-   "depends_on": "sync_biometric_device",
-   "fieldname": "user_management_section",
-   "fieldtype": "Section Break",
-   "label": "User Management"
-  },
-  {
-   "fieldname": "device_details",
-   "fieldtype": "Table",
-   "label": "Device Details",
-   "options": "Device Details"
-  },
-  {
-   "fieldname": "sync_all",
-   "fieldtype": "Button",
-   "label": "Sync All"
-  },
-  {
    "default": "1",
-   "depends_on": "sync_biometric_device",
    "description": "Sync device attendance logs at every hour",
    "fieldname": "sync_attendance_logs",
    "fieldtype": "Check",
@@ -61,13 +39,7 @@
    "label": "Update Shift to Attendance"
   },
   {
-   "default": "0",
-   "fieldname": "sync_biometric_device",
-   "fieldtype": "Check",
-   "label": "Sync Biometric Device"
-  },
-  {
-   "depends_on": "eval: doc.sync_biometric_device && doc.sync_attendance_logs",
+   "depends_on": "eval: doc.sync_attendance_logs",
    "fieldname": "biometric_attendance_sync_config_section",
    "fieldtype": "Section Break",
    "label": "Biometric Attendance Sync Config"
@@ -92,7 +64,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2021-01-11 07:02:21.885860",
+ "modified": "2021-03-02 19:10:54.068798",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Attendance Settings",
