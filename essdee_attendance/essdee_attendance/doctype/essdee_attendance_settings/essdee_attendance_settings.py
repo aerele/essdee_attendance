@@ -171,6 +171,7 @@ def enroll_fingerprint(doc, device):
 					is_exist = frappe.db.get_value('Finger Print Details', {'parent': doc.name, "id":template['fid']})
 					if not is_exist:
 						return template['fid'], template['template']
+				conn.refresh_data()
 				conn.disconnect()
 			else:
 				frappe.throw(_('Please Try Again'))
@@ -250,7 +251,7 @@ def compare_records(info):
 			templates = [json_pack(t) for t in templates]
 			users = [u.__dict__ for u in users]
 			user_id_list = [u['uid'] for u in users]
-			sync_status = 0
+			sync_status = False
 			if users:
 				diff_list = list(set(info['employee_id_list']) - set(user_id_list))
 				for user in users:
@@ -261,25 +262,21 @@ def compare_records(info):
 					if templates and employee:
 						doc = frappe.get_doc('Employee', employee)
 						if doc.employee_name != user['name']:
-							sync_status = 1
-							create_sync_records(user['uid'], device_ip, 'Update')
+							sync_status = create_sync_records(user['uid'], device_ip, 'Update')
 						
 						fid_key = itemgetter('fid')
 						user_templates = ['FID '+ str(x["fid"]) for x in templates if x["uid"] == int(doc.attendance_device_id)]
 						if doc.finger_print_details:
 							for row in doc.finger_print_details:		
 								if row.id not in user_templates:
-									sync_status = 1
-									create_sync_records(user['uid'], device_ip, 'Sync Templates')
+									sync_status = create_sync_records(user['uid'], device_ip, 'Sync Templates')
 									break
 				if diff_list:
 					for id in diff_list:
-						create_sync_records(id, device_ip, 'All')
-					sync_status = 1
+						sync_status = create_sync_records(id, device_ip, 'All')
 			else:
 				for id in info['employee_id_list']:
-					create_sync_records(id, device_ip, 'All')
-				sync_status = 1
+					sync_status = create_sync_records(id, device_ip, 'All')
 
 			if mismatched_users:
 				frappe.log_error(title='Employee not found', message=f'Employee not found for the device users{mismatched_users}')
@@ -309,6 +306,8 @@ def create_sync_records(id, device_ip, action):
 			'device_ip': device_ip,
 			'action': action,
 			'status': 'Queued'}).save()
+		return True
+	return False
 
 def validate_location(doc, action):
 	if action == 'before_save':
