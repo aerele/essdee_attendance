@@ -16,6 +16,7 @@ from frappe import _, msgprint
 from six import string_types
 from itertools import groupby
 import codecs
+from operator import itemgetter
 
 class EssdeeAttendanceSettings(Document):
 	pass
@@ -44,7 +45,22 @@ def make_custom_field():
 			"fieldtype": "Table",
 			"label": "Finger Print Details",
 			"options": "Finger Print Details",
-			"insert_after": "work_location"
+			"insert_after": "work_location",
+			"read_only": 1
+			},
+			{
+			"fieldname": "enroll_fingerprint",
+			"depends_on": "eval: !doc.__islocal",
+			"fieldtype": "Button",
+			"label": "Enroll Fingerprint",
+			"insert_after": "default_shift"
+			},
+			{
+			"fieldname": "sync_now",
+			"depends_on": "eval: !doc.__islocal",
+			"fieldtype": "Button",
+			"label": "Sync Now",
+			"insert_after": "enroll_fingerprint"
 			}		
 		],
 		'Attendance': [
@@ -135,84 +151,31 @@ def sync_device(ip, port=4370, timeout=30):
 	return conn
 
 @frappe.whitelist()
-def sync_records(doc=None):
-	enqueued_jobs = [d.get("job_name") for d in get_info()]
-	if 'sync_records' in enqueued_jobs:
-		frappe.throw(
-			_("Sync already in progress. Please wait for sometime.")
-		)
-	else:
-		device_details = []
-		if doc:
-			if isinstance(doc, string_types):
-				device_details.append(frappe._dict(json.loads(doc)))
-		else:
-			settings = frappe.get_single('Essdee Attendance Settings')
-			for device in settings.device_details:
-				device_details.append(frappe.get_doc('Essdee Biometric Device', device.device_id))
-		enqueue(
-			sync_all,
-			queue="default",
-			timeout=6000,
-			event= 'sync_records',
-			job_name= 'sync_records',
-			device_details= device_details
-		)
-		frappe.throw(
-			_("Sync job added to queue. Please check after sometime.")
-		)
-
-def sync_all(device_details):
+def enroll_fingerprint(doc, device):
+	if isinstance(doc, string_types):
+		doc = frappe._dict(json.loads(doc))
 	try:
-		for detail in device_details:
-			employee_record = frappe.get_all('Employee', filters = [["Work Location", "sd_location", "=", detail.location]], fields = ['attendance_device_id','employee_name'])
-			conn = sync_device(ip = detail.ip)
-			if conn:
-				for record in employee_record:
-					conn.set_user(uid= int(record['attendance_device_id']), name= record['employee_name'], user_id= record['attendance_device_id'])
-				sync_fingerprint(conn)
+		device_doc = frappe.get_doc('Essdee Biometric Device', device)
+		conn = sync_device(ip = device_doc.ip)
+		if conn:
+			uid = int(doc.attendance_device_id)
+			conn.set_user(uid= uid, name= doc.employee_name, user_id= doc.attendance_device_id)
+			temp_id = len(doc.finger_print_details)
+			enrolled = conn.enroll_user(uid, temp_id)
+			if enrolled:
+				template_obj = conn.get_user_template(uid, temp_id)
+				template = json_pack(template_obj)
+				doc = frappe.get_doc('Employee', doc.name)
+				if template['valid']:
+					template['fid'] = 'FID '+str(template['fid'])
+					is_exist = frappe.db.get_value('Finger Print Details', {'parent': doc.name, "id":template['fid']})
+					if not is_exist:
+						return template['fid'], template['template']
 				conn.disconnect()
-	except:
-		error_message = frappe.get_traceback()
-		frappe.log_error(error_message, "Employee Records Sync Error")
-		raise
-
-@frappe.whitelist()
-def delete_employee(id, work_location):
-	try:
-		if isinstance(work_location, string_types):
-			work_location = json.loads(work_location)
-		settings = frappe.get_single('Essdee Attendance Settings')
-		for row in work_location:
-			for device in settings.device_details:
-				device_doc = frappe.get_doc('Essdee Biometric Device', device.device_id)
-				if device_doc.location == row['sd_location']:
-					conn = sync_device(ip = device_doc.ip)
-					if conn:
-						conn.delete_user(uid= int(id))
-						conn.disconnect()
-		msgprint(_('Successfully deleted the linked user'))
+			else:
+				frappe.throw(_('Please Try Again'))
 	except Exception as e:
 		raise e
-
-@frappe.whitelist()
-def enroll_user(id, work_location):
-	try:
-		if isinstance(work_location, string_types):
-			work_location = json.loads(work_location)
-		settings = frappe.get_single('Essdee Attendance Settings')
-		for row in work_location:
-			for device in settings.device_details:
-				device_doc = frappe.get_doc('Essdee Biometric Device', device.device_id)
-				if device_doc.location == row['sd_location']:
-					conn = sync_device(ip = device_doc.ip)
-					if conn:
-						test = conn.enroll_user(int(id))
-						conn.disconnect()
-		msgprint(_('Successfully enrolled'))
-	except Exception as e:
-		raise e
-
 
 def json_pack(data):
 	return {
@@ -223,22 +186,140 @@ def json_pack(data):
 		"template": codecs.encode(data.template, 'hex').decode('ascii')
 	}
 
-def sync_fingerprint(conn):
-	templates_obj = conn.get_templates()
-	templates = [json_pack(t) for t in templates_obj]
-	for key, value in groupby(templates, key=lambda x: (x['uid'])):
-		for data in value:
-			if data['valid']:
-				data['fid'] = 'FID '+str(data['fid'])
-				emp = frappe.db.get_value('Employee',{'attendance_device_id':key}, 'name')
-				if emp:
-					doc = frappe.get_doc('Employee',emp)
-					existing_labels = []
-					for val in doc.finger_print_details:
-						existing_labels.append(val.label)
-					if not data['fid'] in existing_labels:
-						doc.append("finger_print_details",{
-							"label":data['fid'],
-							"data": data['template']
-						})
-					doc.save()
+def update_attendance_device_id(doc, action):
+	if action == 'after_insert':
+		last_device_id = 1
+		employee_list = frappe.get_all('Employee', ['attendance_device_id'], order_by="creation DESC")
+		if employee_list and len(employee_list) > 1:
+			last_device_id = int(employee_list[1]['attendance_device_id'])
+			last_device_id +=1
+		doc.attendance_device_id = last_device_id
+		doc.save()
+
+@frappe.whitelist()
+def sync_now(device=None, location=None, employee=None):
+	if device:
+		if isinstance(device, string_types):
+			device = frappe._dict(json.loads(device))
+		employee_list = frappe.get_all('Work Location', {'sd_location': device.location}, 'parent')
+		employee_id_list = [int(frappe.db.get_value('Employee', emp['parent'], 'attendance_device_id')) for emp in employee_list]
+		device_list = [device.name]
+		if not device_list:
+			frappe.throw("No employee found for this device location {device.location}")
+
+	if location:
+		if isinstance(location, string_types):
+			location = frappe._dict(json.loads(location))
+		device_list = frappe.get_all('Essdee Biometric Device', {'location': location.name}, 'name')
+		employee_list = frappe.get_all('Work Location', {'sd_location': location.name}, 'parent')
+		employee_id_list = [int(frappe.db.get_value('Employee', emp['parent'], 'attendance_device_id')) for emp in employee_list]
+		device_list = [device['name'] for device in device_list]
+		if not device_list:
+			frappe.throw(f"No device linked to this location {location.name}")
+
+		if not employee_list:
+			frappe.throw(f"No employee linked to this location {location.name}")		
+
+	if employee:
+		if isinstance(employee, string_types):
+			employee = frappe._dict(json.loads(employee))
+		location_list = frappe.get_all('Work Location', {'parent': employee.name}, 'sd_location')
+		location_list = [location['sd_location'] for location in location_list]
+		device_list = frappe.get_all('Essdee Biometric Device', {'location': ['in', location_list]}, 'name')
+		device_list = [device['name'] for device in device_list]
+		employee_id_list = [int(employee.attendance_device_id)]
+		if not device_list:
+			frappe.throw(f"No device location linked to the employee {employee.name}")
+
+	info = {'employee_id_list': employee_id_list, 'device_list': device_list}
+	compare_records(info)
+
+def compare_records(info):
+	for device in info['device_list']:
+		device_ip = frappe.db.get_value('Essdee Biometric Device', device, 'ip')
+		conn = None
+		try:
+			conn = sync_device(device_ip, port=4370, timeout=30)
+			if not conn:
+				frappe.throw(f'Unable to sync device {device}')
+			conn.disable_device()
+			users = conn.get_users()
+			templates = conn.get_templates()
+			conn.enable_device()
+			mismatched_users = []
+			templates = [json_pack(t) for t in templates]
+			users = [u.__dict__ for u in users]
+			user_id_list = [u['uid'] for u in users]
+			sync_status = 0
+			if users:
+				diff_list = list(set(info['employee_id_list']) - set(user_id_list))
+				for user in users:
+					employee = frappe.db.get_value('Employee', {'attendance_device_id': user['uid']}, 'name')
+					if not user['uid'] in info['employee_id_list']:
+						mismatched_users.append(user)
+						continue
+					if templates and employee:
+						doc = frappe.get_doc('Employee', employee)
+						if doc.employee_name != user['name']:
+							sync_status = 1
+							create_sync_records(user['uid'], device_ip, 'Update')
+						
+						fid_key = itemgetter('fid')
+						user_templates = ['FID '+ str(x["fid"]) for x in templates if x["uid"] == int(doc.attendance_device_id)]
+						if doc.finger_print_details:
+							for row in doc.finger_print_details:		
+								if row.id not in user_templates:
+									sync_status = 1
+									create_sync_records(user['uid'], device_ip, 'Sync Templates')
+									break
+				if diff_list:
+					for id in diff_list:
+						create_sync_records(id, device_ip, 'All')
+					sync_status = 1
+			else:
+				for id in info['employee_id_list']:
+					create_sync_records(id, device_ip, 'All')
+				sync_status = 1
+
+			if mismatched_users:
+				frappe.log_error(title='Employee not found', message=f'Employee not found for the device users{mismatched_users}')
+				msgprint('Employee not found for some device users. Check error log for more info')
+			
+			if sync_status:
+				msgprint('Sync on progress. Please check status in sync log after sometimes.')
+			else:
+				msgprint('Already Synced')
+		except:
+			frappe.throw(frappe.get_traceback())
+		finally:
+			if conn:
+				conn.disconnect()
+
+def create_sync_records(id, device_ip, action):
+	id = frappe.db.get_value('Employee',{'attendance_device_id':id},'name')
+	is_exist = frappe.db.get_value('Essdee Biometric Device Sync Log',
+		{'employee': id,
+		'device_ip': device_ip,
+		'action': action,
+		'status': ['in',['Error', 'Queued']],
+		'resend_count': ['<', 5]})
+	if not is_exist:
+		frappe.get_doc({'doctype': 'Essdee Biometric Device Sync Log',
+			'employee': id,
+			'device_ip': device_ip,
+			'action': action,
+			'status': 'Queued'}).save()
+
+def validate_location(doc, action):
+	if action == 'before_save':
+		previous_locations = [loc['sd_location'] for loc in frappe.get_all('Work Location', {'parent': doc.name}, ['sd_location'])]
+		if previous_locations and not doc.work_location:
+			previous_locations = previous_locations
+		if doc.work_location and previous_locations:
+			for loc in doc.work_location:
+				if loc.sd_location in previous_locations:
+					previous_locations.remove(loc.sd_location)
+		if previous_locations:
+			ip_list = frappe.db.get_all('Essdee Biometric Device', {'location': ['in', previous_locations]}, 'ip')
+			for ip in ip_list:
+				create_sync_records(doc.attendance_device_id, ip['ip'], 'Delete')

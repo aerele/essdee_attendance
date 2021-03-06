@@ -91,13 +91,12 @@ app_license = "MIT"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-#	}
-# }
+doc_events = {
+	"Employee": {
+		"after_insert": "essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.update_attendance_device_id",
+		"before_save": "essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.validate_location"
+	},
+}
 
 # Scheduled Tasks
 # ---------------
@@ -106,6 +105,11 @@ scheduler_events = {
 # 	"all": [
 # 		"essdee_attendance.tasks.all"
 # 	],
+	"cron": {
+		"0/30 * * * *": [
+		"essdee_attendance.essdee_attendance.doctype.essdee_biometric_device_sync_log.essdee_biometric_device_sync_log.process_unsync_record"
+		]
+	},
 	"hourly": [
 		"essdee_attendance.essdee_attendance.sync.sync_attendance.sync_attendance_log"
 	],
