@@ -1,0 +1,40 @@
+{
+ "actions": [],
+ "creation": "2021-01-05 12:17:41.923946",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "id",
+  "template"
+ ],
+ "fields": [
+  {
+   "fieldname": "id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "ID",
+   "reqd": 1
+  },
+  {
+   "fieldname": "template",
+   "fieldtype": "Code",
+   "in_list_view": 1,
+   "label": "Template",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2021-03-05 13:43:03.416818",
+ "modified_by": "Administrator",
+ "module": "Essdee Attendance",
+ "name": "Finger Print Details",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
