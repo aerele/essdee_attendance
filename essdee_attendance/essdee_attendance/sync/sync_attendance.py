@@ -43,7 +43,7 @@ status = pickledb.load('/'.join([logs_directory, 'status.json']), True)
 
 
 def sync_attendance_log():
-	settings = frappe.db.get_single('Essdee Attendance Settings')
+	settings = frappe.get_single('Essdee Attendance Settings')
 	if settings.sync_attendance_logs:
 		try:
 			last_lift_off_timestamp = _safe_convert_date(status.get('lift_off_timestamp'), "%Y-%m-%d %H:%M:%S.%f")
