@@ -185,7 +185,7 @@ def json_pack(data):
 	}
 
 def update_attendance_device_id(doc, action):
-	if action == 'after_insert':
+	if action == 'after_insert-stop':
 		last_device_id = 1
 		employee_list = frappe.get_all('Employee', ['attendance_device_id'], order_by="creation DESC")
 		if employee_list and len(employee_list) > 1:
