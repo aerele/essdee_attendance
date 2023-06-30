@@ -132,9 +132,9 @@ scheduler_events = {
 # Overriding Methods
 # ------------------------------
 #
-# override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "essdee_attendance.event.get_events"
-# }
+override_whitelisted_methods = {
+	"insights.api.subscription.trial_expired": "essdee_attendance.essdee_attendance.utils.trial_expired"
+}
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
