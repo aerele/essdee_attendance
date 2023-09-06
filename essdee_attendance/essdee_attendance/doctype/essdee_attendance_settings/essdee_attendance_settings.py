@@ -7,7 +7,7 @@ import frappe
 import json
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 from frappe.model.document import Document
-from frappe.utils import cint, nowdate, getdate
+from frappe.utils import cint, nowdate, getdate, add_days
 from datetime import timedelta, datetime
 from frappe.core.page.background_jobs.background_jobs import get_info
 from frappe.utils.background_jobs import enqueue
@@ -86,11 +86,17 @@ def make_custom_field():
  			"depends_on": "sd_enable_essdee_attendance"
 			},
 			{
+			"fieldname": "sd_allowed_early_entry",
+			"fieldtype": "Int",
+			"label": "Allowed Early Entry (In Mins)",
+			"insert_after": "sd_essdee_attendance_settings"
+			},
+			{
 			"fieldname": "sd_shift_time_mapping",
 			"fieldtype": "Table",
 			"label": "Shift Time Mapping",
 			"options": "Shift Time Mapping",
-			"insert_after": "sd_essdee_attendance_settings"
+			"insert_after": "sd_allowed_early_entry"
 			}
 		]
 	}
@@ -321,16 +327,17 @@ def validate_location(doc, action):
 				create_sync_records(doc.attendance_device_id, ip['ip'], 'Delete')
 
 def attendance_before_submit(doc, action):
-	if action == 'before_submit' and not doc.sd_no_of_shifts and doc.in_time and doc.out_time:
+	if action == 'before_submit' and doc.status in ['Present', 'Half Day'] and not doc.sd_no_of_shifts and doc.in_time and doc.out_time:
 		if doc.shift and frappe.get_value('Shift Type', doc.shift, 'sd_enable_essdee_attendance'):
 			doc.sd_no_of_shifts = calculate_shifts(doc.shift, doc.in_time, doc.out_time)
 
 def calculate_shifts(shift_type, in_time, out_time):
 	shift_count = 0
+	early_entry_mins = frappe.get_value('Shift Type', shift_type, 'sd_allowed_early_entry')
 	shift_time_mapping = frappe.get_list(
 		'Shift Time Mapping', 
 		filters = {'parent': shift_type},
-		fields = ['in_time', 'shift', 'allowed_early_entry', 'allowed_late_entry', 'name'],
+		fields = ['in_time', 'out_time', 'shift', 'allowed_early_entry', 'allowed_late_entry', 'allowed_early_exit', 'name'],
 		order_by = "in_time"
 	)
 	if isinstance(in_time, string_types):
@@ -342,7 +349,7 @@ def calculate_shifts(shift_type, in_time, out_time):
 	shift_start_index = -1
 	for index, shift_time in enumerate(shift_time_mapping):
 		if not early_entry:
-			early_entry = datetime.combine(in_date, datetime.min.time()) + (shift_time.in_time - timedelta(minutes = shift_time.allowed_early_entry))
+			early_entry = datetime.combine(in_date, datetime.min.time()) + (shift_time.in_time - timedelta(minutes = early_entry_mins))
 			if in_time < early_entry:
 				break
 		late_entry = datetime.combine(in_date, datetime.min.time()) + (shift_time.in_time + timedelta(minutes = shift_time.allowed_late_entry))
@@ -350,9 +357,14 @@ def calculate_shifts(shift_type, in_time, out_time):
 			if in_time >= early_entry and in_time <= late_entry:
 				shift_start_index = index
 			else:
+				early_entry = late_entry
 				continue
-		if out_time <= late_entry:
+		
+		early_exit = datetime.combine(in_date, datetime.min.time()) + (shift_time.out_time - timedelta(minutes = shift_time.allowed_early_exit))
+		if shift_time.out_time < shift_time.in_time:
+			early_exit = datetime.combine(add_days(in_date, 1), datetime.min.time()) + (shift_time.out_time - timedelta(minutes = shift_time.allowed_early_exit))
+		if out_time < early_exit:
 			break
-		if shift_start_index <= index:
-			shift_count += shift_time.shift
+		shift_count += shift_time.shift
+		early_entry = late_entry
 	return shift_count
