@@ -9,7 +9,8 @@ from logging.handlers import RotatingFileHandler
 import pickledb
 from zk import ZK
 import frappe
-from erpnext.hr.doctype.employee_checkin.employee_checkin import add_log_based_on_employee_field
+from frappe import _
+from hrms.hr.doctype.employee_checkin.employee_checkin import add_log_based_on_employee_field
 
 device_punch_values_IN = [0,4]
 device_punch_values_OUT = [1,5]

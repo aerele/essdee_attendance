@@ -319,3 +319,40 @@ def validate_location(doc, action):
 			ip_list = frappe.db.get_all('Essdee Biometric Device', {'location': ['in', previous_locations]}, 'ip')
 			for ip in ip_list:
 				create_sync_records(doc.attendance_device_id, ip['ip'], 'Delete')
+
+def attendance_before_submit(doc, action):
+	if action == 'before_submit' and not doc.sd_no_of_shifts and doc.in_time and doc.out_time:
+		if doc.shift and frappe.get_value('Shift Type', doc.shift, 'sd_enable_essdee_attendance'):
+			doc.sd_no_of_shifts = calculate_shifts(doc.shift, doc.in_time, doc.out_time)
+
+def calculate_shifts(shift_type, in_time, out_time):
+	shift_count = 0
+	shift_time_mapping = frappe.get_list(
+		'Shift Time Mapping', 
+		filters = {'parent': shift_type},
+		fields = ['in_time', 'shift', 'allowed_early_entry', 'allowed_late_entry', 'name'],
+		order_by = "in_time"
+	)
+	if isinstance(in_time, string_types):
+		in_time = datetime.fromisoformat(in_time)
+	if isinstance(out_time, string_types):
+		out_time = datetime.fromisoformat(out_time)
+	in_date = in_time.date()
+	early_entry = None
+	shift_start_index = -1
+	for index, shift_time in enumerate(shift_time_mapping):
+		if not early_entry:
+			early_entry = datetime.combine(in_date, datetime.min.time()) + (shift_time.in_time - timedelta(minutes = shift_time.allowed_early_entry))
+			if in_time < early_entry:
+				break
+		late_entry = datetime.combine(in_date, datetime.min.time()) + (shift_time.in_time + timedelta(minutes = shift_time.allowed_late_entry))
+		if shift_start_index == -1:
+			if in_time >= early_entry and in_time <= late_entry:
+				shift_start_index = index
+			else:
+				continue
+		if out_time <= late_entry:
+			break
+		if shift_start_index <= index:
+			shift_count += shift_time.shift
+	return shift_count

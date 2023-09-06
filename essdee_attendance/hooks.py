@@ -96,6 +96,9 @@ doc_events = {
 		"after_insert": "essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.update_attendance_device_id",
 		"before_save": "essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.validate_location"
 	},
+    "Attendance": {
+		"before_submit": "essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.attendance_before_submit",
+	},
 }
 
 # Scheduled Tasks
@@ -114,7 +117,7 @@ scheduler_events = {
 		"essdee_attendance.essdee_attendance.sync.sync_attendance.sync_attendance_log"
 	],
 	"daily": [
-		"essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.update_attendance"
+		# "essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.update_attendance"
 	],
 # 	"weekly": [
 # 		"essdee_attendance.tasks.weekly"
