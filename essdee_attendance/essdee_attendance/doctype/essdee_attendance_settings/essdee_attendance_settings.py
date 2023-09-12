@@ -335,7 +335,8 @@ def calculate_shifts(shift_type, in_time, out_time):
 	shift_count = 0
 	early_entry_mins = frappe.get_value('Shift Type', shift_type, 'sd_allowed_early_entry')
 	shift_time_mapping = frappe.get_list(
-		'Shift Time Mapping', 
+		'Shift Time Mapping',
+		parent_doctype = 'Shift Type',
 		filters = {'parent': shift_type},
 		fields = ['in_time', 'out_time', 'shift', 'allowed_early_entry', 'allowed_late_entry', 'allowed_early_exit', 'name'],
 		order_by = "in_time"
