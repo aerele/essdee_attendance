@@ -94,7 +94,7 @@ def get_employee_detail(data, filters, employee, attendance_records):
 			if filters.show_time_logs:
 				detail.append(", ".join(value.get('checkin') or []))
 			if filters.show_hours:
-				detail.append("{} - {}".format(value.get('status') or '', value.get('working_hours') or 0))
+				detail.append("{} - {} hrs".format(value.get('status') or '', value.get('working_hours') or 0))
 			if filters.show_shift:
 				detail.append(str(value.get('sd_no_of_shifts') or 0))
 			data[date] = "<br>".join(detail)
@@ -105,6 +105,12 @@ def get_employees(filters):
 	query = frappe.qb.from_(Employee).select(Employee.name, Employee.employee_name, Employee.sd_shift_rate)
 	if filters.employee:
 		query = query.where(Employee.name == filters.employee)
+	if filters.shift:
+		query = query.where(Employee.default_shift == filters.shift)
+	if filters.department:
+		query = query.where(Employee.department == filters.department)
+	if filters.branch:
+		query = query.where(Employee.branch == filters.branch)
 	return query.run(as_dict = 1)
 
 
@@ -129,9 +135,10 @@ def get_attendance_map(filters):
 
 def get_attendance_records(filters):
 	Attendance = frappe.qb.DocType("Attendance")
+	Employee = frappe.qb.DocType("Employee")
 	
 	query = (
-		frappe.qb.from_(Attendance)
+		frappe.qb.from_(Attendance).from_(Employee)
 		.select(
 			Attendance.employee,
 			Attendance.attendance_date,
@@ -146,11 +153,18 @@ def get_attendance_records(filters):
 			& (Attendance.company == filters.company)
 			& (Attendance.attendance_date >= filters.from_date)
 			& (Attendance.attendance_date <= filters.to_date)
+			& (Attendance.employee == Employee.name)
 		)
 	)
 	
 	if filters.employee:
-		query = query.where(Attendance.employee == filters.employee)
+		query = query.where(Employee.name == filters.employee)
+	if filters.shift:
+		query = query.where(Attendance.shift == filters.shift)
+	if filters.department:
+		query = query.where(Employee.department == filters.department)
+	if filters.branch:
+		query = query.where(Employee.branch == filters.branch)
 	query = query.orderby(Attendance.employee, Attendance.attendance_date)
 
 	return query.run(as_dict=1)
@@ -169,6 +183,7 @@ def get_checkin_map(attendance_records, filters):
 
 def get_check_in_records(filters):
 	EmployeeCheckin = frappe.qb.DocType("Employee Checkin")
+	Employee = frappe.qb.DocType("Employee")
 	
 	query = (
 		frappe.qb.from_(EmployeeCheckin)
@@ -179,11 +194,18 @@ def get_check_in_records(filters):
 			(EmployeeCheckin.attendance.notnull())
 			& (EmployeeCheckin.time >= filters.from_date)
 			& (EmployeeCheckin.time <= filters.to_date)
+			& (EmployeeCheckin.employee == Employee.name)
 		)
 	)
 	
 	if filters.employee:
 		query = query.where(EmployeeCheckin.employee == filters.employee)
+	if filters.shift:
+		query = query.where(Employee.default_shift == filters.shift)
+	if filters.department:
+		query = query.where(Employee.department == filters.department)
+	if filters.branch:
+		query = query.where(Employee.branch == filters.branch)
 	query = query.orderby(EmployeeCheckin.employee, EmployeeCheckin.time)
 
 	return query.run(as_dict=1)

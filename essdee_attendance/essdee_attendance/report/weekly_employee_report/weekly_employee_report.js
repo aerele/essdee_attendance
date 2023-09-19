@@ -68,6 +68,24 @@ frappe.query_reports["Weekly Employee Report"] = {
 			}
 		},
 		{
+			"fieldname":"shift",
+			"label": __("Shift"),
+			"fieldtype": "Link",
+			"options": "Shift Type",
+		},
+		{
+			"fieldname":"branch",
+			"label": __("Branch"),
+			"fieldtype": "Link",
+			"options": "Branch",
+		},
+		{
+			"fieldname":"department",
+			"label": __("Department"),
+			"fieldtype": "Link",
+			"options": "Department",
+		},
+		{
 			"fieldname":"company",
 			"label": __("Company"),
 			"fieldtype": "Link",
