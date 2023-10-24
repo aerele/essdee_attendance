@@ -68,6 +68,12 @@ frappe.query_reports["Weekly Employee Report"] = {
 			}
 		},
 		{
+			"fieldname":"employment_type",
+			"label": __("Employment Type"),
+			"fieldtype": "Link",
+			"options": "Employment Type",
+		},
+		{
 			"fieldname":"shift",
 			"label": __("Shift"),
 			"fieldtype": "Link",
@@ -142,6 +148,13 @@ frappe.query_reports["Weekly Employee Report"] = {
 				set_cell_height();
 				frappe.query_report.refresh();
 			}
+		},
+		{
+			"fieldname":"status",
+			"label": __("Employment Status"),
+			"fieldtype": "Select",
+			"options": "\nActive\nInactive",
+			"default": "Active",
 		},
 	],
 

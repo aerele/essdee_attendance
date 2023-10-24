@@ -103,23 +103,14 @@ def get_employees(filters):
 	Employee = frappe.qb.DocType("Employee")
 	
 	query = frappe.qb.from_(Employee).select(Employee.name, Employee.employee_name, Employee.sd_shift_rate)
-	if filters.employee:
-		query = query.where(Employee.name == filters.employee)
-	if filters.shift:
-		query = query.where(Employee.default_shift == filters.shift)
-	if filters.department:
-		query = query.where(Employee.department == filters.department)
-	if filters.branch:
-		query = query.where(Employee.branch == filters.branch)
+	query = apply_employee_filters(query, filters, Employee)
 	return query.run(as_dict = 1)
-
 
 def get_attendance_map(filters):
 	attendance_list = get_attendance_records(filters)
 	attendance_map = {}
 
 	for d in attendance_list:
-
 		attendance_map.setdefault(d.employee, {})
 		attendance_map[d.employee][d.attendance_date.isoformat()] = {
 			'employee_name': d.employee_name,
@@ -156,15 +147,8 @@ def get_attendance_records(filters):
 			& (Attendance.employee == Employee.name)
 		)
 	)
-	
-	if filters.employee:
-		query = query.where(Employee.name == filters.employee)
-	if filters.shift:
-		query = query.where(Attendance.shift == filters.shift)
-	if filters.department:
-		query = query.where(Employee.department == filters.department)
-	if filters.branch:
-		query = query.where(Employee.branch == filters.branch)
+
+	query = apply_employee_filters(query, filters, Employee)
 	query = query.orderby(Attendance.employee, Attendance.attendance_date)
 
 	return query.run(as_dict=1)
@@ -186,7 +170,7 @@ def get_check_in_records(filters):
 	Employee = frappe.qb.DocType("Employee")
 	
 	query = (
-		frappe.qb.from_(EmployeeCheckin)
+		frappe.qb.from_(EmployeeCheckin).from_(Employee)
 		.select(
 			EmployeeCheckin.employee,
 			EmployeeCheckin.time,
@@ -197,15 +181,26 @@ def get_check_in_records(filters):
 			& (EmployeeCheckin.employee == Employee.name)
 		)
 	)
-	
+
+	query = apply_employee_filters(query, filters, Employee)
+	query = query.orderby(EmployeeCheckin.employee, EmployeeCheckin.time)
+
+	return query.run(as_dict=1)
+
+def apply_employee_filters(query, filters, Employee):
 	if filters.employee:
-		query = query.where(EmployeeCheckin.employee == filters.employee)
+		query = query.where(Employee.name == filters.employee)
 	if filters.shift:
 		query = query.where(Employee.default_shift == filters.shift)
 	if filters.department:
 		query = query.where(Employee.department == filters.department)
 	if filters.branch:
 		query = query.where(Employee.branch == filters.branch)
-	query = query.orderby(EmployeeCheckin.employee, EmployeeCheckin.time)
-
-	return query.run(as_dict=1)
+	if filters.employment_type:
+		query = query.where(Employee.employment_type == filters.employment_type)
+	if filters.status:
+		if filters.status == "Active":
+			query = query.where(Employee.status == "Active")
+		else:
+			query = query.where(Employee.status != "Active")
+	return query
