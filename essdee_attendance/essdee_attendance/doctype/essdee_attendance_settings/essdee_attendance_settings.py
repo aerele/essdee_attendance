@@ -9,8 +9,6 @@ from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 from frappe.model.document import Document
 from frappe.utils import cint, nowdate, getdate, add_days
 from datetime import timedelta, datetime
-from frappe.core.page.background_jobs.background_jobs import get_info
-from frappe.utils.background_jobs import enqueue
 from zk import ZK
 from frappe import _, msgprint
 from six import string_types
