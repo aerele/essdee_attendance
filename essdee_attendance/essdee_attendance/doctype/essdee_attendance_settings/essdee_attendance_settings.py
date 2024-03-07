@@ -23,78 +23,85 @@ def make_custom_field():
 	custom_fields = {
 		'Employee': [
 			{
-			"fieldname": "sd_shift_rate",
-			"fieldtype": "Currency",
-			"label": "Shift Rate",
-			"description": "Allocate rate per shift",
-			"insert_after": "date_of_joining",
-			"precision": 2
+				"fieldname": "sd_shift_rate",
+				"fieldtype": "Currency",
+				"label": "Shift Rate",
+				"description": "Allocate rate per shift",
+				"insert_after": "date_of_joining",
+				"precision": 2
 			},
 			{
-			"fieldname": "work_location",
-			"fieldtype": "Table",
-			"label": "Work Location",
-			"options": "Work Location",
-			"insert_after": "attendance_device_id"
+				"fieldname": "work_location",
+				"fieldtype": "Table",
+				"label": "Work Location",
+				"options": "Work Location",
+				"insert_after": "attendance_device_id"
 			},
 			{
-			"fieldname": "finger_print_details",
-			"fieldtype": "Table",
-			"label": "Finger Print Details",
-			"options": "Finger Print Details",
-			"insert_after": "work_location",
-			"read_only": 1
+				"fieldname": "finger_print_details",
+				"fieldtype": "Table",
+				"label": "Finger Print Details",
+				"options": "Finger Print Details",
+				"insert_after": "work_location",
+				"read_only": 1
 			},
 			{
-			"fieldname": "enroll_fingerprint",
-			"depends_on": "eval: !doc.__islocal",
-			"fieldtype": "Button",
-			"label": "Enroll Fingerprint",
-			"insert_after": "default_shift"
+				"fieldname": "enroll_fingerprint",
+				"depends_on": "eval: !doc.__islocal",
+				"fieldtype": "Button",
+				"label": "Enroll Fingerprint",
+				"insert_after": "default_shift"
 			},
 			{
-			"fieldname": "sync_now",
-			"depends_on": "eval: !doc.__islocal",
-			"fieldtype": "Button",
-			"label": "Sync Now",
-			"insert_after": "enroll_fingerprint"
-			}		
+				"fieldname": "sync_now",
+				"depends_on": "eval: !doc.__islocal",
+				"fieldtype": "Button",
+				"label": "Sync Now",
+				"insert_after": "enroll_fingerprint"
+			},
+			{
+				"fieldname": "sd_attendance_book_serial",
+				"fieldtype": "Data",
+				"label": "Attendance Book Serial",
+				"insert_after": "employment_type",
+				"unique": 1,
+			},
 		],
 		'Attendance': [
 			{
-			"fieldname": "sd_no_of_shifts",
-			"fieldtype": "Float",
-			"label": "No of Shifts",
-			"insert_after": "shift",
-			"precision": 2
+				"fieldname": "sd_no_of_shifts",
+				"fieldtype": "Float",
+				"label": "No of Shifts",
+				"insert_after": "shift",
+				"precision": 2
 			}	
 		],
 		'Shift Type': [
 			{
-			"fieldname": "sd_enable_essdee_attendance",
-			"fieldtype": "Check",
-			"label": "Enable Essdee Attendance",
-			"insert_after": "enable_auto_attendance"
+				"fieldname": "sd_enable_essdee_attendance",
+				"fieldtype": "Check",
+				"label": "Enable Essdee Attendance",
+				"insert_after": "enable_auto_attendance"
 			},
 			{
-			"fieldname": "sd_essdee_attendance_settings",
- 			"label": "Essdee Attendance Settings",
- 			"fieldtype": 'Section Break',
-			"insert_after": "sd_enable_essdee_attendance",
- 			"depends_on": "sd_enable_essdee_attendance"
+				"fieldname": "sd_essdee_attendance_settings",
+				"label": "Essdee Attendance Settings",
+				"fieldtype": 'Section Break',
+				"insert_after": "sd_enable_essdee_attendance",
+				"depends_on": "sd_enable_essdee_attendance"
 			},
 			{
-			"fieldname": "sd_allowed_early_entry",
-			"fieldtype": "Int",
-			"label": "Allowed Early Entry (In Mins)",
-			"insert_after": "sd_essdee_attendance_settings"
+				"fieldname": "sd_allowed_early_entry",
+				"fieldtype": "Int",
+				"label": "Allowed Early Entry (In Mins)",
+				"insert_after": "sd_essdee_attendance_settings"
 			},
 			{
-			"fieldname": "sd_shift_time_mapping",
-			"fieldtype": "Table",
-			"label": "Shift Time Mapping",
-			"options": "Shift Time Mapping",
-			"insert_after": "sd_allowed_early_entry"
+				"fieldname": "sd_shift_time_mapping",
+				"fieldtype": "Table",
+				"label": "Shift Time Mapping",
+				"options": "Shift Time Mapping",
+				"insert_after": "sd_allowed_early_entry"
 			}
 		]
 	}

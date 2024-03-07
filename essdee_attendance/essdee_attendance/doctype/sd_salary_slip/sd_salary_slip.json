@@ -1,0 +1,194 @@
+{
+ "actions": [],
+ "autoname": "naming_series:",
+ "creation": "2024-03-07 12:19:33.182713",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "employee",
+  "employee_name",
+  "column_break_ukon",
+  "date",
+  "naming_series",
+  "section_break_rfdr",
+  "salary_amount",
+  "additions_section",
+  "other_additions",
+  "deductions_section",
+  "canteen",
+  "leave",
+  "other_deductions",
+  "column_break_nxhr",
+  "advance",
+  "esi_pf",
+  "total_deductions",
+  "section_break_baas",
+  "total_amount",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Employee",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "salary_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Salary Amount",
+   "non_negative": 1,
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "advance",
+   "fieldtype": "Currency",
+   "label": "Advance",
+   "non_negative": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "canteen",
+   "fieldtype": "Currency",
+   "label": "Canteen",
+   "non_negative": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "esi_pf",
+   "fieldtype": "Currency",
+   "label": "ESI/PF",
+   "non_negative": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "leave",
+   "fieldtype": "Currency",
+   "label": "Leave",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "column_break_nxhr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_baas",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "other_deductions",
+   "fieldtype": "Currency",
+   "label": "Other Deductions",
+   "non_negative": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "label": "Total Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_ukon",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_rfdr",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "deductions_section",
+   "fieldtype": "Section Break",
+   "label": "Deductions"
+  },
+  {
+   "fieldname": "additions_section",
+   "fieldtype": "Section Break",
+   "label": "Additions"
+  },
+  {
+   "default": "0",
+   "fieldname": "other_additions",
+   "fieldtype": "Currency",
+   "label": "Other Additions",
+   "non_negative": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "total_deductions",
+   "fieldtype": "Currency",
+   "label": "Total Deductions",
+   "non_negative": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Data",
+   "label": "Naming Series",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-03-07 17:56:18.940269",
+ "modified_by": "Administrator",
+ "module": "Essdee Attendance",
+ "name": "SD Salary Slip",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
