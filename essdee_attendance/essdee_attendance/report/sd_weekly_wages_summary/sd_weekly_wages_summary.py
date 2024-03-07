@@ -109,6 +109,9 @@ def get_data(filters):
 			q = q.where(Employee.salary_mode == filters.get('salary_mode'))
 	
 	q = q.where(Employee.status == 'Active')
+	q = q.orderby(Employee.sd_attendance_book_serial.isnull())
+	q = q.orderby(Employee.sd_attendance_book_serial)
+	q = q.orderby(Employee.name)
 
 	data = q.run(as_dict=True)
 	validate_duplicate(data)

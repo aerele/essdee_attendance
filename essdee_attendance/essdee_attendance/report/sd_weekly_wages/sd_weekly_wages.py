@@ -143,7 +143,6 @@ def get_columns():
 	]
 
 def get_all_active_employees(filters = None):
-	print(filters)
 	Employee = frappe.qb.DocType("Employee")
 	q = (
 		frappe.qb.from_(Employee)
@@ -175,6 +174,9 @@ def get_all_active_employees(filters = None):
 		q = q.where(Employee.salary_mode == filters.get('salary_mode'))
 
 	q = q.where(Employee.status == 'Active')
+	q = q.orderby(Employee.sd_attendance_book_serial.isnull())
+	q = q.orderby(Employee.sd_attendance_book_serial)
+	q = q.orderby(Employee.name)
 
 	data = q.run(as_dict=True)
 	return data
