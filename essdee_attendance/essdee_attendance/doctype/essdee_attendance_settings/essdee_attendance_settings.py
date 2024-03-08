@@ -66,6 +66,13 @@ def make_custom_field():
 				"insert_after": "employment_type",
 				"unique": 1,
 			},
+			{
+				"fieldname": "sd_salary_batch",
+				"fieldtype": "Link",
+				"label": "Salary Batch",
+				"options": "SD Salary Batch",
+				"insert_after": "sd_attendance_book_serial",
+			},
 		],
 		'Attendance': [
 			{

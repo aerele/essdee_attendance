@@ -20,6 +20,13 @@ def get_columns():
 			"width": 115,
 		},
 		{
+			"label": _("Salary Batch"),
+			"fieldname": "salary_batch",
+			"fieldtype": "Link",
+			"options": "SD Salary Batch",
+			"width": 115,
+		},
+		{
 			"label": _("Employee"),
 			"fieldname": "employee",
 			"fieldtype": "Link",
@@ -80,6 +87,7 @@ def get_data(filters):
 		.left_join(Employee).on(Employee.name == SalarySlip.employee)
 		.select(
 			Employee.sd_attendance_book_serial.as_("serial"),
+			Employee.sd_salary_batch.as_("salary_batch"),
 			Employee.name.as_("employee"),
 			Employee.employee_name,
 			Employee.bank_ac_no,
@@ -111,6 +119,7 @@ def get_data(filters):
 	q = q.where(Employee.status == 'Active')
 	q = q.orderby(Employee.sd_attendance_book_serial.isnull())
 	q = q.orderby(Employee.sd_attendance_book_serial)
+	q = q.orderby(Employee.sd_salary_batch)
 	q = q.orderby(Employee.name)
 
 	data = q.run(as_dict=True)

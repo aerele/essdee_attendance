@@ -21,6 +21,13 @@ def get_columns():
 			"width": 115,
 		},
 		{
+			"label": _("Salary Batch"),
+			"fieldname": "salary_batch",
+			"fieldtype": "Link",
+			"options": "SD Salary Batch",
+			"width": 115,
+		},
+		{
 			"label": _("Employee"),
 			"fieldname": "employee",
 			"fieldtype": "Link",
@@ -37,6 +44,12 @@ def get_columns():
 			"label": _("Nick Name"),
 			"fieldname": "nick_name",
 			"fieldtype": "Data",
+			"width": 120
+		},
+		{
+			"label": _("Shift Rate"),
+			"fieldname": "shift_rate",
+			"fieldtype": "Currency",
 			"width": 120
 		},
 		{
@@ -148,9 +161,11 @@ def get_all_active_employees(filters = None):
 		frappe.qb.from_(Employee)
 		.select(
 			Employee.sd_attendance_book_serial.as_("serial"),
+			Employee.sd_salary_batch.as_("salary_batch"),
 			Employee.name.as_("employee"),
 			Employee.employee_name,
 			Employee.nick_name,
+			Employee.sd_shift_rate.as_("shift_rate"),
 			Employee.status,
 			Employee.department,
 			Employee.employment_type,
@@ -176,6 +191,7 @@ def get_all_active_employees(filters = None):
 	q = q.where(Employee.status == 'Active')
 	q = q.orderby(Employee.sd_attendance_book_serial.isnull())
 	q = q.orderby(Employee.sd_attendance_book_serial)
+	q = q.orderby(Employee.sd_salary_batch)
 	q = q.orderby(Employee.name)
 
 	data = q.run(as_dict=True)
