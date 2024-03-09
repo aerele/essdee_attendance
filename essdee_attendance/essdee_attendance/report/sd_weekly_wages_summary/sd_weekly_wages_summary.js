@@ -53,5 +53,11 @@ frappe.query_reports["SD Weekly Wages Summary"] = {
 			"fieldtype": "Select",
 			"options": "\nBank\nCash",
 		},
+		{
+			"fieldname": "salary_batch",
+			"label": __("Salary Batch"),
+			"fieldtype": "Link",
+			"options": "SD Salary Batch",
+		},
 	]
 };

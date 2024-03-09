@@ -40,6 +40,12 @@ def get_columns():
 			"width": 120
 		},
 		{
+			"label": _("Bank Account Name"),
+			"fieldname": "bank_account_name",
+			"fieldtype": "Data",
+			"width": 120
+		},
+		{
 			"label": _("Bank A/C No."),
 			"fieldname": "bank_ac_no",
 			"fieldtype": "Data",
@@ -90,6 +96,7 @@ def get_data(filters):
 			Employee.sd_salary_batch.as_("salary_batch"),
 			Employee.name.as_("employee"),
 			Employee.employee_name,
+			Employee.sd_bank_account_name.as_("bank_account_name"),
 			Employee.bank_ac_no,
 			Employee.ifsc_code,
 			Employee.salary_mode,
@@ -115,6 +122,8 @@ def get_data(filters):
 			q = q.where(Employee.branch == filters.get('branch'))
 		if filters.get('salary_mode'):
 			q = q.where(Employee.salary_mode == filters.get('salary_mode'))
+		if filters.get('salary_batch'):
+			q = q.where(Employee.sd_salary_batch == filters.get('salary_batch'))
 	
 	q = q.where(Employee.status == 'Active')
 	q = q.orderby(Employee.sd_attendance_book_serial.isnull())
