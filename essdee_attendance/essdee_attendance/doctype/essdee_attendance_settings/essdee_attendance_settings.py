@@ -73,6 +73,12 @@ def make_custom_field():
 				"options": "SD Salary Batch",
 				"insert_after": "sd_attendance_book_serial",
 			},
+			{
+				"fieldname": "sd_bank_account_name",
+				"fieldtype": "Data",
+				"label": "Bank Account Name",
+				"insert_after": "bank_name",
+			},
 		],
 		'Attendance': [
 			{
