@@ -64,6 +64,12 @@ def get_columns():
 			"width": 120,
 		},
 		{
+			"label": _("Bank Account Status"),
+			"fieldname": "bank_account_status",
+			"fieldtype": "Data",
+			"width": 120,
+		},
+		{
 			"label": _("Salary Mode"),
 			"fieldname": "salary_mode",
 			"fieldtype": "Data",
@@ -99,6 +105,7 @@ def get_data(filters):
 			Employee.sd_bank_account_name.as_("bank_account_name"),
 			Employee.bank_ac_no,
 			Employee.ifsc_code,
+			Employee.sd_bank_account_status.as_("bank_account_status"),
 			Employee.salary_mode,
 			SalarySlip.total_amount,
 			SalarySlip.name.as_("salary_slip_name"),
