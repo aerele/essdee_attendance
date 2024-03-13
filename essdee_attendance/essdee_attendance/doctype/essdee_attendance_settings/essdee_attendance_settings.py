@@ -79,6 +79,14 @@ def make_custom_field():
 				"label": "Bank Account Name",
 				"insert_after": "bank_name",
 			},
+			{
+				"fieldname": "sd_bank_account_status",
+				"fieldtype": "Select",
+				"label": "Bank Account Status",
+				"options": "\nPending Approval\nApproved",
+				"depends_on": "eval:doc.salary_mode == \"Bank\"",
+				"insert_after": "bank_ac_no",
+			},
 		],
 		'Attendance': [
 			{

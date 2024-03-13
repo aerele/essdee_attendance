@@ -94,7 +94,8 @@ app_license = "MIT"
 doc_events = {
 	"Employee": {
 		"after_insert": "essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.update_attendance_device_id",
-		"before_save": "essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.validate_location"
+		"before_save": "essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.validate_location",
+        "validate": "essdee_attendance.utils.employee.validate",
 	},
     "Attendance": {
 		"before_submit": "essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.attendance_before_submit",
