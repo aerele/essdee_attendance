@@ -20,7 +20,6 @@ def get_employees_by_filters(**args):
     filters = args["filters"]
     fields = ['name', 'first_name'] 
     employees = frappe.get_list('Employee',filters=filters, fields=fields)
-    print("List ",employees)
     return employees
 
 @frappe.whitelist()
@@ -44,7 +43,7 @@ def store_employees(**args):
             'image':employee['image'],
             'sd_upload_signature':employee['sd_upload_signature'],
         })
-        doc.save(ignore_permissions=True) 
+    doc.save(ignore_permissions=True) 
 
 
 
