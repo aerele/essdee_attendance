@@ -1,0 +1,83 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-03-30 11:53:23.493267",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_kxys",
+  "filter_area",
+  "section_break_icwe",
+  "select_all",
+  "unselect_all",
+  "section_break_sslb",
+  "employee_list",
+  "child_table"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_icwe",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "select_all",
+   "fieldtype": "Button",
+   "label": "Select All"
+  },
+  {
+   "fieldname": "unselect_all",
+   "fieldtype": "Button",
+   "label": "Unselect All"
+  },
+  {
+   "fieldname": "section_break_sslb",
+   "fieldtype": "Section Break",
+   "label": "Employee List"
+  },
+  {
+   "fieldname": "employee_list",
+   "fieldtype": "HTML",
+   "label": "Employee List"
+  },
+  {
+   "fieldname": "child_table",
+   "fieldtype": "Table",
+   "hidden": 1,
+   "label": "Child Table",
+   "options": "Employee ID Card Detail"
+  },
+  {
+   "fieldname": "section_break_kxys",
+   "fieldtype": "Section Break",
+   "label": "Filters"
+  },
+  {
+   "fieldname": "filter_area",
+   "fieldtype": "HTML",
+   "label": "Filter Area"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2024-04-01 13:03:00.621492",
+ "modified_by": "Administrator",
+ "module": "Essdee Attendance",
+ "name": "Employee ID Card",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
