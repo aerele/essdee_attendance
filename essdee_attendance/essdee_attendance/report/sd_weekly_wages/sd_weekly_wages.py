@@ -148,6 +148,12 @@ def get_columns():
 			"width": 120,
 		},
 		{
+			"label": _("Previous Canteen"),
+			"fieldname": "previous_canteen",
+			"fieldtype": "currency",
+			"width": 70
+		},
+		{
 			"label": _("Status"),
 			"fieldname": "status",
 			"fieldtype": "Data",
@@ -197,6 +203,47 @@ def get_all_active_employees(filters = None):
 	data = q.run(as_dict=True)
 	return data
 
+def get_previous_canteen_amount(filters):
+	q1 = """
+	WITH ranked_messages AS (
+		SELECT s.employee, s.canteen, ROW_NUMBER() OVER (PARTITION BY s.employee ORDER BY s.creation DESC) AS rn
+		FROM `tabSD Salary Slip` AS s, `tabEmployee` AS e
+		where s.employee = e.name
+	"""
+	q2 = """
+	)
+	SELECT * FROM ranked_messages WHERE rn = 1;
+	"""
+	values = {}
+	if filters:
+		if filters.get('from_date'):
+			q1 += " and s.date < %(date)s"
+			values['date'] = filters.get('from_date')
+		if filters.get('employee'):
+			q1 += " and e.name = %(employee)s"
+			values['employee'] = filters.get('employee')
+		if filters.get('department'):
+			q1 += " and e.department =  %(department)s"
+			values['department'] = filters.get('department')
+		if filters.get('employment_type'):
+			q1 += " and e.employment_type = %(employment_type)s"
+			values['employment_type'] = filters.get('employment_type')
+		if filters.get('designation'):
+			q1 += " and e.designation = %(designation)s"
+			values['designation'] = filters.get('designation')
+		if filters.get('branch'):
+			q1 += " and e.branch = %(branch)s"
+			values['branch'] = filters.get('branch')
+		if filters.get('salary_mode'):
+			q1 += " and e.salary_mode = %(salary_mode)s"
+			values['salary_mode'] = filters.get('salary_mode')
+	results = frappe.db.sql(q1+q2, values=values, as_dict=1)
+	d = {}
+	for r in results:
+		if r.employee not in d:
+			d[r.employee] = r
+	return d
+
 def get_salary_slips(employees=None, filters=None):
 	SalarySlip = frappe.qb.DocType("SD Salary Slip")
 
@@ -237,6 +284,7 @@ def get_data(filters=None):
 	employees = get_all_active_employees(filters)
 	emp_names = [emp.employee for emp in employees]
 	salary_slips = get_salary_slips(emp_names, filters)
+	previous_canteen = get_previous_canteen_amount(filters)
 	multiple_entry = []
 	for employee in employees:
 		if employee.employee in salary_slips:
@@ -254,9 +302,12 @@ def get_data(filters=None):
 					"esi_pf": ss.esi_pf,
 					"other_deductions": ss.other_deductions,
 					"total_deductions": ss.total_deductions,
-					"total_amount": ss.total_amount
+					"total_amount": ss.total_amount,
 				})
-				print(employee)
+		if employee.employee in previous_canteen:
+			employee.update({
+				"previous_canteen": previous_canteen[employee.employee].canteen,
+			})
 	if len(multiple_entry) > 0:
 		frappe.throw(f"The below Employees have multiple Salary Slip in this date range.<br>{'<br>'.join(multiple_entry)}")
 	return employees

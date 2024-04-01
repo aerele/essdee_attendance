@@ -16,7 +16,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-03-08 17:22:10.812509",
+ "modified": "2024-03-28 09:43:10.582015",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "SD Salary Batch",
@@ -31,7 +31,19 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "System Manager",
+   "role": "HR Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR User",
    "share": 1,
    "write": 1
   }
