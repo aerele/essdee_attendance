@@ -12,69 +12,36 @@ frappe.ui.form.on("Employee ID Card", {
                 }
             }
         });
-        frm.add_custom_button('Print',() => addFields(wrapper))
-    }
-});
-frappe.ui.form.on("Employee ID Card", {
-    department: function(frm) {
-        let department = '';
-        let company = '';
-        if (frm.doc.company == null){
-            company = null;
-        }
-        else{
-            company=frm.doc.company;
-        }
-        if (frm.doc.department == null){
-            department = null;
-        }
-        else{
-            department=frm.doc.department;
-        }
-        const wrapper = frm.fields_dict["employee_list"].$wrapper;
-        wrapper.empty();
-        fetchEmployeesByDepartment(department, company, wrapper);
+        frm.add_custom_button('Print', () => addFields(wrapper))
+        var filterWrapper = frm.fields_dict["filter_area"].$wrapper;
+        filterWrapper.html('');
+        let filter_group = new frappe.ui.FilterGroup({
+            parent: filterWrapper,
+            doctype: "Employee",
+        })
+        frappe.model.with_doctype("Employee", () => {
+            filter_group.refresh();
+        });       
+        frm.add_custom_button('Apply Filters', () => {
+            let filters = filter_group.get_filters();
+            fetchEmployeesWithFilters(filters, wrapper);
+        });
     },
-    company: function(frm) {
-        let company = '';
-        let department = '';
-        if (frm.doc.department == null){
-            department = null;
-        }
-        else{
-            department=frm.doc.department;
-        }
-        if (frm.doc.company == null){
-            company = null;
-        }
-        else{
-            company=frm.doc.company;
-        }
-        const wrapper = frm.fields_dict["employee_list"].$wrapper;
-        wrapper.empty();
-        fetchEmployeesByDepartment(department, company, wrapper);
-    }
+    select_all: function(frm) {
+        var wrapper = frm.fields_dict["employee_list"].$wrapper;
+        selectAllEmployees(wrapper);
+    },
+    unselect_all: function(frm) {
+        var wrapper = frm.fields_dict["employee_list"].$wrapper;
+        unselectAllEmployees(wrapper);
+    }        
 });
 
-frappe.ui.form.on("Employee ID Card", "select_all", function(frm) {
-    var wrapper = frm.fields_dict["employee_list"].$wrapper;
-    selectAllEmployees(wrapper)
-});
-frappe.ui.form.on("Employee ID Card", "unselect_all", function(frm) {
-    var wrapper = frm.fields_dict["employee_list"].$wrapper;
-    unselectAllEmployees(wrapper)
-});
-frappe.ui.form.on("Employee ID Card", "unselect_all", function(frm) {
-    var wrapper = frm.fields_dict["employee_list"].$wrapper;
-    unselectAllEmployees(wrapper)
-});
-
-function fetchEmployeesByDepartment(department,company,wrapper) {
+function fetchEmployeesWithFilters(filters,wrapper) {
     frappe.call({
-        method: "essdee_attendance.api.get_employees_by_department",
+        method: "essdee_attendance.api.get_employees_by_filters",
         args: {
-            'department': department,
-            'company': company,
+            'filters': filters,
         },
         callback: function(r) { 
             if (r.message) {
@@ -86,9 +53,10 @@ function fetchEmployeesByDepartment(department,company,wrapper) {
         }
     });
 }
+
 async function addFields(wrapper){
     const selectedEmployees =await showSelectedEmployee(wrapper);
-    // console.log(selectedEmployees.length);
+    console.log(selectedEmployees)
     if(selectedEmployees.length > 0){
         frappe.call({
             method:"essdee_attendance.api.store_employees",
@@ -96,10 +64,13 @@ async function addFields(wrapper){
                 'Employees': selectedEmployees 
             },
         });
+        const sitename = window.location.origin;
+        const printFormatURL = `${sitename}/app/print/Employee%20ID%20Card`;
+        window.open(printFormatURL, "_blank");
     }
-    const sitename = window.location.origin;
-    const printFormatURL = `${sitename}/app/print/Employee%20ID%20Card`;
-    window.open(printFormatURL, "_blank");
+    else{
+        frappe.msgprint('No Employee was selected')
+    }
 }
 function renderEmployeeList(employees, wrapper) {
     employees.forEach(employee => {
@@ -112,7 +83,6 @@ function selectAllEmployees(wrapper) {
     wrapper.find('input[type="checkbox"]').prop('checked', true);
 }
 function unselectAllEmployees(wrapper) {
-    // Find all checkboxes inside the wrapper and set them to unchecked
     wrapper.find('input[type="checkbox"]').prop('checked', false);
 }
 async function showSelectedEmployee(wrapper) {
@@ -120,7 +90,7 @@ async function showSelectedEmployee(wrapper) {
     wrapper.find('input[type="checkbox"]').each(function() {
         if ($(this).prop('checked')) {
             const employeeName = $(this).val();
-            selectedEmployees.push(employeeName);  // Push the employeeName, not employeeDetails
+            selectedEmployees.push(employeeName);
         }
     });
     let sendEmployee = []
@@ -133,7 +103,6 @@ async function showSelectedEmployee(wrapper) {
             callback: function(r) { 
                 if (r.message) {
                     sendEmployee = r.message;
-                    // console.log(sendEmployee)
                 } else {
                     frappe.msgprint("Failed to fetch employees.");
                 }

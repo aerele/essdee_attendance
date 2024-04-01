@@ -5,9 +5,8 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "filters_section",
-  "company",
-  "department",
+  "section_break_kxys",
+  "filter_area",
   "section_break_icwe",
   "select_all",
   "unselect_all",
@@ -16,23 +15,6 @@
   "child_table"
  ],
  "fields": [
-  {
-   "fieldname": "filters_section",
-   "fieldtype": "Section Break",
-   "label": "Filters"
-  },
-  {
-   "fieldname": "company",
-   "fieldtype": "Link",
-   "label": "Company",
-   "options": "Company"
-  },
-  {
-   "fieldname": "department",
-   "fieldtype": "Link",
-   "label": "Department",
-   "options": "Department"
-  },
   {
    "fieldname": "section_break_icwe",
    "fieldtype": "Section Break"
@@ -62,13 +44,23 @@
    "fieldtype": "Table",
    "hidden": 1,
    "label": "Child Table",
-   "options": "Child Doc"
+   "options": "Employee ID Card Detail"
+  },
+  {
+   "fieldname": "section_break_kxys",
+   "fieldtype": "Section Break",
+   "label": "Filters"
+  },
+  {
+   "fieldname": "filter_area",
+   "fieldtype": "HTML",
+   "label": "Filter Area"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-03-30 12:49:00.743987",
+ "modified": "2024-04-01 13:03:00.621492",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Employee ID Card",

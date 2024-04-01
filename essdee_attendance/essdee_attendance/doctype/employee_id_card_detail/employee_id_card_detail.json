@@ -16,7 +16,8 @@
   "parent_to_be_contacted",
   "blood_group",
   "emergency_phone_number",
-  "image"
+  "image",
+  "sd_upload_signature"
  ],
  "fields": [
   {
@@ -84,15 +85,20 @@
    "fieldtype": "Attach",
    "in_list_view": 1,
    "label": "Image"
+  },
+  {
+   "fieldname": "sd_upload_signature",
+   "fieldtype": "Attach Image",
+   "label": "SD Upload Signature"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-03-30 11:56:35.967078",
+ "modified": "2024-04-01 13:16:05.569138",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
- "name": "Child Doc",
+ "name": "Employee ID Card Detail",
  "owner": "Administrator",
  "permissions": [],
  "sort_field": "modified",
