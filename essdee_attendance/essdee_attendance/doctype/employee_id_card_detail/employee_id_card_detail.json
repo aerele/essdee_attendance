@@ -17,7 +17,7 @@
   "blood_group",
   "emergency_phone_number",
   "image",
-  "sd_upload_signature"
+  "sd_signature_upload"
  ],
  "fields": [
   {
@@ -87,7 +87,7 @@
    "label": "Image"
   },
   {
-   "fieldname": "sd_upload_signature",
+   "fieldname": "sd_signature_upload",
    "fieldtype": "Attach Image",
    "label": "SD Upload Signature"
   }
@@ -95,7 +95,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-04-01 13:16:05.569138",
+ "modified": "2024-04-01 22:42:36.740737",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Employee ID Card Detail",
