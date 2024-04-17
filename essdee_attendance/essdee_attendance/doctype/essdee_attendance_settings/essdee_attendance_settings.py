@@ -87,6 +87,13 @@ def make_custom_field():
 				"depends_on": "eval:doc.salary_mode == \"Bank\"",
 				"insert_after": "bank_ac_no",
 			},
+			{
+				'fieldname':'essdee_employee_operations',
+				"fieldtype":'Table',
+				'label': 'Essdee Employee Operations',
+				'options': 'Essdee Employee Operation',
+				'insert_after':'employee_number'
+			}
 		],
 		'Attendance': [
 			{
