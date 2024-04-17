@@ -2,7 +2,7 @@ import frappe,json
 
 @frappe.whitelist()
 def get_employees(**args):
-    fields = ['name', 'first_name'] 
+    fields = ['name', 'employee', 'first_name', 'employee_name'] 
     employees = frappe.get_list('Employee', fields=fields)
     return employees
 
@@ -10,7 +10,7 @@ def get_employees(**args):
 def get_selected_employees(**args):
     employees = args.get('employees')
     employees = json.loads(employees)
-    fields = ['name', 'first_name', 'last_name', 'gender', 'date_of_birth', 'status', 'company', 'department','person_to_be_contacted','blood_group','emergency_phone_number','image','sd_upload_signature'] 
+    fields = ['name', 'first_name', 'last_name', 'gender', 'date_of_birth', 'status', 'company', 'department','person_to_be_contacted','blood_group','emergency_phone_number','image','sd_signature_upload'] 
     temp = frappe.get_list('Employee',filters={'name': ['in', employees]}, fields=fields)
     return temp
 
@@ -18,7 +18,7 @@ def get_selected_employees(**args):
 @frappe.whitelist()
 def get_employees_by_filters(**args):
     filters = args["filters"]
-    fields = ['name', 'first_name'] 
+    fields = ['name', 'employee', 'first_name', 'employee_name'] 
     employees = frappe.get_list('Employee',filters=filters, fields=fields)
     return employees
 
@@ -41,9 +41,10 @@ def store_employees(**args):
             'blood_group':employee['blood_group'],
             'emergency_phone_number':employee['emergency_phone_number'],
             'image':employee['image'],
-            'sd_upload_signature':employee['sd_upload_signature'],
+            'sd_signature_upload':employee['sd_signature_upload'],
         })
     doc.save(ignore_permissions=True) 
+    return True
 
 
 

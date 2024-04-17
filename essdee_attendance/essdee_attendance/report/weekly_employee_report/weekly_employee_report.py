@@ -20,6 +20,12 @@ def execute(filters=None):
 def get_columns(filters):
 	columns = [
 		{
+			"label": _("Serial No."),
+			"fieldname": "serial",
+			"fieldtype": "data",
+			"width": 115,
+		},
+		{
 			"label": _("Employee"),
 			"fieldname": "employee",
 			"fieldtype": "Link",
@@ -58,6 +64,7 @@ def get_data(filters):
 	attendance_records = get_checkin_map(attendance_records, filters)
 	for employee in employees:
 		d = {
+			'serial': employee.serial,
 			'employee': employee.name,
 			'employee_name': employee.employee_name
 		}
@@ -102,8 +109,10 @@ def get_employee_detail(data, filters, employee, attendance_records):
 def get_employees(filters):
 	Employee = frappe.qb.DocType("Employee")
 	
-	query = frappe.qb.from_(Employee).select(Employee.name, Employee.employee_name, Employee.sd_shift_rate)
+	query = frappe.qb.from_(Employee).select(Employee.sd_attendance_book_serial.as_("serial"),Employee.name, Employee.employee_name, Employee.sd_shift_rate)
 	query = apply_employee_filters(query, filters, Employee)
+	query = query.orderby(Employee.sd_attendance_book_serial.isnull())
+	query = query.orderby(Employee.sd_attendance_book_serial)
 	return query.run(as_dict = 1)
 
 def get_attendance_map(filters):

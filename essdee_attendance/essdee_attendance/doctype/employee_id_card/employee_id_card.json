@@ -6,37 +6,16 @@
  "engine": "InnoDB",
  "field_order": [
   "section_break_kxys",
-  "filter_area",
-  "section_break_icwe",
-  "select_all",
-  "unselect_all",
+  "filter_area_html",
+  "apply_filter",
   "section_break_sslb",
-  "employee_list",
+  "employee_list_html",
   "child_table"
  ],
  "fields": [
   {
-   "fieldname": "section_break_icwe",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "select_all",
-   "fieldtype": "Button",
-   "label": "Select All"
-  },
-  {
-   "fieldname": "unselect_all",
-   "fieldtype": "Button",
-   "label": "Unselect All"
-  },
-  {
    "fieldname": "section_break_sslb",
    "fieldtype": "Section Break",
-   "label": "Employee List"
-  },
-  {
-   "fieldname": "employee_list",
-   "fieldtype": "HTML",
    "label": "Employee List"
   },
   {
@@ -52,7 +31,17 @@
    "label": "Filters"
   },
   {
-   "fieldname": "filter_area",
+   "fieldname": "apply_filter",
+   "fieldtype": "Button",
+   "label": "Apply Filter"
+  },
+  {
+   "fieldname": "employee_list_html",
+   "fieldtype": "HTML",
+   "label": "Employee List"
+  },
+  {
+   "fieldname": "filter_area_html",
    "fieldtype": "HTML",
    "label": "Filter Area"
   }
@@ -60,7 +49,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-04-01 13:03:00.621492",
+ "modified": "2024-04-02 00:00:31.602220",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Employee ID Card",

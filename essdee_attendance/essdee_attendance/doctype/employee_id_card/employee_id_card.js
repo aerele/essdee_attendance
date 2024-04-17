@@ -1,45 +1,36 @@
+let filter_group = null;
+
 frappe.ui.form.on("Employee ID Card", {
     refresh(frm) {
-        var wrapper = frm.fields_dict["employee_list"].$wrapper;
+        let wrapper = frm.fields_dict["employee_list_html"].$wrapper;
         wrapper.html('');
         frappe.call({
             method: "essdee_attendance.api.get_employees",
             callback: function(r) { 
                 if (r.message) {
-                    renderEmployeeList(r.message, wrapper);
+                    renderEmployeeList(frm, r.message);
                 } else {
                     frappe.msgprint("Failed to fetch employees.");
                 }
             }
         });
         frm.disable_save();
-        // frm.disable_menu();
-        frm.add_custom_button('Print', () => addFields(wrapper))
-        var filterWrapper = frm.fields_dict["filter_area"].$wrapper;
+        frm.add_custom_button('Print', () => addFields(frm))
+        var filterWrapper = frm.fields_dict["filter_area_html"].$wrapper;
         filterWrapper.html('');
-        let filter_group = new frappe.ui.FilterGroup({
+        filter_group = new frappe.ui.FilterGroup({
             parent: filterWrapper,
             doctype: "Employee",
         })
-        frappe.model.with_doctype("Employee", () => {
-            filter_group.refresh();
-        });       
-        frm.add_custom_button('Apply Filters', () => {
-            let filters = filter_group.get_filters();
-            fetchEmployeesWithFilters(filters, wrapper);
-        });
+        frappe.model.with_doctype("Employee", () => {});
     },
-    select_all: function(frm) {
-        var wrapper = frm.fields_dict["employee_list"].$wrapper;
-        selectAllEmployees(wrapper);
-    },
-    unselect_all: function(frm) {
-        var wrapper = frm.fields_dict["employee_list"].$wrapper;
-        unselectAllEmployees(wrapper);
-    }        
+    apply_filter: function(frm) {
+        let filters = filter_group.get_filters();
+        fetchEmployeesWithFilters(frm, filters);
+    }     
 });
 
-function fetchEmployeesWithFilters(filters,wrapper) {
+function fetchEmployeesWithFilters(frm, filters) {
     frappe.call({
         method: "essdee_attendance.api.get_employees_by_filters",
         args: {
@@ -47,8 +38,7 @@ function fetchEmployeesWithFilters(filters,wrapper) {
         },
         callback: function(r) { 
             if (r.message) {
-                wrapper.html("");
-                renderEmployeeList(r.message,wrapper);
+                renderEmployeeList(frm, r.message);
             } else {
                 frappe.msgprint("No employees found for the selected date.");
             }
@@ -56,8 +46,8 @@ function fetchEmployeesWithFilters(filters,wrapper) {
     });
 }
 
-async function addFields(wrapper){
-    const selectedEmployees =await showSelectedEmployee(wrapper);
+async function addFields(frm){
+    const selectedEmployees = await getSelectedEmployee(frm);
     console.log(selectedEmployees)
     if(selectedEmployees.length > 0){
         frappe.call({
@@ -65,36 +55,52 @@ async function addFields(wrapper){
             args:{
                 'Employees': selectedEmployees 
             },
+            callback: function(r) {
+                if (r.message) {
+                    const sitename = window.location.origin;
+                    const printFormatURL = `${sitename}/app/print/Employee%20ID%20Card`;
+                    window.open(printFormatURL, "_self");
+                }
+            }
         });
-        const sitename = window.location.origin;
-        const printFormatURL = `${sitename}/app/print/Employee%20ID%20Card`;
-        window.open(printFormatURL, "_blank");
     }
     else{
         frappe.msgprint('No Employee was selected')
     }
 }
-function renderEmployeeList(employees, wrapper) {
-    employees.forEach(employee => {
-        const checkbox = `<input type="checkbox" name="employee_checkbox" value="${employee.name}" />`;
-        const label = `<label>${employee.first_name}</label>`;
-        wrapper.append(`<div>${checkbox}${label}</div>`);
+
+function renderEmployeeList(frm, employees) {
+    const $wrapper = frm.get_field("employee_list_html").$wrapper;
+    $wrapper.empty();
+    const employee_wrapper = $(`<div class="employee_wrapper">`).appendTo($wrapper);
+    console.log(employees)
+
+    frm.employees_multicheck = frappe.ui.form.make_control({
+        parent: employee_wrapper,
+        df: {
+            fieldname: "employees_multicheck",
+            fieldtype: "MultiCheck",
+            select_all: true,
+            columns: 4,
+            get_data: () => {
+                return employees.map((employee) => {
+                    return {
+                        label: `${employee.employee} : ${employee.employee_name}`,
+                        value: employee.employee,
+                        checked: 0,
+                    };
+                });
+            },
+        },
+        render_input: true,
     });
+
+    frm.employees_multicheck.refresh_input();
 }
-function selectAllEmployees(wrapper) {
-    wrapper.find('input[type="checkbox"]').prop('checked', true);
-}
-function unselectAllEmployees(wrapper) {
-    wrapper.find('input[type="checkbox"]').prop('checked', false);
-}
-async function showSelectedEmployee(wrapper) {
-    const selectedEmployees = [];
-    wrapper.find('input[type="checkbox"]').each(function() {
-        if ($(this).prop('checked')) {
-            const employeeName = $(this).val();
-            selectedEmployees.push(employeeName);
-        }
-    });
+
+async function getSelectedEmployee(frm) {
+    const selectedEmployees = frm.employees_multicheck.get_checked_options();
+    
     let sendEmployee = []
     if(selectedEmployees.length > 0){
         await frappe.call({
