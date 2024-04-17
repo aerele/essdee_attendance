@@ -10,15 +10,12 @@ class EssdeeWorkEntry(Document):
 			
 @frappe.whitelist()
 def get_employee_operations(employee):
-	doc = frappe.get_doc('Employee',employee)
-	table_data = doc.essdee_employee_operations
-	print(table_data)
+	employee_operations = frappe.get_all("Essdee Employee Operation", fields=['operation', 'rate'], filters={'parent': employee})
 	operation_rates = []
-	for data in table_data:
+	for data in employee_operations:
 		rate = data.rate
 		if not rate:
-			operation_type = frappe.get_doc('Essdee Operation Type',data.operation)
-			rate = operation_type.rate
+			rate = frappe.get_value('Essdee Operation Type', data.operation, 'rate')
 		operation_rates.append({'operation': data.operation, 'rate': rate})
 	return operation_rates	
 
@@ -26,13 +23,11 @@ def get_employee_operations(employee):
 def get_operation_rate(employee, operation):
 	rate = None
 	if employee:
-		doc = frappe.get_doc("Employee",employee)
-		operation_table = doc.essdee_employee_operations
-		for data in operation_table:
+		employee_operations = frappe.get_all("Essdee Employee Operation", fields=['operation', 'rate'], filters={'parent': employee})
+		for data in employee_operations:
 			if data.operation == operation:
 				rate = data.rate
 				break
 	if not rate:
-		doc = frappe.get_doc('Essdee Operation Type',operation)
-		rate = doc.rate
+		rate = frappe.get_value('Essdee Operation Type',operation,'rate')
 	return rate

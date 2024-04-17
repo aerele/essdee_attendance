@@ -8,6 +8,8 @@
  "field_order": [
   "naming_series",
   "employee",
+  "employee_name",
+  "column_break_uugt",
   "date",
   "section_break_ovtk",
   "details"
@@ -43,13 +45,25 @@
   {
    "fieldname": "naming_series",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "Naming Series",
    "options": "HR-EWE-.YYYY.-"
+  },
+  {
+   "fetch_from": "employee.first_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_uugt",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-04-17 19:02:56.700867",
+ "modified": "2024-04-17 20:06:57.786276",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Work Entry",
@@ -66,6 +80,36 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Production Data Entry",
    "write": 1
   }
  ],
