@@ -22,6 +22,7 @@
    "reqd": 1
   },
   {
+   "default": "Today",
    "fieldname": "date",
    "fieldtype": "Date",
    "in_list_view": 1,
@@ -36,7 +37,8 @@
    "fieldname": "details",
    "fieldtype": "Table",
    "label": "Details",
-   "options": "Essdee Work Entry Detail"
+   "options": "Essdee Work Entry Detail",
+   "reqd": 1
   },
   {
    "fieldname": "naming_series",
@@ -47,7 +49,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-04-17 18:44:56.292615",
+ "modified": "2024-04-17 19:02:56.700867",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Work Entry",

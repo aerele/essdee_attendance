@@ -4,7 +4,10 @@ import datetime
 
 
 class EssdeeWorkEntry(Document):
-	pass
+	def validate(self):
+		for d in self.details:
+			d.total = d.quantity* d.rate
+			
 @frappe.whitelist()
 def get_employee_operations(employee):
 	doc = frappe.get_doc('Employee',employee)

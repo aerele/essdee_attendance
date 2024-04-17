@@ -15,6 +15,7 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Rate",
+   "non_negative": 1,
    "reqd": 1
   },
   {
@@ -28,7 +29,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-04-17 17:55:02.741842",
+ "modified": "2024-04-17 18:50:08.988070",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Operation Type",
