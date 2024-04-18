@@ -13,11 +13,13 @@
   "status",
   "company",
   "department",
-  "parent_to_be_contacted",
+  "person_to_be_contacted",
   "blood_group",
   "emergency_phone_number",
   "image",
-  "sd_signature_upload"
+  "sd_signature_upload",
+  "father_or_spouse",
+  "relation"
  ],
  "fields": [
   {
@@ -63,12 +65,6 @@
    "label": "Department"
   },
   {
-   "fieldname": "parent_to_be_contacted",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Parent to be contacted"
-  },
-  {
    "fieldname": "blood_group",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -90,12 +86,28 @@
    "fieldname": "sd_signature_upload",
    "fieldtype": "Attach Image",
    "label": "SD Upload Signature"
+  },
+  {
+   "fieldname": "person_to_be_contacted",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Parent to be contacted"
+  },
+  {
+   "fieldname": "father_or_spouse",
+   "fieldtype": "Data",
+   "label": "Father/Spouse"
+  },
+  {
+   "fieldname": "relation",
+   "fieldtype": "Data",
+   "label": "Relation"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-04-01 22:42:36.740737",
+ "modified": "2024-04-18 18:58:53.689580",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Employee ID Card Detail",
