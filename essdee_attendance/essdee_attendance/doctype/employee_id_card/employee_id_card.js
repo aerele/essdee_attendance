@@ -2,7 +2,7 @@ let filter_group = null;
 
 frappe.ui.form.on("Employee ID Card", {
     refresh(frm) {
-        let wrapper = frm.fields_dict["employee_list_html"].$wrapper;
+        let wrapper = frm.fields_dict["employee_list"].$wrapper;
         wrapper.html('');
         frappe.call({
             method: "essdee_attendance.api.get_employees",
@@ -16,7 +16,7 @@ frappe.ui.form.on("Employee ID Card", {
         });
         frm.disable_save();
         frm.add_custom_button('Print', () => addFields(frm))
-        var filterWrapper = frm.fields_dict["filter_area_html"].$wrapper;
+        var filterWrapper = frm.fields_dict["filter_area"].$wrapper;
         filterWrapper.html('');
         filter_group = new frappe.ui.FilterGroup({
             parent: filterWrapper,
@@ -70,7 +70,7 @@ async function addFields(frm){
 }
 
 function renderEmployeeList(frm, employees) {
-    const $wrapper = frm.get_field("employee_list_html").$wrapper;
+    const $wrapper = frm.get_field("employee_list").$wrapper;
     $wrapper.empty();
     const employee_wrapper = $(`<div class="employee_wrapper">`).appendTo($wrapper);
     console.log(employees)

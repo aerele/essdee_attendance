@@ -9,3 +9,4 @@ class EssdeeOperationType(Document):
 	def validate(self):
 		if not self.rate:
 			frappe.throw('Please Enter Valid Rate')
+			
