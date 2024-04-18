@@ -18,11 +18,8 @@ def get_columns(filters):
 		])
 	columns.extend([
 		{'fieldname': 'quantity','fieldtype': 'Data','label' : 'Quantity',},
+		{'fieldname': 'total','fieldtype': 'Data','label' : 'Total',},
 	])	
-	if not filters.summarized_view:
-		columns.extend([
-			{'fieldname': 'total','fieldtype': 'Data','label' : 'Total',},
-		])
 	return columns
 
 def get_data(filters):
@@ -56,10 +53,10 @@ def get_data(filters):
 						data.append(m)
 				else:
 					m.pop('rate')
-					m.pop('total')
 					existing_entry = next((item for item in data if item['employee_id'] == m['employee_id']), None)
 					if existing_entry:
 						existing_entry['quantity'] += m['quantity']
+						existing_entry['total'] += m['total']
 						if m['operation'] not in existing_entry['operation']:
 							existing_entry['operation'] += "," + m['operation']
 					else:
