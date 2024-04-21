@@ -18,7 +18,7 @@ class SDSalarySlip(Document):
 		self.validate_employee()
 	
 	def calculate_total(self):
-		self.total_deductions = (get_float(self.advance) + get_float(self.canteen) + get_float(self.esi_pf) + get_float(self.other_deductions) + get_float(self.leave))
+		self.total_deductions = (get_float(self.advance) + get_float(self.canteen) + get_float(self.esi_pf) + get_float(self.other_deductions) + get_float(self.leave) + get_float(self.via_cash))
 		self.total_amount = self.salary_amount + (get_float(self.other_additions)) - (get_float(self.total_deductions))
 	
 	def validate_employee(self):

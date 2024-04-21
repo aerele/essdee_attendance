@@ -18,6 +18,7 @@
   "canteen",
   "leave",
   "other_deductions",
+  "via_cash",
   "column_break_nxhr",
   "advance",
   "esi_pf",
@@ -151,11 +152,18 @@
    "fieldtype": "Data",
    "label": "Naming Series",
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "via_cash",
+   "fieldtype": "Currency",
+   "label": "Via Cash",
+   "non_negative": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-03-07 17:56:18.940269",
+ "modified": "2024-04-21 11:31:38.888450",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "SD Salary Slip",
