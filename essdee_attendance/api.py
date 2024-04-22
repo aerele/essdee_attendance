@@ -10,7 +10,7 @@ def get_employees(**args):
 def get_selected_employees(**args):
     employees = args.get('employees')
     employees = json.loads(employees)
-    fields = ['name', 'first_name', 'last_name', 'gender', 'date_of_birth', 'status', 'company', 'department','person_to_be_contacted','blood_group','emergency_phone_number','image','sd_signature_upload','father_or_spouse','relation'] 
+    fields = ['name', 'first_name', 'last_name', 'gender', 'date_of_birth', 'status', 'company', 'department','person_to_be_contacted','blood_group','emergency_phone_number','image','sd_signature_upload','father_or_spouse','relation_'] 
     temp = frappe.get_list('Employee',filters={'name': ['in', employees]}, fields=fields)
     return temp
 
@@ -43,7 +43,7 @@ def store_employees(**args):
             'emergency_phone_number':employee['emergency_phone_number'],
             'image':employee['image'],
             'sd_signature_upload':employee['sd_signature_upload'],
-            'relation': employee['relation']
+            'relation': employee['relation_']
         })
     doc.save(ignore_permissions=True) 
     return True

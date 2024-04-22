@@ -4,12 +4,48 @@
 # import frappe
 from frappe.model.document import Document
 
-
 class EmployeeIDCard(Document):
 	pass
 
-# def get_qr_code_base64_str(content, scale=1):
-# 	from pyqrcode import create as qrcreate
-# 	qr = qrcreate(content)
-# 	qr_str = qr.png_as_base64_str(scale=scale)
-# 	return qr_str
+def generate_qr_code(qr_text, scale=5):
+    import pyqrcode
+    d = pyqrcode.create(qr_text).png_as_base64_str(scale=scale, quiet_zone=1)
+    return f'<img src="data:image/png;base64,{d}">'
+
+
+def generate_barcode(data):
+    from io import BytesIO
+    from barcode import Code128
+    from barcode.writer import ImageWriter
+    import base64
+    
+    # if isinstance(data, str):
+    #     data = get_numbers_from_last(data)
+    
+    stream = BytesIO()
+    Code128(str(data), writer=ImageWriter()).write(
+        stream,
+        {
+            "module_width": 0.5,
+            "module_height": 18.0,
+            "text_distance": 0,
+            "foreground": "#330223",
+            "quiet_zone": 6.5,
+        	"write_text": False,
+        },
+    )
+    barcode_base64 = base64.b64encode(stream.getbuffer()).decode()
+    stream.close()
+
+    return f'<img src="data:image/png;base64,{barcode_base64}">'
+
+def get_numbers_from_last(data):
+    length = len(data)
+    index = length
+    for i in range(length-1, -1, -1):
+        try:
+            j = int(data[i])
+            index = i
+        except:
+            break
+    return data[index:]
