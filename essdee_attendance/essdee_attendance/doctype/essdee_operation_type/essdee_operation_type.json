@@ -7,7 +7,9 @@
  "engine": "InnoDB",
  "field_order": [
   "operation",
-  "rate"
+  "rate",
+  "column_break_tnqv",
+  "uom"
  ],
  "fields": [
   {
@@ -25,11 +27,23 @@
    "label": "Operation Name",
    "reqd": 1,
    "unique": 1
+  },
+  {
+   "fieldname": "column_break_tnqv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Nos",
+   "fieldname": "uom",
+   "fieldtype": "Select",
+   "label": "UOM",
+   "options": "Nos\nDozen",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-04-17 20:07:53.612931",
+ "modified": "2024-04-22 19:32:23.651885",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Operation Type",

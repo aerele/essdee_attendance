@@ -93,6 +93,12 @@ def make_custom_field():
 				'label': 'Essdee Employee Operations',
 				'options': 'Essdee Employee Operation',
 				'insert_after':'employee_number'
+			},
+			{
+				"fieldname": "father_or_spouse",
+				"fieldtype": "Data",
+				"label": "Father/Spouse",
+				"insert_after": "cell_number",
 			}
 		],
 		'Attendance': [

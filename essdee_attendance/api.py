@@ -10,10 +10,9 @@ def get_employees(**args):
 def get_selected_employees(**args):
     employees = args.get('employees')
     employees = json.loads(employees)
-    fields = ['name', 'first_name', 'last_name', 'gender', 'date_of_birth', 'status', 'company', 'department','person_to_be_contacted','blood_group','emergency_phone_number','image','sd_signature_upload'] 
+    fields = ['name', 'first_name', 'last_name', 'gender', 'date_of_birth', 'status', 'company', 'department','person_to_be_contacted','blood_group','emergency_phone_number','image','sd_signature_upload','father_or_spouse','relation_'] 
     temp = frappe.get_list('Employee',filters={'name': ['in', employees]}, fields=fields)
     return temp
-
 
 @frappe.whitelist()
 def get_employees_by_filters(**args):
@@ -28,6 +27,7 @@ def store_employees(**args):
     employees = json.loads(employees)
     doc = frappe.get_single('Employee ID Card')
     doc.child_table=[]
+    print(employees)
     for employee in employees:
         doc.append('child_table',{
             'employee_id':employee['name'],
@@ -38,10 +38,12 @@ def store_employees(**args):
             'company':employee['company'],
             'department':employee['department'],
             'person_to_be_contacted':employee['person_to_be_contacted'],
+            'father_or_spouse':employee['father_or_spouse'],
             'blood_group':employee['blood_group'],
             'emergency_phone_number':employee['emergency_phone_number'],
             'image':employee['image'],
             'sd_signature_upload':employee['sd_signature_upload'],
+            'relation': employee['relation_']
         })
     doc.save(ignore_permissions=True) 
     return True

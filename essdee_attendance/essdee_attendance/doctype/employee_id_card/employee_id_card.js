@@ -48,6 +48,7 @@ function fetchEmployeesWithFilters(frm, filters) {
 
 async function addFields(frm){
     const selectedEmployees = await getSelectedEmployee(frm);
+    console.log('Store')
     console.log(selectedEmployees)
     if(selectedEmployees.length > 0){
         frappe.call({
@@ -111,6 +112,7 @@ async function getSelectedEmployee(frm) {
             callback: function(r) { 
                 if (r.message) {
                     sendEmployee = r.message;
+                    console.log(r.message)
                 } else {
                     frappe.msgprint("Failed to fetch employees.");
                 }

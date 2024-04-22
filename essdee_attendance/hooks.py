@@ -152,3 +152,11 @@ override_whitelisted_methods = {
 # auto_cancel_exempted_doctypes = ["Auto Repeat"]
 after_install = "essdee_attendance.essdee_attendance.doctype.essdee_attendance_settings.essdee_attendance_settings.make_custom_field"
 doctype_js = {"Employee" : "public/js/employee.js"}
+
+
+jinja = {
+	"methods": [
+  		"essdee_attendance.essdee_attendance.doctype.employee_id_card.employee_id_card.generate_qr_code",
+  		"essdee_attendance.essdee_attendance.doctype.employee_id_card.employee_id_card.generate_barcode",
+ 	],
+}
