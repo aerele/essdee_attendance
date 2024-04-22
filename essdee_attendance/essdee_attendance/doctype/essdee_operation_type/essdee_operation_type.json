@@ -34,17 +34,17 @@
    "fieldtype": "Column Break"
   },
   {
-   "default": "Nos",
    "fieldname": "uom",
    "fieldtype": "Select",
    "label": "UOM",
-   "options": "Nos\nDozen",
-   "reqd": 1
+   "options": "\nNos\nDozen",
+   "reqd": 1,
+   "set_only_once": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-04-22 19:54:21.534603",
+ "modified": "2024-04-22 20:30:26.556327",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Operation Type",

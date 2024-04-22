@@ -7,10 +7,11 @@
  "engine": "InnoDB",
  "field_order": [
   "operation",
-  "rate",
   "quantity",
-  "total",
-  "uom"
+  "column_break_pait",
+  "uom",
+  "rate",
+  "total"
  ],
  "fields": [
   {
@@ -23,14 +24,17 @@
    "fieldname": "quantity",
    "fieldtype": "Int",
    "in_list_view": 1,
-   "label": "Quantity"
+   "label": "Quantity",
+   "non_negative": 1,
+   "reqd": 1
   },
   {
    "fieldname": "operation",
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Operation",
-   "options": "Essdee Operation Type"
+   "options": "Essdee Operation Type",
+   "reqd": 1
   },
   {
    "fieldname": "total",
@@ -41,16 +45,20 @@
   {
    "fetch_from": "operation.uom",
    "fieldname": "uom",
-   "fieldtype": "Select",
+   "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "UOM",
-   "options": "Nos\nDozen",
    "read_only": 1
+  },
+  {
+   "fieldname": "column_break_pait",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-04-22 19:35:15.724829",
+ "modified": "2024-04-22 20:22:08.619886",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Work Entry Detail",

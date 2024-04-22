@@ -1,4 +1,9 @@
 frappe.ui.form.on("Essdee Work Entry", {
+    refresh: function(frm) {
+        if (!frm.doc.date) {
+            frm.set_value('date', frappe.datetime.add_days(frappe.datetime.get_today(), -1))
+        }
+    },
 	employee:function(frm) {
         if(frm.doc.employee){
             frappe.call({
@@ -16,6 +21,7 @@ frappe.ui.form.on("Essdee Work Entry", {
                             operation_details.operation = d.operation
                             operation_details.rate = d.rate
                             operation_details.quantity = 0
+                            operation_details.uom = d.uom
                         })
                         frm.refresh_field('details');
                     }
