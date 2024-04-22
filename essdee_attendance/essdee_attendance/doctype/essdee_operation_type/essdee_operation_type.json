@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "field:operation",
  "creation": "2024-04-17 16:14:59.978469",
@@ -43,7 +44,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-04-22 19:32:23.651885",
+ "modified": "2024-04-22 19:54:21.534603",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Operation Type",

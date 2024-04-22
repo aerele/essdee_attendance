@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "naming_series:",
  "creation": "2024-04-17 16:20:44.360538",
@@ -63,7 +64,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-04-17 20:06:57.786276",
+ "modified": "2024-04-22 19:54:35.393408",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Work Entry",
