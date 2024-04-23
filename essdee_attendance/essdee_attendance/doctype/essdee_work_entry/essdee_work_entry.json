@@ -9,7 +9,6 @@
  "field_order": [
   "naming_series",
   "employee",
-  "employee_name",
   "column_break_uugt",
   "date",
   "section_break_ovtk",
@@ -25,7 +24,6 @@
    "reqd": 1
   },
   {
-   "default": "Today",
    "fieldname": "date",
    "fieldtype": "Date",
    "in_list_view": 1,
@@ -51,20 +49,13 @@
    "options": "HR-EWE-.YYYY.-"
   },
   {
-   "fetch_from": "employee.first_name",
-   "fieldname": "employee_name",
-   "fieldtype": "Data",
-   "label": "Employee Name",
-   "read_only": 1
-  },
-  {
    "fieldname": "column_break_uugt",
    "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-04-22 19:54:35.393408",
+ "modified": "2024-04-22 20:33:51.741632",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Work Entry",

@@ -99,6 +99,18 @@ def make_custom_field():
 				"fieldtype": "Data",
 				"label": "Father/Spouse",
 				"insert_after": "cell_number",
+			},
+			{
+				"fieldname": "sd_remarks_section",
+				"fieldtype": "Section Break",
+				"label": "",
+				"insert_after": "sd_signature_upload",
+			},
+			{
+				"fieldname": "sd_hr_remarks",
+				"fieldtype": "Long Text",
+				"label": "Remarks",
+				"insert_after": "sd_remarks_section",
 			}
 		],
 		'Attendance': [
