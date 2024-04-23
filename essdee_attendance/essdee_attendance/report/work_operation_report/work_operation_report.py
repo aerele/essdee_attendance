@@ -31,7 +31,7 @@ def get_data(filters):
 		fil.pop('summarized_view')
 	docs = frappe.get_all('Employee',filters=fil,fields=['name'])	
 	for doc in docs:
-		doc = frappe.get_list('Essdee Work Entry',filters={'employee':doc.name},fields=['employee','date','name'])
+		doc = frappe.get_list('Essdee Work Entry',filters={'employee':doc.name,'date': ['between', [filters['from_date'], filters['to_date']]]},fields=['employee','date','name'])
 		for d in doc:
 			parent_doc = frappe.get_doc("Essdee Work Entry",d['name'])
 			for row in parent_doc.details:
