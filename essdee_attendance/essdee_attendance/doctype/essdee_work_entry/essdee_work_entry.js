@@ -13,10 +13,8 @@ frappe.ui.form.on("Essdee Work Entry", {
                 },
                 callback:function(response){
                     if(response.message){
-                        console.log(response.message)
                         frm.doc.details =[]
                         $.each(response.message,function(i,d){
-                            console.log(d)
                             const operation_details = frm.add_child('details')
                             operation_details.operation = d.operation
                             operation_details.rate = d.rate

@@ -10,13 +10,18 @@ frappe.ui.form.on("Employee ID Card", {
                 if (r.message) {
                     renderEmployeeList(frm, r.message);
                 } else {
-                    frappe.msgprint("Failed to fetch employees.");
+                    frappe.throw("Failed to fetch employees.");
                 }
             }
         });
         frm.disable_save();
+<<<<<<< Updated upstream
         frm.add_custom_button('Print', () => addFields(frm))
         var filterWrapper = frm.fields_dict["filter_area_html"].$wrapper;
+=======
+        frm.add_custom_button('Print', () => show_page(frm))
+        var filterWrapper = frm.fields_dict["filter_area"].$wrapper;
+>>>>>>> Stashed changes
         filterWrapper.html('');
         filter_group = new frappe.ui.FilterGroup({
             parent: filterWrapper,
@@ -46,10 +51,8 @@ function fetchEmployeesWithFilters(frm, filters) {
     });
 }
 
-async function addFields(frm){
+async function show_page(frm){
     const selectedEmployees = await getSelectedEmployee(frm);
-    console.log('Store')
-    console.log(selectedEmployees)
     if(selectedEmployees.length > 0){
         frappe.call({
             method:"essdee_attendance.api.store_employees",
@@ -66,7 +69,7 @@ async function addFields(frm){
         });
     }
     else{
-        frappe.msgprint('No Employee was selected')
+        frappe.throw('No Employee was selected')
     }
 }
 
@@ -74,8 +77,6 @@ function renderEmployeeList(frm, employees) {
     const $wrapper = frm.get_field("employee_list_html").$wrapper;
     $wrapper.empty();
     const employee_wrapper = $(`<div class="employee_wrapper">`).appendTo($wrapper);
-    console.log(employees)
-
     frm.employees_multicheck = frappe.ui.form.make_control({
         parent: employee_wrapper,
         df: {
@@ -95,13 +96,11 @@ function renderEmployeeList(frm, employees) {
         },
         render_input: true,
     });
-
     frm.employees_multicheck.refresh_input();
 }
 
 async function getSelectedEmployee(frm) {
     const selectedEmployees = frm.employees_multicheck.get_checked_options();
-    
     let sendEmployee = []
     if(selectedEmployees.length > 0){
         await frappe.call({
@@ -112,9 +111,8 @@ async function getSelectedEmployee(frm) {
             callback: function(r) { 
                 if (r.message) {
                     sendEmployee = r.message;
-                    console.log(r.message)
                 } else {
-                    frappe.msgprint("Failed to fetch employees.");
+                    frappe.throw("Failed to fetch employees.");
                 }
             }
         });

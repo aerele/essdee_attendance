@@ -10,7 +10,7 @@ def get_employees(**args):
 def get_selected_employees(**args):
     employees = args.get('employees')
     employees = json.loads(employees)
-    fields = ['name', 'first_name', 'last_name', 'gender', 'date_of_birth', 'status', 'company', 'department','person_to_be_contacted','blood_group','emergency_phone_number','image','sd_signature_upload','father_or_spouse','relation_'] 
+    fields = ['name', 'first_name', 'last_name', 'gender', 'date_of_birth', 'status', 'company', 'department','person_to_be_contacted','blood_group','emergency_phone_number','image','sd_signature_upload','father_or_spouse','relation'] 
     temp = frappe.get_list('Employee',filters={'name': ['in', employees]}, fields=fields)
     return temp
 
@@ -27,7 +27,6 @@ def store_employees(**args):
     employees = json.loads(employees)
     doc = frappe.get_single('Employee ID Card')
     doc.child_table=[]
-    print(employees)
     for employee in employees:
         doc.append('child_table',{
             'employee_id':employee['name'],
