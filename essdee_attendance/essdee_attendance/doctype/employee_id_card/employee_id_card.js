@@ -15,13 +15,8 @@ frappe.ui.form.on("Employee ID Card", {
             }
         });
         frm.disable_save();
-<<<<<<< Updated upstream
-        frm.add_custom_button('Print', () => addFields(frm))
-        var filterWrapper = frm.fields_dict["filter_area_html"].$wrapper;
-=======
         frm.add_custom_button('Print', () => show_page(frm))
-        var filterWrapper = frm.fields_dict["filter_area"].$wrapper;
->>>>>>> Stashed changes
+        var filterWrapper = frm.fields_dict["filter_area_html"].$wrapper;
         filterWrapper.html('');
         filter_group = new frappe.ui.FilterGroup({
             parent: filterWrapper,

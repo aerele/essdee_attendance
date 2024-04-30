@@ -17,49 +17,11 @@ def get_columns(filters):
 	]
 	if not filters.summarized_view:
 		columns.insert(3, {'fieldname': 'rate', 'fieldtype': 'Currency', 'label': 'Rate','width':100})
+		columns.insert(5, {'fieldname': 'uom', 'fieldtype': 'Data', 'label': 'UOM','width':180})
 	return columns
 
 def get_data(filters):
 	data = []
-	# fil = {}
-	# filter_keys = ['employee', 'default_shift', 'employment_type', 'branch', 'department', 'company']
-	# for key in filter_keys:
-	# 	if key in filters and filters[key] is not None:
-	# 		fil[key] = filters[key]
-
-	# docs = frappe.get_all('Employee',filters=fil,fields=['name'])
-	# for doc in docs:
-	# 	doc = frappe.get_list('Essdee Work Entry',filters={'employee':doc.name,'date': ['between', [filters['from_date'], filters['to_date']]]},fields=['name'])
-	# 	for detail in doc:
-	# 		parent_doc = frappe.get_doc("Essdee Work Entry",detail['name'])
-	# 		for row in parent_doc.details:
-	# 			table_data = row.as_dict()
-	# 			employee_details = {
-	# 				'employee_id': parent_doc.employee,
-	# 				'employee_name': frappe.get_value('Employee',parent_doc.employee,'employee_name'),
-	# 				'operation': table_data.operation,
-	# 				'rate': table_data.rate,
-	# 				'quantity': table_data.quantity,
-	# 				'total': table_data.total
-	# 			}
-	# 			if not filters.summarized_view:	
-	# 				existing_entry = next((item for item in data if item['employee_id'] == employee_details['employee_id'] and item['operation'] == employee_details['operation']), None)
-	# 				if existing_entry:
-	# 					existing_entry['quantity'] += employee_details['quantity']
-	# 					existing_entry['total'] = existing_entry['quantity']*existing_entry['rate']
-	# 				else:
-	# 					data.append(employee_details)
-	# 			else:
-	# 				employee_details.pop('rate')
-	# 				existing_entry = next((item for item in data if item['employee_id'] == employee_details['employee_id']), None)
-	# 				if existing_entry:
-	# 					existing_entry['quantity'] += employee_details['quantity']
-	# 					existing_entry['total'] += employee_details['total']
-	# 					if employee_details['operation'] not in existing_entry['operation']:
-	# 						existing_entry['operation'] += "," + employee_details['operation']
-	# 				else:
-	# 					data.append(employee_details)
-
 	Essdee_Work_Entry = frappe.qb.DocType('Essdee Work Entry')
 	Essdee_Work_Entry_Detail = frappe.qb.DocType('Essdee Work Entry Detail')
 	Employee = frappe.qb.DocType('Employee')
@@ -74,6 +36,7 @@ def get_data(filters):
 			Essdee_Work_Entry_Detail.operation,
 			Essdee_Work_Entry_Detail.rate,
 			Essdee_Work_Entry_Detail.quantity,
+			Essdee_Work_Entry_Detail.uom,
 			Essdee_Work_Entry_Detail.total,
 		).where(Essdee_Work_Entry.date.between(filters.from_date, filters.to_date))
 	
@@ -89,7 +52,9 @@ def get_data(filters):
 		query= query.where(Employee.branch == filters.branch)
 
 	query = query.orderby(Employee.name)			 
+	
 	result = query.run(as_dict = True)
+
 	for row in result:
 		employee_details = {
 			'employee_id': row.name,
@@ -97,6 +62,7 @@ def get_data(filters):
 			'operation': row.operation,
 			'rate': row.rate,
 			'quantity': row.quantity,
+			'uom':row.uom,
 			'total': row.total
 		}
 		if not filters.summarized_view:	
