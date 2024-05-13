@@ -4,6 +4,10 @@
 import frappe
 from frappe.model.document import Document
 import datetime
+from frappe.utils import flt
+from essdee_attendance.essdee_attendance.utils import make_ledger
+from essdee_attendance.essdee_attendance.utils import cancel_ledger
+from erpnext.stock.utils import get_combine_datetime
 
 
 class SDSalarySlip(Document):
@@ -14,6 +18,8 @@ class SDSalarySlip(Document):
 		self.naming_series = f'SS-{year}{current_week:02}-'
 
 	def validate(self):
+		self.posting_datetime = get_combine_datetime(self.posting_date, self.posting_time)
+		self.db_set("posting_datetime", self.posting_datetime)
 		self.calculate_total()
 		self.validate_employee()
 	
@@ -26,7 +32,44 @@ class SDSalarySlip(Document):
 		if status != 'Active':
 			frappe.throw("Salary Slip can be created only for active employees.")
 
+	def on_submit(self):
+		details = get_list(self)
+		make_ledger(details)
+	
+	def on_cancel(self):
+		cancel_ledger(self.name,'SD Salary Slip')
+
 def get_float(x):
 	if not x:
 		return 0
+	return x
+
+def get_list(doc):
+	x = []
+	if doc.method == 'Pay Later':
+		dic = {
+			"employee" : doc.employee,
+			"posting_date" : doc.posting_date,
+			"posting_time" : doc.posting_time,
+			"posting_datetime": doc.posting_datetime,
+			"amount": doc.total_amount ,
+			"type":"Pay Later",
+			"doctype" : "SD Salary Slip",
+			"docname" : doc.name
+		}
+		x.append(dic)	
+
+	if doc.advance:
+		dic = {
+			"employee" : doc.employee,
+			"posting_date" : doc.posting_date,
+			"posting_time" : doc.posting_time,
+			"posting_datetime": doc.posting_datetime,
+			"amount": flt(doc.advance) * flt(-1) ,
+			"type":"Advance",
+			"doctype" : "SD Salary Slip",
+			"docname" : doc.name
+		}
+		x.append(dic)
+
 	return x

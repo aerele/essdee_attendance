@@ -65,7 +65,7 @@ def get_data(filters):
 			'uom':row.uom,
 			'total': row.total
 		}
-		if not filters.summarized_view:	
+		if not filters.summarized_view:
 			existing_entry = next((item for item in data if item['employee_id'] == employee_details['employee_id'] and item['operation'] == employee_details['operation']), None)
 			if existing_entry:
 				existing_entry['quantity'] += employee_details['quantity']

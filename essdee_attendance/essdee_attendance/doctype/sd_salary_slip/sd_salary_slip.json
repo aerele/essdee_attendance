@@ -7,9 +7,11 @@
  "field_order": [
   "employee",
   "employee_name",
+  "posting_datetime",
   "column_break_ukon",
-  "date",
+  "posting_date",
   "naming_series",
+  "posting_time",
   "section_break_rfdr",
   "salary_amount",
   "additions_section",
@@ -23,9 +25,11 @@
   "advance",
   "esi_pf",
   "total_deductions",
+  "method",
   "section_break_baas",
   "total_amount",
-  "remarks"
+  "remarks",
+  "amended_from"
  ],
  "fields": [
   {
@@ -34,14 +38,6 @@
    "in_list_view": 1,
    "label": "Employee",
    "options": "Employee",
-   "reqd": 1
-  },
-  {
-   "default": "Today",
-   "fieldname": "date",
-   "fieldtype": "Date",
-   "in_list_view": 1,
-   "label": "Date",
    "reqd": 1
   },
   {
@@ -159,11 +155,49 @@
    "fieldtype": "Currency",
    "label": "Via Cash",
    "non_negative": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "SD Salary Slip",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "method",
+   "fieldtype": "Select",
+   "label": "Method",
+   "options": "Regular\nPay Later"
+  },
+  {
+   "default": "Now",
+   "fieldname": "posting_time",
+   "fieldtype": "Time",
+   "label": "Posting Time",
+   "reqd": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Posting Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "posting_datetime",
+   "fieldtype": "Datetime",
+   "label": "Posting Datetime",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2024-04-21 11:31:38.888450",
+ "modified": "2024-05-13 15:15:11.925044",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "SD Salary Slip",
