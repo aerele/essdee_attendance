@@ -7,7 +7,8 @@ frappe.query_reports["Essdee Advance Balance"] = {
 			"fieldname":"to_date",
 			"label": __("To Date"),
 			"fieldtype": "Date",
-			"default": frappe.datetime.add_days(frappe.datetime.week_end(), -1)
+			"default": frappe.datetime.add_days(frappe.datetime.week_end(), -1),
+			"reqd":1
 		},
 		{
 			"fieldname":"employee",
@@ -27,7 +28,7 @@ frappe.query_reports["Essdee Advance Balance"] = {
 			"fieldname" : "type",
 			"label" : __("Type"),
 			"fieldtype":"Select",
-			"options":"Advance\nPay Later",
+			"options":"\nAdvance\nPay Later",
 			"default":"Advance",
 		},
 		{

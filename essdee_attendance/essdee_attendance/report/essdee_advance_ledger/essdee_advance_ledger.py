@@ -12,14 +12,14 @@ def execute(filters=None):
 
 def get_columns():
 	columns =[
-		{'fieldname': 'employee', 'fieldtype': 'Data', 'label': 'Employee','width':170},
+		{'fieldname': 'employee', 'fieldtype': 'Link', 'label': 'Employee',"options":"Employee",'width':170},
 		{'fieldname': 'type', 'fieldtype': 'Data', 'label': 'Type','width':120},
 		{'fieldname': 'amount', 'fieldtype': 'Currency', 'label': 'Amount','width':120},
 		{'fieldname': 'running_balance', 'fieldtype': 'Currency', 'label': 'Balance','width':120},
 		{'fieldname': 'posting_date', 'fieldtype': 'Date', 'label': 'Posting Date','width':120},
 		{'fieldname': 'posting_time', 'fieldtype': 'Time', 'label': 'Posting Time','width':120},
-		{'fieldname': 'transaction_type', 'fieldtype': 'Data', 'label': 'Transaction Type','width':200},
-		{'fieldname': 'transaction_name', 'fieldtype': 'Data', 'label': 'Transaction Name','width':150},
+		{'fieldname': 'transaction_type', 'fieldtype': 'Link', 'label': 'Transaction Type',"options":"DocType",'width':200},
+		{'fieldname': 'transaction_name', 'fieldtype': 'Dynamic Link', 'label': 'Transaction Name',"options":"transaction_type",'width':150},
 	]
 	return columns
 
