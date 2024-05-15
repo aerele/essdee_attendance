@@ -7,7 +7,7 @@ frappe.query_reports["Essdee Advance Ledger"] = {
 			"fieldname":"from_date",
 			"label": __("From Date"),
 			"fieldtype": "Date",
-			"default": frappe.datetime.get_today()
+			"default": frappe.datetime.add_days(frappe.datetime.get_today(), -30)
 		},
 		{
 			"fieldname":"to_date",
@@ -33,7 +33,7 @@ frappe.query_reports["Essdee Advance Ledger"] = {
 			"fieldname" : "type",
 			"label" : __("Type"),
 			"fieldtype":"Select",
-			"options":"Advance\nPay Later"
+			"options":"\nAdvance\nPay Later"
 		},
 		{
 			"fieldname":"department",
@@ -41,5 +41,17 @@ frappe.query_reports["Essdee Advance Ledger"] = {
 			"fieldtype": "Link",
 			"options": "Department",
 		},
-	]
-};
+	],
+	formatter: function(value, row, column, data, default_formatter) {
+		value = default_formatter(value, row, column, data);
+		if (column.fieldname == "amount") {
+			if (data.amount >= 0) {
+				value = "<span style='color:green'>" + value + "</span>";
+			} 
+			else if (data.amount < 0) {
+				value = "<span style='color:red'>" + value + "</span>";
+			} 
+		}
+		return value
+	}
+};	

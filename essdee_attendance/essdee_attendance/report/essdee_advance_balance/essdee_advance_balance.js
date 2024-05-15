@@ -27,7 +27,8 @@ frappe.query_reports["Essdee Advance Balance"] = {
 			"fieldname" : "type",
 			"label" : __("Type"),
 			"fieldtype":"Select",
-			"options":"Advance\nPay Later"
+			"options":"Advance\nPay Later",
+			"default":"Advance",
 		},
 		{
 			"fieldname":"department",

@@ -2,7 +2,7 @@
 # For license information, please see license.txt
 
 import frappe
-
+from frappe.query_builder import Order
 
 def execute(filters=None):
 	columns, data = [], []
@@ -33,6 +33,6 @@ def get_data(filters):
 	if filters.from_date and filters.to_date:
 		query = query.where(Ledger_Entry.posting_date.between(filters.from_date, filters.to_date))
 
-	query = query.orderby(Ledger_Entry.posting_datetime)			 
+	query = query.orderby(Ledger_Entry.posting_datetime, order=Order.desc)	
 	result = query.run(as_dict = True)	
 	return result

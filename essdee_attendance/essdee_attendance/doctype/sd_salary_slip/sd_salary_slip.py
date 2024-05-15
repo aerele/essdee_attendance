@@ -18,7 +18,7 @@ class SDSalarySlip(Document):
 		self.naming_series = f'SS-{year}{current_week:02}-'
 
 	def validate(self):
-		self.posting_datetime = get_combine_datetime(self.posting_date, self.posting_time)
+		self.posting_datetime = get_combine_datetime(self.date, self.posting_time)
 		self.db_set("posting_datetime", self.posting_datetime)
 		self.calculate_total()
 		self.validate_employee()
@@ -33,6 +33,8 @@ class SDSalarySlip(Document):
 			frappe.throw("Salary Slip can be created only for active employees.")
 
 	def on_submit(self):
+		if frappe.flags.in_patch or frappe.flags.in_migrate:
+			return
 		details = get_list(self)
 		make_ledger(details)
 	
@@ -49,7 +51,7 @@ def get_list(doc):
 	if doc.method == 'Pay Later':
 		dic = {
 			"employee" : doc.employee,
-			"posting_date" : doc.posting_date,
+			"posting_date" : doc.date,
 			"posting_time" : doc.posting_time,
 			"posting_datetime": doc.posting_datetime,
 			"amount": doc.total_amount ,
@@ -62,7 +64,7 @@ def get_list(doc):
 	if doc.advance:
 		dic = {
 			"employee" : doc.employee,
-			"posting_date" : doc.posting_date,
+			"posting_date" : doc.date,
 			"posting_time" : doc.posting_time,
 			"posting_datetime": doc.posting_datetime,
 			"amount": flt(doc.advance) * flt(-1) ,
