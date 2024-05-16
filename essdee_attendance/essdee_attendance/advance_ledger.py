@@ -108,7 +108,8 @@ def cancel_ledger(transaction_name, transaction_type):
         past_doc = get_last_past_record(d.employee,d.posting_datetime,d.type)
         future_docs = get_future_records(d.employee,d.posting_datetime,d.type)
         if future_docs:
-            check_cancel_future(future_docs,d.amount)
+            check_cancel_possible(future_docs,d.amount)
+            make_cancel_future_update(future_docs,d.amount)
             d.is_cancelled = True
         elif past_doc:
             if past_doc.running_balance >= 0:
@@ -117,10 +118,7 @@ def cancel_ledger(transaction_name, transaction_type):
             d.is_cancelled = True
         d.save()
 
-def check_cancel_future(future_docs,amount):
-    check_cancel_possible(future_docs,amount)
-    make_cancel_future_update(future_docs,amount)
-
+    
 def check_cancel_possible(future_docs,amount):
     for doc in future_docs:
         if flt(doc.running_balance) - flt(amount) >= 0:

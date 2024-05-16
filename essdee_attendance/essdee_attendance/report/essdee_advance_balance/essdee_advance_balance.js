@@ -7,7 +7,7 @@ frappe.query_reports["Essdee Advance Balance"] = {
 			"fieldname":"to_date",
 			"label": __("To Date"),
 			"fieldtype": "Date",
-			"default": frappe.datetime.add_days(frappe.datetime.week_end(), -1),
+			"default": frappe.datetime.get_today(),
 			"reqd":1
 		},
 		{

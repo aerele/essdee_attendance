@@ -37,9 +37,8 @@ def get_data(filters):
                 ROW_NUMBER() OVER (PARTITION BY employee,type ORDER BY posting_datetime DESC) AS rn
             FROM `tabEssdee Advance Ledger Entry` where 1=1 {conditions}
         )
-        SELECT * FROM ranked_entries WHERE rn = 1;
+        SELECT employee,type,running_balance FROM ranked_entries WHERE rn = 1;
         """
-    print(query)
     doc = frappe.db.sql(query,
         con,
         as_dict=True
