@@ -67,13 +67,15 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-05-17 22:34:38.425936",
+ "modified": "2024-05-17 22:55:55.439510",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Advance Entry",
  "owner": "Administrator",
  "permissions": [
   {
+   "amend": 1,
+   "cancel": 1,
    "create": 1,
    "delete": 1,
    "email": 1,
@@ -87,6 +89,7 @@
    "write": 1
   },
   {
+   "amend": 1,
    "cancel": 1,
    "create": 1,
    "export": 1,
@@ -97,6 +100,8 @@
    "write": 1
   },
   {
+   "amend": 1,
+   "cancel": 1,
    "create": 1,
    "read": 1,
    "report": 1,
