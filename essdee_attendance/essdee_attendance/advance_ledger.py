@@ -104,17 +104,12 @@ def cancel_ledger(transaction_name, transaction_type):
     docs = frappe.get_all('Essdee Advance Ledger Entry',filters={'transaction_type': transaction_type, 'transaction_name':transaction_name})
     for doc in docs:
         d = frappe.get_doc('Essdee Advance Ledger Entry',doc.name)
-        past_doc = get_last_past_record(d.employee,d.posting_datetime,d.type)
         future_docs = get_future_records(d.employee,d.posting_datetime,d.type)
         if future_docs:
             check_cancel_possible(future_docs,d.amount)
             make_cancel_future_update(future_docs,d.amount)
-            d.is_cancelled = True
-        elif past_doc:
-            if past_doc.running_balance >= 0:
-                d.is_cancelled = True
-        else:
-            d.is_cancelled = True
+        d.is_cancelled = True
+        d.flags.ignore_permissions = 1
         d.save()
 
     
