@@ -9,11 +9,37 @@ def execute(filters=None):
 
 def get_columns(filters):
 	columns = [
-		{'fieldname': 'employee_id', 'fieldtype': 'Data', 'label': 'Employee ID', 'options': 'Employee','width':180},
-		{'fieldname': 'employee_name', 'fieldtype': 'Data', 'label': 'Employee Name','width':180},
-		{'fieldname': 'operation', 'fieldtype': 'Data', 'label': 'Operation','width':180},
-		{'fieldname': 'quantity', 'fieldtype': 'Int', 'label': 'Quantity','width':100},
-		{'fieldname': 'total', 'fieldtype': 'Currency', 'label': 'Total','width':180}
+		{
+			'fieldname': 'employee_id',
+			'fieldtype': 'Data',
+			'label': 'Employee ID',
+			'options': 'Employee',
+			'width':180
+		},
+		{
+			'fieldname': 'employee_name',
+			'fieldtype': 'Data',
+			'label': 'Employee Name',
+			'width':180
+		},
+		{
+			'fieldname': 'operation',
+			'fieldtype': 'Data',
+			'label': 'Operation',
+			'width':180
+		},
+		{
+			'fieldname': 'quantity',
+			'fieldtype': 'Int',
+			'label': 'Quantity',
+			'width':100
+		},
+		{
+			'fieldname': 'total',
+			'fieldtype': 'Currency',
+			'label': 'Total',
+			'width':180
+		},
 	]
 	if not filters.summarized_view:
 		columns.insert(3, {'fieldname': 'rate', 'fieldtype': 'Currency', 'label': 'Rate','width':100})

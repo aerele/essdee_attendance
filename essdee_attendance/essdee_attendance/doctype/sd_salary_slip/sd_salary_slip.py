@@ -5,8 +5,7 @@ import frappe
 from frappe.model.document import Document
 import datetime
 from frappe.utils import flt
-from essdee_attendance.essdee_attendance.advance_ledger import make_ledger
-from essdee_attendance.essdee_attendance.advance_ledger import cancel_ledger
+from essdee_attendance.essdee_attendance.advance_ledger import make_ledger, cancel_ledger
 from erpnext.stock.utils import get_combine_datetime
 
 

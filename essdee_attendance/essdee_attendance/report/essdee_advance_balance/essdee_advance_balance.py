@@ -11,9 +11,25 @@ def execute(filters=None):
 
 def get_columns():
 	columns = [
-		{'fieldname': 'employee', 'fieldtype': 'Link', 'label': 'Employee',"options":"Employee",'width':170},
-		{'fieldname': 'type', 'fieldtype': 'Data', 'label': 'Type','width':170},
-		{'fieldname': 'running_balance', 'fieldtype': 'Currency', 'label': 'Balance','width':170},
+		{
+            'fieldname': 'employee',
+            'fieldtype': 'Link',
+            'label': 'Employee',
+            "options":"Employee",
+            'width':170
+        },
+		{
+            'fieldname': 'type',
+            'fieldtype': 'Data',
+            'label': 'Type',
+            'width':170
+        },
+		{
+            'fieldname': 'running_balance',
+            'fieldtype': 'Currency',
+            'label': 'Balance',
+            'width':170
+        },
 	]
 	return columns
 

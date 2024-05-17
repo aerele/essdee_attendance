@@ -3,6 +3,7 @@ from frappe.utils import flt
 
 def create_advance_ledger_entry(data,running_balance):
     new_doc = frappe.new_doc('Essdee Advance Ledger Entry')
+    new_doc.flags.ignore_permissions = 1
     new_doc.employee = data['employee']
     new_doc.posting_date = data['posting_date']
     new_doc.posting_time = data['posting_time']
@@ -13,7 +14,6 @@ def create_advance_ledger_entry(data,running_balance):
     new_doc.running_balance = running_balance
     new_doc.save()
 
-@frappe.whitelist()
 def make_ledger(detail_list):
     for row in detail_list:
         check_and_create_ledger(row)               
@@ -100,7 +100,6 @@ def make_future_update(data,running_balance,docs):
         new_entry_running_balance = s
         d.save()
 
-@frappe.whitelist()
 def cancel_ledger(transaction_name, transaction_type):
     docs = frappe.get_all('Essdee Advance Ledger Entry',filters={'transaction_type': transaction_type, 'transaction_name':transaction_name})
     for doc in docs:
@@ -126,9 +125,9 @@ def check_cancel_possible(future_docs,amount):
         else:
             frappe.throw("It can't be cancelled, it affects the ledger")
 
-
 def make_cancel_future_update(future_docs,amount):
     for docs in future_docs:
         update_doc = frappe.get_doc("Essdee Advance Ledger Entry",docs.name)
         update_doc.running_balance = flt(update_doc.running_balance) - flt(amount)
+        update_doc.flags.ignore_permissions = 1
         update_doc.save() 
