@@ -7,8 +7,10 @@
  "field_order": [
   "section_break_fqod",
   "posting_date",
-  "posting_time",
   "posting_datetime",
+  "column_break_qvdm",
+  "posting_time",
+  "section_break_umzy",
   "essdee_advance_entry_details",
   "amended_from"
  ],
@@ -49,14 +51,23 @@
   {
    "fieldname": "posting_datetime",
    "fieldtype": "Datetime",
+   "hidden": 1,
    "label": "Posting Datetime",
    "read_only": 1
+  },
+  {
+   "fieldname": "column_break_qvdm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_umzy",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-05-17 19:34:46.518955",
+ "modified": "2024-05-17 22:34:38.425936",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Advance Entry",

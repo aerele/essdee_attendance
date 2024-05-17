@@ -51,7 +51,7 @@ def get_data(filters):
             SELECT 
                 *,
                 ROW_NUMBER() OVER (PARTITION BY employee,type ORDER BY posting_datetime DESC) AS rn
-            FROM `tabEssdee Advance Ledger Entry` where 1=1 {conditions}
+            FROM `tabEssdee Advance Ledger Entry` where is_cancelled=0 {conditions}
         )
         SELECT employee,type,running_balance FROM ranked_entries WHERE rn = 1;
         """

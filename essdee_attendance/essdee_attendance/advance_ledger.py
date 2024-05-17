@@ -1,7 +1,7 @@
 import frappe
 from frappe.utils import flt
 
-def create_advance_ledger_entry(data,running_balance):
+def create_advance_ledger_entry(data, running_balance):
     new_doc = frappe.new_doc('Essdee Advance Ledger Entry')
     new_doc.flags.ignore_permissions = 1
     new_doc.employee = data['employee']
@@ -19,7 +19,7 @@ def make_ledger(detail_list):
         check_and_create_ledger(row)               
 
 def check_and_create_ledger(data):
-    past_doc = get_last_past_record(data['employee'],data['posting_datetime'],data['type'])
+    past_doc = get_last_past_record(data['employee'], data['posting_datetime'], data['type'])
     running_balance = flt(data['amount'])
     if past_doc:
         running_balance += flt(past_doc.running_balance)
@@ -29,11 +29,11 @@ def check_and_create_ledger(data):
     future_docs = get_future_records(data['employee'], data['posting_datetime'], data['type'])
 
     if running_balance >= 0 and future_docs:
-        check_for_future(data,future_docs,data['amount'])
+        check_for_future(data, future_docs, running_balance)
     elif running_balance >= 0:
-        create_advance_ledger_entry(data,data['amount'])
+        create_advance_ledger_entry(data, running_balance)
     else:
-        show_error(data['type'],data['amount'],data['employee']) 
+        show_error(data['type'], data['amount'], data['employee']) 
 
 def check_for_future(data,future_docs,running_balance):
     check_is_possible(running_balance,future_docs,data['employee'],data['amount'],data['type'])

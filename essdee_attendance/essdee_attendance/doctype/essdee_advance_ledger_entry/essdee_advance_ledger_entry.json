@@ -8,12 +8,13 @@
   "employee",
   "type",
   "amount",
+  "running_balance",
+  "is_cancelled",
+  "column_break_ydiw",
   "posting_date",
   "posting_time",
   "transaction_type",
   "transaction_name",
-  "running_balance",
-  "is_cancelled",
   "posting_datetime"
  ],
  "fields": [
@@ -70,7 +71,8 @@
    "fieldname": "posting_date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "Posting Date"
+   "label": "Posting Date",
+   "reqd": 1
   },
   {
    "fieldname": "running_balance",
@@ -80,13 +82,18 @@
   {
    "fieldname": "posting_datetime",
    "fieldtype": "Datetime",
+   "hidden": 1,
    "label": "Posting Datetime",
    "read_only": 1
+  },
+  {
+   "fieldname": "column_break_ydiw",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-05-17 19:28:36.754875",
+ "modified": "2024-05-17 22:35:56.322942",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Advance Ledger Entry",
