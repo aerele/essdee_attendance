@@ -10,7 +10,6 @@ from erpnext.stock.utils import get_combine_datetime
 class EssdeeAdvanceEntry(Document):
 	def validate(self):
 		self.posting_datetime = get_combine_datetime(self.posting_date, self.posting_time)
-		self.db_set("posting_datetime", self.posting_datetime)
 	
 	def on_submit(self):
 		details = get_list(self)

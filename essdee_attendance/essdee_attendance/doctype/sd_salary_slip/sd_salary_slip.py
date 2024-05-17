@@ -18,7 +18,6 @@ class SDSalarySlip(Document):
 
 	def validate(self):
 		self.posting_datetime = get_combine_datetime(self.date, self.posting_time)
-		self.db_set("posting_datetime", self.posting_datetime)
 		self.calculate_total()
 		self.validate_employee()
 	
@@ -27,6 +26,8 @@ class SDSalarySlip(Document):
 		self.total_amount = self.salary_amount + (get_float(self.other_additions)) - (get_float(self.total_deductions))
 	
 	def validate_employee(self):
+		if frappe.flags.in_patch:
+			return
 		status = frappe.get_value("Employee", self.employee, "status")
 		if status != 'Active':
 			frappe.throw("Salary Slip can be created only for active employees.")
