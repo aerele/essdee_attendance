@@ -98,6 +98,7 @@ def make_future_update(data,running_balance,docs):
         s = flt(d.amount) + flt(new_entry_running_balance)
         d.running_balance = s
         new_entry_running_balance = s
+        d.flags.ignore_permissions = 1
         d.save()
 
 def cancel_ledger(transaction_name, transaction_type):
