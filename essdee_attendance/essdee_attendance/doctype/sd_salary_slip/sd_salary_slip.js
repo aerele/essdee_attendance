@@ -37,12 +37,24 @@ frappe.ui.form.on("SD Salary Slip", {
     via_cash: function(frm) {
         calculate_all(frm)
     },
+
+    method: function(frm) {
+        calculate_all(frm)
+    },
 });
 
 function calculate_all(frm) {
     frm.doc.total_deductions = (get_float(frm.doc.advance) + get_float(frm.doc.canteen) + get_float(frm.doc.esi_pf) + get_float(frm.doc.other_deductions) + get_float(frm.doc.leave) + get_float(frm.doc.via_cash))
-    frm.doc.total_amount = frm.doc.salary_amount + (get_float(frm.doc.other_additions)) - (get_float(frm.doc.total_deductions));
+    let total = frm.doc.salary_amount + (get_float(frm.doc.other_additions)) - (get_float(frm.doc.total_deductions));
+    if (frm.doc.method == "Pay Later") {
+        frm.doc.pay_later_amount = total;
+        frm.doc.total_amount = 0;
+    } else {
+        frm.doc.pay_later_amount = 0;
+        frm.doc.total_amount = total;
+    }
     frm.refresh_field("total_deductions");
+    frm.refresh_field("pay_later_amount");
     frm.refresh_field("total_amount");
 }
 

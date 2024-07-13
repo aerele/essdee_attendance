@@ -23,7 +23,13 @@ class SDSalarySlip(Document):
 	
 	def calculate_total(self):
 		self.total_deductions = (get_float(self.advance) + get_float(self.canteen) + get_float(self.esi_pf) + get_float(self.other_deductions) + get_float(self.leave) + get_float(self.via_cash))
-		self.total_amount = self.salary_amount + (get_float(self.other_additions)) - (get_float(self.total_deductions))
+		total =self.salary_amount + (get_float(self.other_additions)) - (get_float(self.total_deductions))
+		if self.method == 'Pay Later':
+			self.pay_later_amount = total
+			self.total_amount = 0
+		else:
+			self.pay_later_amount = 0
+			self.total_amount = total
 	
 	def validate_employee(self):
 		if frappe.flags.in_patch:

@@ -27,6 +27,7 @@
   "total_deductions",
   "method",
   "section_break_baas",
+  "pay_later_amount",
   "total_amount",
   "remarks",
   "amended_from"
@@ -194,12 +195,19 @@
    "in_list_view": 1,
    "label": "Posting Date",
    "reqd": 1
+  },
+  {
+   "fieldname": "pay_later_amount",
+   "fieldtype": "Currency",
+   "label": "Pay Later Amount",
+   "non_negative": 1,
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-05-17 22:55:23.884747",
+ "modified": "2024-07-13 12:18:48.432711",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "SD Salary Slip",
