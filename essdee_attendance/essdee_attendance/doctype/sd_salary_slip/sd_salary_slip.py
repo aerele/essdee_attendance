@@ -41,7 +41,7 @@ class SDSalarySlip(Document):
 	def on_submit(self):
 		if frappe.flags.in_patch or frappe.flags.in_migrate:
 			return
-		details = get_list(self)
+		details = get_ledger_entry(self)
 		make_ledger(details)
 	
 	def on_cancel(self):
@@ -52,7 +52,7 @@ def get_float(x):
 		return 0
 	return x
 
-def get_list(doc):
+def get_ledger_entry(doc):
 	x = []
 	if doc.method == 'Pay Later':
 		dic = {
@@ -60,7 +60,7 @@ def get_list(doc):
 			"posting_date" : doc.date,
 			"posting_time" : doc.posting_time,
 			"posting_datetime": doc.posting_datetime,
-			"amount": doc.total_amount ,
+			"amount": doc.pay_later_amount,
 			"type":"Pay Later",
 			"doctype" : "SD Salary Slip",
 			"docname" : doc.name
