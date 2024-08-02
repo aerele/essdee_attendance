@@ -1,0 +1,31 @@
+{
+ "attach_print": 0,
+ "channel": "Email",
+ "creation": "2024-08-01 10:35:27.528182",
+ "days_in_advance": 0,
+ "docstatus": 0,
+ "doctype": "Notification",
+ "document_type": "Essdee Permission Application",
+ "enabled": 1,
+ "event": "Value Change",
+ "idx": 0,
+ "is_standard": 1,
+ "message": "<p>Permission required for this user</p>\n<a href=\"{{ request.url_root }}app/essdee-permission-application/{{ doc.name }}\">Click to approve</a>\n\n",
+ "message_type": "HTML",
+ "modified": "2024-08-01 11:05:33.168894",
+ "modified_by": "Administrator",
+ "module": "Essdee Attendance",
+ "name": "Permission Notification",
+ "owner": "Administrator",
+ "recipients": [
+  {
+   "condition": "doc.workflow_state == 'Draft'",
+   "receiver_by_document_field": "permission_approver",
+   "receiver_by_role": "Leave Approver"
+  }
+ ],
+ "send_system_notification": 0,
+ "send_to_all_assignees": 0,
+ "subject": "{{doc.name}}",
+ "value_changed": "workflow_state"
+}

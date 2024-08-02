@@ -12,7 +12,10 @@
   "biometric_attendance_sync_config_section",
   "import_start_date",
   "column_break_11",
-  "pull_frequency"
+  "pull_frequency",
+  "permission_details_tab",
+  "permission_type",
+  "permission_hours"
  ],
  "fields": [
   {
@@ -59,12 +62,27 @@
    "fieldname": "pull_frequency",
    "fieldtype": "Int",
    "label": "Pull Frequency"
+  },
+  {
+   "fieldname": "permission_details_tab",
+   "fieldtype": "Tab Break",
+   "label": "Permission Details"
+  },
+  {
+   "fieldname": "permission_type",
+   "fieldtype": "Data",
+   "label": "Permission Type"
+  },
+  {
+   "fieldname": "permission_hours",
+   "fieldtype": "Int",
+   "label": "Permission Hours"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2021-03-02 19:10:54.068798",
+ "modified": "2024-08-01 16:52:21.710068",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Attendance Settings",
@@ -84,5 +102,6 @@
  "quick_entry": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }
