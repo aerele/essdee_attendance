@@ -23,7 +23,7 @@ class SDSalarySlip(Document):
 	
 	def calculate_total(self):
 		self.total_deductions = (get_float(self.advance) + get_float(self.canteen) + get_float(self.esi_pf) + get_float(self.other_deductions) + get_float(self.leave) + get_float(self.via_cash))
-		total =self.salary_amount + (get_float(self.other_additions)) - (get_float(self.total_deductions))
+		total = get_float(self.salary_amount) + (get_float(self.other_additions)) - (get_float(self.total_deductions))
 		if self.method == 'Pay Later':
 			self.pay_later_amount = total
 			self.total_amount = 0
@@ -41,21 +41,21 @@ class SDSalarySlip(Document):
 	def on_submit(self):
 		if frappe.flags.in_patch or frappe.flags.in_migrate:
 			return
-		details = get_ledger_entry(self)
-		make_ledger(details)
+		entries = get_ledger_entry(self)
+		make_ledger(entries)
 	
 	def on_cancel(self):
 		cancel_ledger(self.name,'SD Salary Slip')
 
-def get_float(x):
-	if not x:
+def get_float(num):
+	if not num:
 		return 0
-	return x
+	return num
 
 def get_ledger_entry(doc):
-	x = []
+	entries = []
 	if doc.method == 'Pay Later':
-		dic = {
+		entry = {
 			"employee" : doc.employee,
 			"posting_date" : doc.date,
 			"posting_time" : doc.posting_time,
@@ -65,10 +65,10 @@ def get_ledger_entry(doc):
 			"doctype" : "SD Salary Slip",
 			"docname" : doc.name
 		}
-		x.append(dic)	
+		entries.append(entry)	
 
 	if doc.advance:
-		dic = {
+		entry = {
 			"employee" : doc.employee,
 			"posting_date" : doc.date,
 			"posting_time" : doc.posting_time,
@@ -78,6 +78,6 @@ def get_ledger_entry(doc):
 			"doctype" : "SD Salary Slip",
 			"docname" : doc.name
 		}
-		x.append(dic)
+		entries.append(entry)
 
-	return x
+	return entries

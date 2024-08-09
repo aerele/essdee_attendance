@@ -102,7 +102,11 @@ def make_future_update(data,running_balance,docs):
         d.save()
 
 def cancel_ledger(transaction_name, transaction_type):
-    docs = frappe.get_all('Essdee Advance Ledger Entry',filters={'transaction_type': transaction_type, 'transaction_name':transaction_name})
+    docs = frappe.get_all('Essdee Advance Ledger Entry',filters={
+        'transaction_type': transaction_type,
+        'transaction_name':transaction_name,
+        'is_cancelled': 0,
+    })
     for doc in docs:
         d = frappe.get_doc('Essdee Advance Ledger Entry',doc.name)
         future_docs = get_future_records(d.employee,d.posting_datetime,d.type)
