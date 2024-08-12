@@ -14,9 +14,8 @@
   "column_break_11",
   "pull_frequency",
   "permission_details_tab",
-  "permission_type",
-  "permission_hours",
-  "permission_limit"
+  "personal_permission_hours",
+  "personal_permission_limit"
  ],
  "fields": [
   {
@@ -70,25 +69,20 @@
    "label": "Permission Details"
   },
   {
-   "fieldname": "permission_type",
-   "fieldtype": "Data",
-   "label": "Permission Type"
+   "fieldname": "personal_permission_hours",
+   "fieldtype": "Int",
+   "label": "Personal Permission Hours"
   },
   {
-   "fieldname": "permission_hours",
+   "fieldname": "personal_permission_limit",
    "fieldtype": "Int",
-   "label": "Permission Hours"
-  },
-  {
-   "fieldname": "permission_limit",
-   "fieldtype": "Int",
-   "label": "Permission Limit"
+   "label": "Personal Permission Limit"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-08-07 17:41:46.961657",
+ "modified": "2024-08-12 17:30:29.155956",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Attendance Settings",

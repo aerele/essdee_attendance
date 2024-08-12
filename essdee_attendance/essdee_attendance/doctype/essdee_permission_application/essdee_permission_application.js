@@ -13,7 +13,7 @@ frappe.ui.form.on("Essdee Permission Application", {
 			};
 		});
 	},
-    refresh(frm){
+    refresh:(frm)=>{
         if(frm.doc.permission_approver == frappe.session.user && frm.doc.status == 'Open'){
             frm.page.add_menu_item(__("Approve"), function() {
                 let d = new frappe.ui.Dialog({
@@ -22,14 +22,17 @@ frappe.ui.form.on("Essdee Permission Application", {
                     secondary_action_label: 'No',
                     primary_action() {
                         frm.set_value("status",'Approved')
-                        // frm.set_value("docstatus",1);
                         frm.doc.docstatus = 1;
                         frm.save().then(()=>{
     						frappe.show_alert({ message: __("Permission Approved"), indicator: "green" });
+                            frappe.call({
+                                method:'essdee_attendance.essdee_attendance.doctype.essdee_permission_application.essdee_permission_application.submit_doc',
+                                args: {
+                                    doc_name: frm.doc.name,
+                                }
+                            })
                         })
                         d.hide()
-
-    
                     },
                     secondary_action() {
                         d.hide();
@@ -48,6 +51,12 @@ frappe.ui.form.on("Essdee Permission Application", {
                         frm.set_value('status','Rejected')
                         frm.save().then(()=>{
     						frappe.show_alert({ message: __("Permission Rejected"), indicator: "red" });
+                            frappe.call({
+                                method:'essdee_attendance.essdee_attendance.doctype.essdee_permission_application.essdee_permission_application.submit_doc',
+                                args: {
+                                    doc_name: frm.doc.name,
+                                }
+                            })
                         })
                         d.hide()
                     },
@@ -82,10 +91,12 @@ frappe.ui.form.on("Essdee Permission Application", {
         }
     },
     permission_type(frm){
-        frm.set_value('start_date',null)
-        frm.set_value('start_time',null)
-        frm.set_value('end_date',null)
-        frm.set_value('end_time',null)
+        if(frm.doc.permission_type == 'Personal Permission' && frm.doc.start_time){
+            frm.trigger('start_time')
+            frm.set_value('end_date',frm.doc.start_date)
+            frm.set_value('end_time',null)
+            frm.trigger('validate_start_and_end_datetime')
+        }
     },
     start_time(frm){
         if(frm.doc.start_time){
@@ -114,10 +125,15 @@ frappe.ui.form.on("Essdee Permission Application", {
                 'type': frm.doc.permission_type
             },
             callback:function(r){
-                if(!r.message.start){
+                if(r.message.start){
                     frm.set_value("start_time",r.message.start)
                 }
-                frm.set_value('end_time',r.message.end)
+                if(r.message.end){
+                    frm.set_value('end_time',r.message.end)
+                }
+                if(r.message.msg){
+                    frappe.show_alert({ message: r.message.msg, indicator: "red" })
+                }
             }
         })
     },
@@ -131,8 +147,11 @@ frappe.ui.form.on("Essdee Permission Application", {
                         'employee': frm.doc.employee,
                     },
                     callback:function(r){
-                        if(!r.message){
-                            frm.set_value('end_time',r.message)
+                        if(r.message.end){
+                            frm.set_value('end_time',r.message.end)
+                        }
+                        if(r.message.msg){
+                            frappe.show_alert({message: r.message.msg, indicator: "red"})
                         }
                     }
                 })
