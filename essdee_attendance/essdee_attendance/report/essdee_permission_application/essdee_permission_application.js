@@ -38,4 +38,19 @@ frappe.query_reports["Essdee Permission Application"] = {
 			'label': 'Summary',
 		}
 	],
+	formatter: function(value, row, column, data, default_formatter) {
+		value = default_formatter(value, row, column, data);
+		if (column.fieldname == "status") {
+			if (data.status == 'Approved') {
+				value = "<span style='color:green';>" + value + "</span>";
+			} 
+			else if (data.status == 'Rejected') {
+				value = "<span style='color:red'>" + value + "</span>";
+			}
+			else if (data.status == 'Open'){
+				value = "<span style='color:blue'>" + value + "</span>";
+			} 
+		}
+		return value
+	}
 };

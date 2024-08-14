@@ -8,7 +8,6 @@ from erpnext.stock.utils import get_combine_datetime
 from datetime import datetime , timedelta
 from frappe.utils import cint
 import frappe.utils
-from frappe.core.doctype.has_role.has_role import HasRole
 
 
 class EssdeePermissionApplication(Document):	
@@ -17,7 +16,10 @@ class EssdeePermissionApplication(Document):
 		if 'Employee' in roles:	
 			doc = frappe.get_single('Essdee Attendance Settings')
 			args = self.as_dict()
-			email_template = frappe.get_doc("Email Template",doc.permission_email_template)
+			try:
+				email_template = frappe.get_doc("Email Template",doc.permission_email_template)
+			except:
+				return	
 			message = frappe.render_template(email_template.response_, args)
 			self.notify(
 				{
@@ -32,13 +34,9 @@ class EssdeePermissionApplication(Document):
 		contact = args.message_to
 		if not isinstance(contact, list):
 			contact = frappe.get_doc("User", contact).email or contact
-
-		# user = frappe.get_doc("User", frappe.session.user)
-
 		try:
 			frappe.sendmail(
 				recipients=contact,
-				# sender=user.email,
 				subject=args.subject,
 				message=args.message,
 				)
@@ -185,3 +183,8 @@ def submit_doc(doc_name, status):
 	doc.status = status
 	doc.save()
 	doc.submit()
+
+@frappe.whitelist()
+def send_email(doc_name):
+	doc = frappe.get_doc('Essdee Permission Application', doc_name)
+	doc.before_save()

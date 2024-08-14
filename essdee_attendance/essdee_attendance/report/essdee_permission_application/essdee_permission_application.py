@@ -27,6 +27,7 @@ def get_columns(filters):
 			{'fieldname':'start_time','fieldtype': 'Time','label': 'Start Time'},
 			{'fieldname':'end_date','fieldtype': 'Date','label': 'End Date'},
 			{'fieldname':'end_time','fieldtype': 'Time','label': 'End Time'},
+			{'fieldname': 'permission_hours', 'fieldtype': 'Float', 'label': 'Permission Hours', 'precision': 2},
 			{'fieldname':'purpose','fieldtype': 'Data','label': 'Purpose','width':120}
 		])
 	else:
@@ -57,6 +58,9 @@ def get_data(filters):
 	
 	if not filters.summary:
 		result = query.run(as_dict = True)	
+		for res in result:
+			detail = get_details(res)
+			res['permission_hours'] = get_time(detail['total_permission_hours'])
 		return result
 	else:
 		query = query.where(permissions.status == 'Approved')
@@ -99,14 +103,18 @@ def get_data(filters):
 		final_result = []	
 		for key, value in summary_result.items():
 			for val in value:
-				decimal = val['total_permission_hours'] - int(val['total_permission_hours'])
-				point = (60/100)* decimal
-				if round(point,2) == 0.6:
-					point = 1
-				val['total_permission_hours'] = int(val['total_permission_hours']) + point	
+				val['total_permission_hours'] = get_time(val['total_permission_hours'])
 				final_result.append(val)
 		return final_result
-	
+
+def get_time(hrs):
+	decimal = hrs - int(hrs)
+	point = (60/100)* decimal
+	if round(point,2) == 0.6:
+		point = 1
+	hrs = int(hrs) + point
+	return hrs
+
 def get_details(res):
 	x = {
 		"employee": res.employee,
@@ -122,7 +130,8 @@ def get_details(res):
 	else:
 		shift_type = frappe.get_value("Employee", {'name': res.employee}, 'default_shift')
 		starts,ends = frappe.get_value("Shift Type", {'name': shift_type}, ['start_time','end_time'])
-		start_date = res.start_date
+		start_date = res.start_date + timedelta(days=1)
+
 		x['total_permissions'] = 1
 		x['total_permission_hours'] = time_diff_in_hours(ends, res.start_time)
 		while True:

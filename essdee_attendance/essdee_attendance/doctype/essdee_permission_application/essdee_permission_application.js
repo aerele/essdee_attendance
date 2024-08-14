@@ -62,6 +62,16 @@ frappe.ui.form.on("Essdee Permission Application", {
                 d.show()
             })
         }
+        if(frm.doc.status == 'Open'){
+            frm.add_custom_button("Notify", ()=> {
+                frappe.call({
+                    method:'essdee_attendance.essdee_attendance.doctype.essdee_permission_application.essdee_permission_application.send_email',
+                    args: {
+                        doc_name: frm.doc.name
+                    }
+                })
+            })
+        }
     },
     employee(frm){
         if(frm.doc.employee){
