@@ -21,16 +21,13 @@ frappe.ui.form.on("Essdee Permission Application", {
                     primary_action_label: 'Yes',
                     secondary_action_label: 'No',
                     primary_action() {
-                        frm.set_value("status",'Approved')
-                        frm.doc.docstatus = 1;
-                        frm.save().then(()=>{
-    						frappe.show_alert({ message: __("Permission Approved"), indicator: "green" });
-                            frappe.call({
-                                method:'essdee_attendance.essdee_attendance.doctype.essdee_permission_application.essdee_permission_application.submit_doc',
-                                args: {
-                                    doc_name: frm.doc.name,
-                                }
-                            })
+                        frappe.show_alert({ message: __("Permission Approved"), indicator: "green" });
+                        frappe.call({
+                            method:'essdee_attendance.essdee_attendance.doctype.essdee_permission_application.essdee_permission_application.submit_doc',
+                            args: {
+                                doc_name: frm.doc.name,
+                                status: 'Approved',
+                            }
                         })
                         d.hide()
                     },
@@ -48,15 +45,13 @@ frappe.ui.form.on("Essdee Permission Application", {
                     primary_action_label:'Yes',
                     secondary_action_label:"NO",
                     primary_action(){
-                        frm.set_value('status','Rejected')
-                        frm.save().then(()=>{
-    						frappe.show_alert({ message: __("Permission Rejected"), indicator: "red" });
-                            frappe.call({
-                                method:'essdee_attendance.essdee_attendance.doctype.essdee_permission_application.essdee_permission_application.submit_doc',
-                                args: {
-                                    doc_name: frm.doc.name,
-                                }
-                            })
+                        frappe.show_alert({ message: __("Permission Rejected"), indicator: "red" });
+                        frappe.call({
+                            method:'essdee_attendance.essdee_attendance.doctype.essdee_permission_application.essdee_permission_application.submit_doc',
+                            args: {
+                                doc_name: frm.doc.name,
+                                status: 'Rejected',
+                            }
                         })
                         d.hide()
                     },

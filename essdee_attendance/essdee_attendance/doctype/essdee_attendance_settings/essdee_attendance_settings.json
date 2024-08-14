@@ -15,7 +15,8 @@
   "pull_frequency",
   "permission_details_tab",
   "personal_permission_hours",
-  "personal_permission_limit"
+  "personal_permission_limit",
+  "permission_email_template"
  ],
  "fields": [
   {
@@ -77,12 +78,18 @@
    "fieldname": "personal_permission_limit",
    "fieldtype": "Int",
    "label": "Personal Permission Limit"
+  },
+  {
+   "fieldname": "permission_email_template",
+   "fieldtype": "Link",
+   "label": "Permission Email Template",
+   "options": "Email Template"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-08-12 17:30:29.155956",
+ "modified": "2024-08-13 15:26:24.877254",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Attendance Settings",

@@ -5,15 +5,19 @@ import frappe
 from frappe.model.document import Document
 from frappe.utils import get_datetime, time_diff_in_hours, get_timedelta
 from erpnext.stock.utils import get_combine_datetime
-from datetime import datetime 
+from datetime import datetime , timedelta
 from frappe.utils import cint
+import frappe.utils
+from frappe.core.doctype.has_role.has_role import HasRole
+
 
 class EssdeePermissionApplication(Document):	
 	def before_save(self):
 		roles = frappe.get_roles()
 		if 'Employee' in roles:	
+			doc = frappe.get_single('Essdee Attendance Settings')
 			args = self.as_dict()
-			email_template = frappe.get_doc("Email Template", "Permission Template")
+			email_template = frappe.get_doc("Email Template",doc.permission_email_template)
 			message = frappe.render_template(email_template.response_, args)
 			self.notify(
 				{
@@ -29,12 +33,12 @@ class EssdeePermissionApplication(Document):
 		if not isinstance(contact, list):
 			contact = frappe.get_doc("User", contact).email or contact
 
-		user = frappe.get_doc("User", frappe.session.user)
+		# user = frappe.get_doc("User", frappe.session.user)
 
 		try:
 			frappe.sendmail(
 				recipients=contact,
-				sender=user.email,
+				# sender=user.email,
 				subject=args.subject,
 				message=args.message,
 				)
@@ -149,9 +153,7 @@ def valid_start_and_end_datetime(start_time,employee,type):
 		if time_diff <= doc.personal_permission_hours:
 			end= end_time
 		else:
-			arr = start_time.split(":")
-			arr[0] = str(int(arr[0]) + doc.personal_permission_hours)
-			end= ":".join(arr)
+			end = get_timedelta(start_time) + timedelta(hours=doc.personal_permission_hours)
 	return {
 		'start': None,
 		'end': end,
@@ -178,6 +180,8 @@ def valid_endtime(end_time,employee):
 	}
 
 @frappe.whitelist()
-def submit_doc(doc_name):
+def submit_doc(doc_name, status):
 	doc = frappe.get_doc("Essdee Permission Application", doc_name)
+	doc.status = status
+	doc.save()
 	doc.submit()
