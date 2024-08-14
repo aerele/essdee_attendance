@@ -2,9 +2,8 @@
 # For license information, please see license.txt
 
 import frappe
-from frappe.utils import get_datetime, time_diff_in_hours, get_timedelta, getdate
-from erpnext.stock.utils import get_combine_datetime
-from datetime import datetime, timedelta
+from frappe.utils import time_diff_in_hours
+from datetime import timedelta
 
 def execute(filters=None):
 	columns, data = [], []
