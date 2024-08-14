@@ -14,96 +14,26 @@ def execute(filters=None):
 
 def get_columns(filters):
 	columns =[
-		{
-			'fieldname': 'employee',
-			'fieldtype': 'Link',
-			'label': 'Employee',
-			"options": "Employee",
-		},
-		{
-			'fieldname':'full_name',
-			'fieldtype': 'Data',
-			'label': 'Name',
-			'width':150
-		},
-		{
-			'fieldname': 'department',
-			'fieldtype': 'Link',
-			'label': 'Department',
-			"options": "Department",
-		},
-		{
-			'fieldname': 'designation',
-			'fieldtype': 'Link',
-			'label': 'Designation',
-			"options": "Designation",
-			'width':120
-		},
-		{
-			'fieldname':'permission_type',
-			'fieldtype': 'Data',
-			'label': 'Permission Type',
-			'width':120
-		},
+		{'fieldname': 'employee','fieldtype': 'Link','label': 'Employee',"options": "Employee"},
+		{'fieldname':'full_name','fieldtype': 'Data','label': 'Name','width':150},
+		{'fieldname': 'department','fieldtype': 'Link','label': 'Department',"options": "Department"},
+		{'fieldname': 'designation','fieldtype': 'Link','label': 'Designation',"options": "Designation",'width':120},
+		{'fieldname':'permission_type','fieldtype': 'Data','label': 'Permission Type','width':120}
 	]
 	if not filters.summary:
 		columns.extend([
-			{
-				'fieldname':'permission_approver',
-				'fieldtype': 'Link',
-				'label': 'Permission Approver',
-				'options': 'User',
-				'width':120
-			},
-			{
-				'fieldname': 'status',
-				'fieldtype': 'Select',
-				'label': 'Status',
-				'options':"\nOpen\nApproved\nRejected",
-			},
-			{
-				'fieldname':'start_date',
-				'fieldtype': 'Date',
-				'label': 'Start Date',
-			},
-			{
-				'fieldname':'start_time',
-				'fieldtype': 'Time',
-				'label': 'Start Time',
-			},
-			{
-				'fieldname':'end_date',
-				'fieldtype': 'Date',
-				'label': 'End Date',
-			},
-			{
-				'fieldname':'end_time',
-				'fieldtype': 'Time',
-				'label': 'End Time',
-			},
-			{
-				'fieldname':'purpose',
-				'fieldtype': 'Data',
-				'label': 'Purpose',
-				'width':120
-			}
+			{'fieldname':'permission_approver','fieldtype': 'Link','label': 'Permission Approver','options': 'User','width':120},
+			{'fieldname': 'status','fieldtype': 'Select','label': 'Status','options':"\nOpen\nApproved\nRejected"},
+			{'fieldname':'start_date','fieldtype': 'Date','label': 'Start Date'},
+			{'fieldname':'start_time','fieldtype': 'Time','label': 'Start Time'},
+			{'fieldname':'end_date','fieldtype': 'Date','label': 'End Date'},
+			{'fieldname':'end_time','fieldtype': 'Time','label': 'End Time'},
+			{'fieldname':'purpose','fieldtype': 'Data','label': 'Purpose','width':120}
 		])
 	else:
 		columns.extend([
-			{
-				'fieldname':'total_permissions',
-				'fieldtype':'Float',
-				'label':'Total Permissions',
-				'precision': 2,
-				'width': 150,
-			},
-			{
-				'fieldname': 'total_permission_hours',
-				'fieldtype':'Float',
-				'label':'Total Permission Hours',
-				'precision':2,
-				'width': 150,
-			}
+			{'fieldname':'total_permissions','fieldtype':'Float','label':'Total Permissions','precision': 2,'width': 150},
+			{'fieldname': 'total_permission_hours','fieldtype':'Float','label':'Total Permission Hours','precision':2,'width': 150}
 		])	
 	
 	return columns
@@ -141,13 +71,11 @@ def get_data(filters):
 			else:
 				same_permission_type = False
 				index = -1
-				
 				for ind,x in enumerate(summary_result[res.employee]):
 					if x['permission_type'] == res.permission_type:
 						same_permission_type = True
 						index = ind
 						break
-
 				if same_permission_type:
 					if res.start_date == res.end_date:
 						diff = time_diff_in_hours(res.end_time, res.start_time)
@@ -179,8 +107,6 @@ def get_data(filters):
 				val['total_permission_hours'] = int(val['total_permission_hours']) + point	
 				final_result.append(val)
 		return final_result
-
-
 	
 def get_details(res):
 	x = {
@@ -208,5 +134,4 @@ def get_details(res):
 				x['total_permission_hours'] += time_diff_in_hours(ends, starts)
 				start_date = start_date + timedelta(days=1)
 	return x			
-	
 	
