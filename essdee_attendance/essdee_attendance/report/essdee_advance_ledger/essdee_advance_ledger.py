@@ -68,9 +68,29 @@ def get_columns():
 
 def get_data(filters):
 	Ledger_Entry = frappe.qb.DocType('Essdee Advance Ledger Entry')
-	query = frappe.qb.from_(Ledger_Entry).select('*').where(Ledger_Entry.is_cancelled == False)
+	Employee = frappe.qb.DocType('Employee')
+
+	query = (
+		frappe.qb.from_(Ledger_Entry).from_(Employee)
+		.select(
+			Ledger_Entry.employee,
+			Ledger_Entry.type,
+			Ledger_Entry.amount,
+			Ledger_Entry.running_balance,
+			Ledger_Entry.posting_date,
+			Ledger_Entry.posting_time,
+			Ledger_Entry.transaction_type,
+			Ledger_Entry.transaction_name,
+		)
+		.where(Ledger_Entry.employee == Employee.name)
+		.where(Ledger_Entry.is_cancelled == False)
+	)
+
+	# query = frappe.qb.from_(Ledger_Entry).select('*').where(Ledger_Entry.is_cancelled == False)
 	if filters.employee:
-		query = query.where(Ledger_Entry.employee == filters.employee)
+		query = query.where(Employee.name == filters.employee)
+	if filters.department:
+		query = query.where(Employee.department == filters.department)
 	if filters.type:
 		query = query.where(Ledger_Entry.type == filters.type)
 	if filters.from_date and filters.to_date:

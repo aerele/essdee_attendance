@@ -15,14 +15,6 @@ frappe.query_reports["Essdee Advance Balance"] = {
 			"label": __("Employee"),
 			"fieldtype": "Link",
 			"options": "Employee",
-			get_query: () => {
-				var department = frappe.query_report.get_filter_value('department');
-				return {
-					filters: {
-						'department': department,
-					}
-				};
-			}
 		},
 		{
 			"fieldname" : "type",
@@ -31,11 +23,11 @@ frappe.query_reports["Essdee Advance Balance"] = {
 			"options":"\nAdvance\nPay Later",
 			"default":"Advance",
 		},
-		{
-			"fieldname":"department",
-			"label": __("Department"),
-			"fieldtype": "Link",
-			"options": "Department",
-		}
+		// {
+		// 	"fieldname":"department",
+		// 	"label": __("Department"),
+		// 	"fieldtype": "Link",
+		// 	"options": "Department",
+		// }
 	]
 };

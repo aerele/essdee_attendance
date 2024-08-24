@@ -1,7 +1,7 @@
 import frappe
 from frappe.utils import flt
 
-def create_advance_ledger_entry(data,running_balance):
+def create_advance_ledger_entry(data, running_balance):
     new_doc = frappe.new_doc('Essdee Advance Ledger Entry')
     new_doc.flags.ignore_permissions = 1
     new_doc.employee = data['employee']
@@ -19,7 +19,7 @@ def make_ledger(detail_list):
         check_and_create_ledger(row)               
 
 def check_and_create_ledger(data):
-    past_doc = get_last_past_record(data['employee'],data['posting_datetime'],data['type'])
+    past_doc = get_last_past_record(data['employee'], data['posting_datetime'], data['type'])
     running_balance = flt(data['amount'])
     if past_doc:
         running_balance += flt(past_doc.running_balance)
@@ -29,11 +29,11 @@ def check_and_create_ledger(data):
     future_docs = get_future_records(data['employee'], data['posting_datetime'], data['type'])
 
     if running_balance >= 0 and future_docs:
-        check_for_future(data,future_docs,data['amount'])
+        check_for_future(data, future_docs, running_balance)
     elif running_balance >= 0:
-        create_advance_ledger_entry(data,data['amount'])
+        create_advance_ledger_entry(data, running_balance)
     else:
-        show_error(data['type'],data['amount'],data['employee']) 
+        show_error(data['type'], data['amount'], data['employee']) 
 
 def check_for_future(data,future_docs,running_balance):
     check_is_possible(running_balance,future_docs,data['employee'],data['amount'],data['type'])
@@ -98,23 +98,23 @@ def make_future_update(data,running_balance,docs):
         s = flt(d.amount) + flt(new_entry_running_balance)
         d.running_balance = s
         new_entry_running_balance = s
+        d.flags.ignore_permissions = 1
         d.save()
 
 def cancel_ledger(transaction_name, transaction_type):
-    docs = frappe.get_all('Essdee Advance Ledger Entry',filters={'transaction_type': transaction_type, 'transaction_name':transaction_name})
+    docs = frappe.get_all('Essdee Advance Ledger Entry',filters={
+        'transaction_type': transaction_type,
+        'transaction_name':transaction_name,
+        'is_cancelled': 0,
+    })
     for doc in docs:
         d = frappe.get_doc('Essdee Advance Ledger Entry',doc.name)
-        past_doc = get_last_past_record(d.employee,d.posting_datetime,d.type)
         future_docs = get_future_records(d.employee,d.posting_datetime,d.type)
         if future_docs:
             check_cancel_possible(future_docs,d.amount)
             make_cancel_future_update(future_docs,d.amount)
-            d.is_cancelled = True
-        elif past_doc:
-            if past_doc.running_balance >= 0:
-                d.is_cancelled = True
-        else:
-            d.is_cancelled = True
+        d.is_cancelled = True
+        d.flags.ignore_permissions = 1
         d.save()
 
     

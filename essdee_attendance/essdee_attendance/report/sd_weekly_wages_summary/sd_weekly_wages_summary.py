@@ -110,7 +110,8 @@ def get_data(filters):
 			SalarySlip.total_amount,
 			SalarySlip.name.as_("salary_slip_name"),
 			SalarySlip.date.as_("salary_slip_date"),
-		)
+			SalarySlip.docstatus,
+		).where(SalarySlip.docstatus != 2)
 	)
 	if filters:
 		if filters.get('from_date'):

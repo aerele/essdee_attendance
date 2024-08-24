@@ -20,14 +20,6 @@ frappe.query_reports["Essdee Advance Ledger"] = {
 			"label": __("Employee"),
 			"fieldtype": "Link",
 			"options": "Employee",
-			get_query: () => {
-				var department = frappe.query_report.get_filter_value('department');
-				return {
-					filters: {
-						'department': department,
-					}
-				};
-			}
 		},
 		{
 			"fieldname" : "type",
