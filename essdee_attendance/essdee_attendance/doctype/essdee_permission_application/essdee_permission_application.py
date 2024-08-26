@@ -18,16 +18,17 @@ class EssdeePermissionApplication(Document):
 			args = self.as_dict()
 			try:
 				email_template = frappe.get_doc("Email Template",doc.permission_email_template)
+				message = frappe.render_template(email_template.response_, args)
+				self.notify(
+					{
+						"message": message,
+						"message_to": self.permission_approver,
+						"subject": email_template.subject,
+					}
+				)
 			except:
-				return	
-			message = frappe.render_template(email_template.response_, args)
-			self.notify(
-				{
-					"message": message,
-					"message_to": self.permission_approver,
-					"subject": email_template.subject,
-				}
-			)
+				pass	
+			
 
 	def notify(self, args):
 		args = frappe._dict(args)
@@ -67,7 +68,7 @@ class EssdeePermissionApplication(Document):
 				},
 				pluck = 'name')
 
-			if len(perm_list) == attendance_doc.personal_permission_limit:
+			if len(perm_list) >= attendance_doc.personal_permission_limit:
 				frappe.throw(f"{self.full_name}'s permission limit is reached it's limit")
 			
 			for perm in perm_list:
@@ -178,7 +179,6 @@ def valid_endtime(end_time,employee):
 def submit_doc(doc_name, status):
 	doc = frappe.get_doc("Essdee Permission Application", doc_name)
 	doc.status = status
-	doc.save()
 	doc.submit()
 
 @frappe.whitelist()
