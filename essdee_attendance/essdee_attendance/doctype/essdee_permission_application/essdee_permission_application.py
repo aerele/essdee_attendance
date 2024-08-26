@@ -13,7 +13,7 @@ import frappe.utils
 class EssdeePermissionApplication(Document):	
 	def before_save(self):
 		roles = frappe.get_roles()
-		if 'Employee' in roles:	
+		if 'Employee' in roles and self.permission_approver:	
 			doc = frappe.get_single('Essdee Attendance Settings')
 			args = self.as_dict()
 			try:
@@ -47,9 +47,6 @@ class EssdeePermissionApplication(Document):
 	def before_submit(self):
 		if self.status == 'Open':
 			frappe.throw("The permission is in open status")
-
-		if self.permission_approver != frappe.session.user:
-			frappe.throw("You are not permitted to submit this document")	
 
 	def before_validate(self):
 		self.start_datetime = get_combine_datetime(self.start_date,self.start_time)

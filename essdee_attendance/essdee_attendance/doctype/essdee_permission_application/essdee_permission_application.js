@@ -14,7 +14,11 @@ frappe.ui.form.on("Essdee Permission Application", {
 		});
 	},
     refresh:(frm)=>{
-        if(frm.doc.permission_approver == frappe.session.user && frm.doc.status == 'Open'){
+        const is_permission_approver = frm.doc.permission_approver && frm.doc.permission_approver == frappe.session.user;
+        const is_status_open = frm.doc.status === 'Open';
+        const is_leave_approver = !frm.doc.permission_approver && frappe.user.has_role('Leave Approver');
+
+        if((is_permission_approver && is_status_open) || (is_leave_approver && is_status_open)){
             frm.page.add_menu_item(__("Approve"), function() {
                 let d = new frappe.ui.Dialog({
                     title: "Are you sure want to approve this permission ?",
@@ -62,7 +66,7 @@ frappe.ui.form.on("Essdee Permission Application", {
                 d.show()
             })
         }
-        if(frm.doc.status == 'Open'){
+        if(frm.doc.status == 'Open' && frm.doc.permission_approver){
             frm.add_custom_button("Notify", ()=> {
                 frappe.call({
                     method:'essdee_attendance.essdee_attendance.doctype.essdee_permission_application.essdee_permission_application.send_email',

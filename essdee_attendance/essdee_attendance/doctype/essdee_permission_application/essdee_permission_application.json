@@ -99,8 +99,7 @@
    "fieldname": "permission_approver",
    "fieldtype": "Link",
    "label": "Permission Approver",
-   "options": "User",
-   "reqd": 1
+   "options": "User"
   },
   {
    "fieldname": "amended_from",
@@ -178,7 +177,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-08-12 17:34:13.434280",
+ "modified": "2024-08-26 10:18:25.536513",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Permission Application",
