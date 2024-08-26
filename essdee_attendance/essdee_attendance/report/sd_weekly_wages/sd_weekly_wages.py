@@ -94,6 +94,12 @@ def get_columns():
 			"width": 120,
 		},
 		{
+			"label": _("DocStatus"),
+			"fieldname": "docstatus",
+			"fieldtype": "Data",
+			"width": 60,
+		},
+		{
 			"label": _("Salary Slip Date"),
 			"fieldname": "date",
 			"fieldtype": "Date",
@@ -275,7 +281,8 @@ def get_salary_slips(employees=None, filters=None):
 			SalarySlip.other_deductions,
 			SalarySlip.total_deductions,
 			SalarySlip.total_amount,
-		)
+			SalarySlip.docstatus
+		).where(SalarySlip.docstatus != 2)
 	)
 	if filters:
 		if filters.get('from_date'):
@@ -319,6 +326,7 @@ def get_data(filters=None):
 					"other_deductions": ss.other_deductions,
 					"total_deductions": ss.total_deductions,
 					"total_amount": ss.total_amount,
+					"docstatus": ss.docstatus,
 				})
 		if employee.employee in previous_canteen:
 			employee.update({

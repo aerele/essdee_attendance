@@ -10,8 +10,8 @@
   "posting_datetime",
   "column_break_ukon",
   "date",
-  "naming_series",
   "posting_time",
+  "naming_series",
   "section_break_rfdr",
   "salary_amount",
   "additions_section",
@@ -27,6 +27,7 @@
   "total_deductions",
   "method",
   "section_break_baas",
+  "pay_later_amount",
   "total_amount",
   "remarks",
   "amended_from"
@@ -146,6 +147,7 @@
   {
    "fieldname": "naming_series",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Naming Series",
    "read_only": 1
   },
@@ -182,6 +184,7 @@
   {
    "fieldname": "posting_datetime",
    "fieldtype": "Datetime",
+   "hidden": 1,
    "label": "Posting Datetime",
    "read_only": 1
   },
@@ -192,12 +195,19 @@
    "in_list_view": 1,
    "label": "Posting Date",
    "reqd": 1
+  },
+  {
+   "fieldname": "pay_later_amount",
+   "fieldtype": "Currency",
+   "label": "Pay Later Amount",
+   "non_negative": 1,
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-05-14 17:31:26.629704",
+ "modified": "2024-07-13 12:18:48.432711",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "SD Salary Slip",
@@ -205,6 +215,8 @@
  "owner": "Administrator",
  "permissions": [
   {
+   "amend": 1,
+   "cancel": 1,
    "create": 1,
    "delete": 1,
    "email": 1,
@@ -214,9 +226,12 @@
    "report": 1,
    "role": "HR Manager",
    "share": 1,
+   "submit": 1,
    "write": 1
   },
   {
+   "amend": 1,
+   "cancel": 1,
    "create": 1,
    "delete": 1,
    "email": 1,
@@ -226,6 +241,7 @@
    "report": 1,
    "role": "HR User",
    "share": 1,
+   "submit": 1,
    "write": 1
   }
  ],
