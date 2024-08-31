@@ -9,7 +9,7 @@
  "idx": 0,
  "is_standard": "Yes",
  "letterhead": null,
- "modified": "2024-08-01 12:00:14.771368",
+ "modified": "2024-08-26 16:34:49.118984",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Permission Application",
@@ -21,6 +21,12 @@
  "roles": [
   {
    "role": "System Manager"
+  },
+  {
+   "role": "HR Manager"
+  },
+  {
+   "role": "HR User"
   }
  ]
 }
