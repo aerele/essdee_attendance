@@ -8,7 +8,7 @@
  "field_order": [
   "naming_series",
   "employee",
-  "full_name",
+  "employee_name",
   "department",
   "column_break_lckr",
   "posting_date",
@@ -38,6 +38,7 @@
    "reqd": 1
   },
   {
+   "fetch_from": "employee.department",
    "fieldname": "department",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -46,6 +47,7 @@
    "read_only": 1
   },
   {
+   "fetch_from": "employee.designation",
    "fieldname": "designation",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -77,12 +79,6 @@
    "fieldtype": "Data",
    "hidden": 1,
    "label": "Naming Series"
-  },
-  {
-   "fieldname": "full_name",
-   "fieldtype": "Data",
-   "label": "Full Name",
-   "read_only": 1
   },
   {
    "default": "Today",
@@ -124,8 +120,7 @@
    "fieldtype": "Time",
    "label": "End Time",
    "mandatory_depends_on": "eval: doc.permission_type != 'Personal Permission'",
-   "read_only_depends_on": "eval: doc.permission_type == 'Personal Permission'",
-   "reqd": 1
+   "read_only_depends_on": "eval: doc.permission_type == 'Personal Permission'"
   },
   {
    "fieldname": "start_datetime",
@@ -153,8 +148,7 @@
    "fieldname": "end_date",
    "fieldtype": "Date",
    "label": "End Date",
-   "read_only_depends_on": "eval: doc.permission_type == 'Personal Permission'",
-   "reqd": 1
+   "read_only_depends_on": "eval: doc.permission_type == 'Personal Permission'"
   },
   {
    "fieldname": "column_break_lckr",
@@ -172,12 +166,18 @@
    "hidden": 1,
    "label": "Status",
    "options": "Open\nApproved\nRejected"
+  },
+  {
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-08-26 10:18:25.536513",
+ "modified": "2024-08-31 12:40:59.758438",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Permission Application",

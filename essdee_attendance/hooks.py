@@ -17,7 +17,10 @@ app_license = "MIT"
 # include js, css files in header of desk.html
 # app_include_css = "/assets/essdee_attendance/css/essdee_attendance.css"
 # app_include_js = "/assets/essdee_attendance/js/essdee_attendance.js"
-
+app_include_js = [
+	"hrms.bundle.js",
+]
+app_include_css = "hrms.bundle.css"
 # include js, css files in header of web template
 # web_include_css = "/assets/essdee_attendance/css/essdee_attendance.css"
 # web_include_js = "/assets/essdee_attendance/js/essdee_attendance.js"
@@ -48,7 +51,9 @@ app_license = "MIT"
 # role_home_page = {
 #	"Role": "home_page"
 # }
-
+website_route_rules = [
+	{"from_route": "/sd_hrms/<path:app_path>", "to_route": "sd_hrms"},
+]
 # Generators
 # ----------
 

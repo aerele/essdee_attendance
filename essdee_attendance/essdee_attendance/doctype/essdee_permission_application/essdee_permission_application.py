@@ -8,26 +8,29 @@ from erpnext.stock.utils import get_combine_datetime
 from datetime import datetime , timedelta
 from frappe.utils import cint
 import frappe.utils
+from hrms.mixins.pwa_notifications import PWANotificationsMixin
 
+class EssdeePermissionApplication(Document,PWANotificationsMixin):	
+	def after_insert(self):
+		self.notify_approver()
 
-class EssdeePermissionApplication(Document):	
 	def before_save(self):
 		roles = frappe.get_roles()
 		if 'Employee' in roles and self.permission_approver:	
 			doc = frappe.get_single('Essdee Attendance Settings')
 			args = self.as_dict()
-			try:
-				email_template = frappe.get_doc("Email Template",doc.permission_email_template)
-				message = frappe.render_template(email_template.response_, args)
-				self.notify(
-					{
-						"message": message,
-						"message_to": self.permission_approver,
-						"subject": email_template.subject,
-					}
-				)
-			except:
-				pass	
+			# try:
+			# 	email_template = frappe.get_doc("Email Template",doc.permission_email_template)
+			# 	message = frappe.render_template(email_template.response_, args)
+			# 	self.notify(
+			# 		{
+			# 			"message": message,
+			# 			"message_to": self.permission_approver,
+			# 			"subject": email_template.subject,
+			# 		}
+			# 	)
+			# except:
+			# 	pass	
 			
 
 	def notify(self, args):
@@ -50,36 +53,105 @@ class EssdeePermissionApplication(Document):
 			frappe.throw("The permission is in open status")
 
 	def before_validate(self):
+		employee_details = get_employee_details(self.employee)
+		self.employee_name = employee_details['employee_name']
+		shift_type = frappe.get_value("Employee", {'name': self.employee}, 'default_shift')
+		starts,ends = frappe.get_value("Shift Type", {'name': shift_type}, ['start_time','end_time'])
+		doc = frappe.get_single("Essdee Attendance Settings")
+		if get_timedelta(self.start_time) > ends :
+			frappe.throw(f"Start time is greater than {self.employee}'s shift end time"),
+		if get_timedelta(self.start_time) < starts:
+			self.start_time = starts
+		if self.permission_type == "Personal Permission":
+			if get_timedelta(self.start_time) < get_timedelta("13:00:00"):
+				frappe.throw("Permission is not applicable for Morning Shift")
+			self.end_date = self.start_date
+
+			self.end_time = calculate_end_time(ends, self.start_time,doc.personal_permission_hours)
+			
+			perm_list = check_permission_limit(self.posting_date, self.name, self.employee, doc.personal_permission_limit, self.employee_name)
+			
+			check_permission_on_same_day(perm_list, self.start_date, self.name)
+
+		if self.end_time:
+			if get_timedelta(self.end_time) > ends:
+				self.end_time = ends
+
 		self.start_datetime = get_combine_datetime(self.start_date,self.start_time)
 		self.end_datetime = get_combine_datetime(self.end_date, self.end_time)
-
 		if self.start_datetime > self.end_datetime:
 			frappe.throw("End time and date is higher than start time and date")
+		check_available(self.start_datetime, self.end_datetime, self.employee, self.name)
 
-		attendance_doc = frappe.get_single('Essdee Attendance Settings')
 
-		if self.permission_type == "Personal Permission":
-			perm_list = frappe.get_list('Essdee Permission Application', {
-				'employee': self.employee, 
-				'permission_type': self.permission_type, 
-				'posting_date': ['between',datetime.today().replace(day=1), self.posting_date],
-				'status':'Approved',
-				'name':['!=',self.name]
-				},
-				pluck = 'name')
+		# self.start_datetime = get_combine_datetime(self.start_date,self.start_time)
+		# self.end_datetime = get_combine_datetime(self.end_date, self.end_time)
 
-			if len(perm_list) >= attendance_doc.personal_permission_limit:
-				frappe.throw(f"{self.full_name}'s permission limit is reached it's limit")
+		# if self.start_datetime > self.end_datetime:
+		# 	frappe.throw("End time and date is higher than start time and date")
+
+		# attendance_doc = frappe.get_single('Essdee Attendance Settings')
+
+		# if self.permission_type == "Personal Permission":
+		# 	if get_timedelta(self.start_time) < get_timedelta("13:00:00"):
+		# 		frappe.throw("Permission is not applicable for Morning Shift")
+		# 	perm_list = frappe.get_list('Essdee Permission Application', {
+		# 		'employee': self.employee, 
+		# 		'permission_type': self.permission_type, 
+		# 		'posting_date': ['between',datetime.today().replace(day=1), self.posting_date],
+		# 		'status':'Approved',
+		# 		'name':['!=',self.name]
+		# 		},
+		# 		pluck = 'name')
+
+		# 	if len(perm_list) >= attendance_doc.personal_permission_limit:
+		# 		frappe.throw(f"{self.employee_name}'s permission limit is reached it's limit")
 			
-			for perm in perm_list:
-				doc = frappe.get_doc("Essdee Permission Application",perm)
-				if str(doc.start_date) == str(self.start_date) and doc.name != self.name:
-					frappe.throw("Only one permission is applicable for a day")	
+		# 	for perm in perm_list:
+		# 		doc = frappe.get_doc("Essdee Permission Application",perm)
+		# 		if str(doc.start_date) == str(self.start_date) and doc.name != self.name:
+		# 			frappe.throw("Only one permission is applicable for a day")	
 
-			check_available(self.start_datetime, self.end_datetime, self.employee, self.name)
-		else:
-			check_available(self.start_datetime, self.end_datetime, self.employee, self.name)
+		# 	check_available(self.start_datetime, self.end_datetime, self.employee, self.name)
+		# else:
+		# 	check_available(self.start_datetime, self.end_datetime, self.employee, self.name)
+
+def check_permission_limit(posting_date, doc_name, employee, personal_permission_limit, employee_name):
+	perm_doc = frappe.qb.DocType('Essdee Permission Application')
+			
+	query = (
+		frappe.qb.from_(perm_doc)
+		.select('name')
+		.where(
+			(perm_doc.posting_date.between(datetime.today().replace(day=1),posting_date)) &
+			(perm_doc.employee == employee) &
+			(perm_doc.status == 'Approved') &
+			(perm_doc.name != doc_name) &
+			(perm_doc.permission_type == 'Personal Permission')
+		)
+	)
+
+	perm_list = query.run()
+	if len(perm_list) >= personal_permission_limit:
+		frappe.throw(f"{employee_name}'s permission limit is reached it's limit")
 	
+	return perm_list
+
+def check_permission_on_same_day(perm_list, start_date, self_name):
+	for perm in perm_list:
+		doc = frappe.get_doc("Essdee Permission Application",perm)
+		if str(doc.start_date) == str(start_date) and doc.name != self_name:
+			frappe.throw("Only one permission is applicable for a day")	
+
+def calculate_end_time(ends, start_time, personal_permission_hours):
+	time_diff = time_diff_in_hours(str(ends), str(start_time))
+	end_time = None
+	if time_diff <= personal_permission_hours:
+		end_time = ends
+	else:
+		end_time = get_timedelta(start_time) + timedelta(hours=personal_permission_hours)	
+	return end_time
+
 def check_available(start_datetime, end_datetime, employee, doc_name):
 	from pypika import Order
 
@@ -112,68 +184,66 @@ def check_available(start_datetime, end_datetime, employee, doc_name):
 
 @frappe.whitelist()
 def get_employee_details(employee):
-	dept,design,name,leave_approver,department = frappe.get_value('Employee',employee,['department','designation','employee_name','leave_approver','department'])
+	name,leave_approver,department = frappe.get_value('Employee',employee,['employee_name','leave_approver','department'])
 
 	if not leave_approver and department:
 		leave_approver = frappe.db.get_value("Department Approver",
 			{"parent": department, "parentfield": "leave_approvers", "idx": 1},"approver")
 
 	return {
-		'department' : dept,
-		'designation': design,
-		'full_name': name,
+		'employee_name': name,
 		'leave_approver':leave_approver
 	}
 
-@frappe.whitelist()
-def valid_start_and_end_datetime(start_time,employee,type):
-	shift_type = frappe.get_value("Employee", {'name': employee}, 'default_shift')
-	starts,end_time = frappe.get_value("Shift Type", {'name': shift_type}, ['start_time','end_time'])
-	if get_timedelta(start_time) > end_time :
-		return {
-			'start' : starts,
-			'end' : None,
-			'msg': f"Start time is greater than {employee}'s shift end time",
-		}
-	if get_timedelta(start_time) < starts:
-		return {
-			'start': starts,
-			'end': None,
-			'msg':f"Start time is less than {employee}'s shift start time",
-		}		
-	doc = frappe.get_single("Essdee Attendance Settings")
-	end = None
+# @frappe.whitelist()
+# def valid_start_and_end_datetime(start_time,employee,type):
+# 	shift_type = frappe.get_value("Employee", {'name': employee}, 'default_shift')
+# 	starts,end_time = frappe.get_value("Shift Type", {'name': shift_type}, ['start_time','end_time'])
+# 	if get_timedelta(start_time) > end_time :
+# 		return {
+# 			'start' : starts,
+# 			'end' : None,
+# 			'msg': f"Start time is greater than {employee}'s shift end time",
+# 		}
+# 	if get_timedelta(start_time) < starts:
+# 		return {
+# 			'start': starts,
+# 			'end': None,
+# 			'msg':f"Start time is less than {employee}'s shift start time",
+# 		}		
+# 	doc = frappe.get_single("Essdee Attendance Settings")
+# 	end = None
 	
-	if type == "Personal Permission":
-		time_diff = time_diff_in_hours(str(end_time), start_time)
-		if time_diff <= doc.personal_permission_hours:
-			end= end_time
-		else:
-			end = get_timedelta(start_time) + timedelta(hours=doc.personal_permission_hours)
-	return {
-		'start': None,
-		'end': end,
-		'msg':None,
-	}	
+# 	if type == "Personal Permission":
+# 		time_diff = time_diff_in_hours(str(end_time), start_time)
+# 		if time_diff <= doc.personal_permission_hours:
+# 			end= end_time
+# 		else:
+# 			end = get_timedelta(start_time) + timedelta(hours=doc.personal_permission_hours)
+# 	return {
+# 		'start': None,
+# 		'end': end,
+# 		'msg':None,
+# 	}	
 
-@frappe.whitelist()
-def valid_endtime(end_time,employee):
-	shift_type = frappe.get_value("Employee", {'name': employee}, 'default_shift')
-	start, end = frappe.get_value("Shift Type", {'name': shift_type}, ['start_time','end_time'])
-	if end < get_timedelta(end_time):
-		return {
-			'end': end,
-			'msg': f"End time is greater than {employee}'s shift end time",
-		}
-	if start > get_timedelta(end_time):
-		return {
-			'end':end,
-			'msg': f"End time is less than {employee}'s shift start time",
-		}
-	return {
-		'end': None,
-		'msg': None,
-	}
+# @frappe.whitelist()
+# def valid_endtime(end_time,employee):
+# 	shift_type = frappe.get_value("Employee", {'name': employee}, 'default_shift')
+# 	start, end = frappe.get_value("Shift Type", {'name': shift_type}, ['start_time','end_time'])
+# 	if end < get_timedelta(end_time):
+# 		return {
+# 			'end': end,
+# 			'msg': f"End time is greater than {employee}'s shift end time",
+# 		}
+# 	if start > get_timedelta(end_time):
+# 		return {
+# 			'end':end,
+# 			'msg': f"End time is less than {employee}'s shift start time",
+# 		}
+# 	return {
+# 		'end': None,
+# 		'msg': None,
+# 	}
 
 @frappe.whitelist()
 def submit_doc(doc_name, status):
