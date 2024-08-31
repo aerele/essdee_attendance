@@ -4,3 +4,4 @@
 *.swp
 tags
 essdee_attendance/docs/current
+node_modules
