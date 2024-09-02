@@ -1,2 +1,0 @@
-import{a3 as c}from"./frappe-ui-DZDZpt4w.js";const o=c({doctype:"System Settings",name:"System Settings",auto:!1}),m=(t,r)=>{var e,n;if(!r||t!=null&&t.toString().trim().includes(" "))return t;const s=((e=o.doc)==null?void 0:e.country)=="India"?"en-IN":(n=o.doc)==null?void 0:n.language;return Intl.NumberFormat(s,{style:"currency",currency:r,trailingZeroDisplay:"stripIfInteger"}).format(t).replace(/^(\D+)/,"$1 ").replace(/\s+/," ")};export{m as f};
-//# sourceMappingURL=formatters-Ch330Bw1.js.map

@@ -7,21 +7,21 @@ from frappe.utils import get_datetime, time_diff_in_hours, get_timedelta
 from erpnext.stock.utils import get_combine_datetime
 from datetime import datetime , timedelta
 from frappe.utils import cint
+
 import frappe.utils
 from frappe import bold
 
-
 class EssdeePermissionApplication(Document):	
 	def after_insert(self):
-		self.notify_approver()
+		self.notify_approver_pwa()
 
-	def notify_approver(self):
-		"""Send new Leave Application & Expense Claim request notification - to approvers"""
+	def notify_approver_pwa(self):
 		from_user = frappe.db.get_value("Employee", self.employee, "user_id", cache=True)
-		to_user = self.permission_approver
+		to_user = self.get('permission_approver')
 
 		if not to_user or from_user == to_user:
 			return
+
 		notification = frappe.new_doc("PWA Notification")
 		notification.message = (
 			f"{bold(self.employee_name)} raised a new {bold(self.doctype)} for approval: {self.name}"
@@ -33,6 +33,7 @@ class EssdeePermissionApplication(Document):
 		notification.reference_document_name = self.name
 		notification.insert(ignore_permissions=True)
 
+	
 	def before_save(self):
 		roles = frappe.get_roles()
 		if 'Employee' in roles and self.permission_approver:	
@@ -102,8 +103,10 @@ class EssdeePermissionApplication(Document):
 
 		self.start_datetime = get_combine_datetime(self.start_date,self.start_time)
 		self.end_datetime = get_combine_datetime(self.end_date, self.end_time)
+
 		if self.start_datetime > self.end_datetime:
 			frappe.throw("End time and date is higher than start time and date")
+		
 		check_available(self.start_datetime, self.end_datetime, self.employee, self.name)
 		
 		if self.status != 'Open' and not "Leave Approver" in frappe.get_roles():

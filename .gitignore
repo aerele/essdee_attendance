@@ -3,4 +3,18 @@
 *.egg-info
 *.swp
 tags
+essdee_attendance/public/dist
+essdee_attendance/public/node_modules
 essdee_attendance/docs/current
+node_modules/
+dist/
+__pycache__/
+
+# build/
+.vscode
+.vs
+node_modules
+*debug.log
+essdee_attendance/docs/current
+essdee_attendance/public/frontend
+essdee_attendance/www/sd_hrms.html

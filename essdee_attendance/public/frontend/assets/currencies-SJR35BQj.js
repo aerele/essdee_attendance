@@ -1,2 +1,0 @@
-import{O as u}from"./frappe-ui-DZDZpt4w.js";const t=u({url:"essdee_attendance.api.get_company_currencies",auto:!0}),n=u({url:"essdee_attendance.api.get_currency_symbols",auto:!0});function s(a){var e,r;return(r=(e=t==null?void 0:t.data)==null?void 0:e[a])==null?void 0:r[0]}function c(a){var e,r;return(r=(e=t==null?void 0:t.data)==null?void 0:e[a])==null?void 0:r[1]}function d(a){var e;return(e=n==null?void 0:n.data)==null?void 0:e[a]}export{d as a,c as b,s as g};
-//# sourceMappingURL=currencies-SJR35BQj.js.map
