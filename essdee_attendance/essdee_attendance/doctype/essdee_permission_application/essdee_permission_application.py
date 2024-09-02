@@ -7,12 +7,30 @@ from frappe.utils import get_datetime, time_diff_in_hours, get_timedelta
 from erpnext.stock.utils import get_combine_datetime
 from datetime import datetime , timedelta
 from frappe.utils import cint
+from frappe import bold
 import frappe.utils
-from hrms.mixins.pwa_notifications import PWANotificationsMixin
 
-class EssdeePermissionApplication(Document,PWANotificationsMixin):	
+class EssdeePermissionApplication(Document):	
 	def after_insert(self):
-		self.notify_approver()
+		self.notify_approver_pwa()
+
+	def notify_approver_pwa(self):
+		from_user = frappe.db.get_value("Employee", self.employee, "user_id", cache=True)
+		to_user = self.get('permission_approver')
+
+		if not to_user or from_user == to_user:
+			return
+
+		notification = frappe.new_doc("PWA Notification")
+		notification.message = (
+			f"{bold(self.employee_name)} raised a new {bold(self.doctype)} for approval: {self.name}"
+		)
+		notification.from_user = from_user
+		notification.to_user = to_user
+
+		notification.reference_document_type = self.doctype
+		notification.reference_document_name = self.name
+		notification.insert(ignore_permissions=True)
 
 	def before_save(self):
 		roles = frappe.get_roles()
