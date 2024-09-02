@@ -73,8 +73,8 @@ const routes = [
 		component: () => import("@/views/InvalidEmployee.vue"),
 	},
 	...leaveRoutes,
-	...claimRoutes,
-	...employeeAdvanceRoutes,
+	// ...claimRoutes,
+	// ...employeeAdvanceRoutes,
 	...salarySlipRoutes,
 	...permissionRoutes,
 

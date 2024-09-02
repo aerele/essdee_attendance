@@ -187,7 +187,7 @@ function resetSelectedItem() {
 }
 
 const taxesTableFields = createResource({
-	url: "essdee_attendance.api.get_doctype_fields",
+	url: "hrms.api.get_doctype_fields",
 	params: { doctype: "Expense Taxes and Charges" },
 	transform(data) {
 		const excludeFields = ["description_sb"]

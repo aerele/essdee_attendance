@@ -86,7 +86,7 @@ const longitude = ref(0)
 const locationStatus = ref("")
 
 const settings = createResource({
-	url: "essdee_attendance.api.get_hr_settings",
+	url: "hrms.api.get_hr_settings",
 	auto: true,
 })
 

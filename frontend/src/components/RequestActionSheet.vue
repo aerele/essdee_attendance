@@ -204,7 +204,7 @@ const document = createDocumentResource({
 })
 
 const attachedFiles = createResource({
-	url: "essdee_attendance.api.get_attachments",
+	url: "hrms.api.get_attachments",
 	params: {
 		dt: props.modelValue.doctype,
 		dn: props.modelValue.name,
@@ -218,7 +218,7 @@ const docPermissions = createResource({
 })
 
 const permittedWriteFields = createResource({
-	url: "essdee_attendance.api.get_permitted_fields_for_write",
+	url: "hrms.api.get_permitted_fields_for_write",
 	params: { doctype: props.modelValue.doctype },
 	auto: true,
 })

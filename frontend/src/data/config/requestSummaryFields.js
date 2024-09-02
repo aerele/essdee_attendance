@@ -80,8 +80,8 @@ export const PERMISSION_FIELDS = [
 		fieldtype: "Select",
 	},
 	{
-		fieldname: "description",
-		label: "Reason",
+		fieldname: "purpose",
+		label: "Purpose",
 		fieldtype: "Small Text",
 	},
 ]

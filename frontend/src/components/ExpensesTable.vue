@@ -193,7 +193,7 @@ function resetSelectedItem() {
 }
 
 const expensesTableFields = createResource({
-	url: "essdee_attendance.api.get_doctype_fields",
+	url: "hrms.api.get_doctype_fields",
 	params: { doctype: "Expense Claim Detail" },
 	transform(data) {
 		const excludeFields = ["description_sb", "amounts_sb"]

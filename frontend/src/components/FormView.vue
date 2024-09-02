@@ -452,7 +452,7 @@ const tabFields = computed(() => {
 })
 
 const attachedFiles = createResource({
-	url: "essdee_attendance.api.get_attachments",
+	url: "hrms.api.get_attachments",
 	params: {
 		dt: props.doctype,
 		dn: props.id,
@@ -591,7 +591,7 @@ const docPermissions = createResource({
 })
 
 const permittedWriteFields = createResource({
-	url: "essdee_attendance.api.get_permitted_fields_for_write",
+	url: "hrms.api.get_permitted_fields_for_write",
 	params: { doctype: props.doctype },
 })
 

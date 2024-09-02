@@ -21,7 +21,7 @@ export const getLeaveDates = (leave) => {
 }
 
 export const myLeaves = createResource({
-	url: "essdee_attendance.api.get_leave_applications",
+	url: "hrms.api.get_leave_applications",
 	params: {
 		employee: employeeResource.data.name,
 		limit: 10,
@@ -37,7 +37,7 @@ export const myLeaves = createResource({
 })
 
 export const teamLeaves = createResource({
-	url: "essdee_attendance.api.get_leave_applications",
+	url: "hrms.api.get_leave_applications",
 	params: {
 		employee: employeeResource.data.name,
 		approver_id: employeeResource.data.user_id,
@@ -52,7 +52,7 @@ export const teamLeaves = createResource({
 })
 
 export const leaveBalance = createResource({
-	url: "essdee_attendance.api.get_leave_balance_map",
+	url: "hrms.api.get_leave_balance_map",
 	params: {
 		employee: employeeResource.data.name,
 	},

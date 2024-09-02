@@ -47,7 +47,7 @@ const companyCurrency = computed(() =>
 
 // get form fields
 const formFields = createResource({
-	url: "essdee_attendance.api.get_doctype_fields",
+	url: "hrms.api.get_doctype_fields",
 	params: { doctype: "Employee Advance" },
 	transform(data) {
 		const fields = getFilteredFields(data)
@@ -77,7 +77,7 @@ const exchangeRate = createResource({
 })
 
 const advanceAccount = createResource({
-	url: "essdee_attendance.api.get_advance_account",
+	url: "hrms.api.get_advance_account",
 	params: { company: employeeAdvance.value.company },
 	onSuccess(data) {
 		employeeAdvance.value.advance_account = data
