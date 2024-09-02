@@ -8,29 +8,48 @@ from erpnext.stock.utils import get_combine_datetime
 from datetime import datetime , timedelta
 from frappe.utils import cint
 import frappe.utils
-from hrms.mixins.pwa_notifications import PWANotificationsMixin
+from frappe import bold
 
-class EssdeePermissionApplication(Document,PWANotificationsMixin):	
+
+class EssdeePermissionApplication(Document):	
 	def after_insert(self):
 		self.notify_approver()
+
+	def notify_approver(self):
+		"""Send new Leave Application & Expense Claim request notification - to approvers"""
+		from_user = frappe.db.get_value("Employee", self.employee, "user_id", cache=True)
+		to_user = self.permission_approver
+
+		if not to_user or from_user == to_user:
+			return
+		notification = frappe.new_doc("PWA Notification")
+		notification.message = (
+			f"{bold(self.employee_name)} raised a new {bold(self.doctype)} for approval: {self.name}"
+		)
+		notification.from_user = from_user
+		notification.to_user = to_user
+
+		notification.reference_document_type = self.doctype
+		notification.reference_document_name = self.name
+		notification.insert(ignore_permissions=True)
 
 	def before_save(self):
 		roles = frappe.get_roles()
 		if 'Employee' in roles and self.permission_approver:	
 			doc = frappe.get_single('Essdee Attendance Settings')
 			args = self.as_dict()
-			# try:
-			# 	email_template = frappe.get_doc("Email Template",doc.permission_email_template)
-			# 	message = frappe.render_template(email_template.response_, args)
-			# 	self.notify(
-			# 		{
-			# 			"message": message,
-			# 			"message_to": self.permission_approver,
-			# 			"subject": email_template.subject,
-			# 		}
-			# 	)
-			# except:
-			# 	pass	
+			try:
+				email_template = frappe.get_doc("Email Template",doc.permission_email_template)
+				message = frappe.render_template(email_template.response_, args)
+				self.notify(
+					{
+						"message": message,
+						"message_to": self.permission_approver,
+						"subject": email_template.subject,
+					}
+				)
+			except:
+				pass	
 			
 
 	def notify(self, args):
@@ -51,6 +70,10 @@ class EssdeePermissionApplication(Document,PWANotificationsMixin):
 	def before_submit(self):
 		if self.status == 'Open':
 			frappe.throw("The permission is in open status")
+		
+		if not "Leave Approver" in frappe.get_roles():
+			frappe.throw("You are not permitted to submit the document")
+		
 
 	def before_validate(self):
 		employee_details = get_employee_details(self.employee)
@@ -82,39 +105,9 @@ class EssdeePermissionApplication(Document,PWANotificationsMixin):
 		if self.start_datetime > self.end_datetime:
 			frappe.throw("End time and date is higher than start time and date")
 		check_available(self.start_datetime, self.end_datetime, self.employee, self.name)
-
-
-		# self.start_datetime = get_combine_datetime(self.start_date,self.start_time)
-		# self.end_datetime = get_combine_datetime(self.end_date, self.end_time)
-
-		# if self.start_datetime > self.end_datetime:
-		# 	frappe.throw("End time and date is higher than start time and date")
-
-		# attendance_doc = frappe.get_single('Essdee Attendance Settings')
-
-		# if self.permission_type == "Personal Permission":
-		# 	if get_timedelta(self.start_time) < get_timedelta("13:00:00"):
-		# 		frappe.throw("Permission is not applicable for Morning Shift")
-		# 	perm_list = frappe.get_list('Essdee Permission Application', {
-		# 		'employee': self.employee, 
-		# 		'permission_type': self.permission_type, 
-		# 		'posting_date': ['between',datetime.today().replace(day=1), self.posting_date],
-		# 		'status':'Approved',
-		# 		'name':['!=',self.name]
-		# 		},
-		# 		pluck = 'name')
-
-		# 	if len(perm_list) >= attendance_doc.personal_permission_limit:
-		# 		frappe.throw(f"{self.employee_name}'s permission limit is reached it's limit")
-			
-		# 	for perm in perm_list:
-		# 		doc = frappe.get_doc("Essdee Permission Application",perm)
-		# 		if str(doc.start_date) == str(self.start_date) and doc.name != self.name:
-		# 			frappe.throw("Only one permission is applicable for a day")	
-
-		# 	check_available(self.start_datetime, self.end_datetime, self.employee, self.name)
-		# else:
-		# 	check_available(self.start_datetime, self.end_datetime, self.employee, self.name)
+		
+		if self.status != 'Open' and not "Leave Approver" in frappe.get_roles():
+			frappe.throw("You are not permitted to Approve or Reject the Permission")
 
 def check_permission_limit(posting_date, doc_name, employee, personal_permission_limit, employee_name):
 	perm_doc = frappe.qb.DocType('Essdee Permission Application')
@@ -247,6 +240,9 @@ def get_employee_details(employee):
 
 @frappe.whitelist()
 def submit_doc(doc_name, status):
+	if not "Leave Approver" in frappe.get_roles():
+		frappe.throw("You are not permitted to submit the document")
+		
 	doc = frappe.get_doc("Essdee Permission Application", doc_name)
 	doc.status = status
 	doc.submit()
