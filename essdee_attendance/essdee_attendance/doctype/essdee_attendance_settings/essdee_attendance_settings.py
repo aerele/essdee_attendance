@@ -95,10 +95,146 @@ def make_custom_field():
 				'insert_after':'employee_number'
 			},
 			{
+				'fieldname':'branch_address',
+				'fieldtype':'Long Text',
+				'label':"Branch Address",
+				'insert_after':'Branch'
+			},
+			{
+				'fieldname':'nature_of_employee',
+				'fieldtype':'Select',
+				'options':'Permanent\nTemporary\nContract',
+				'label':"Nature of Employee",
+				'insert_after':'salutation',
+			},
+			{
 				"fieldname": "father_or_spouse",
 				"fieldtype": "Data",
 				"label": "Father/Spouse",
+				"reqd": True,
 				"insert_after": "cell_number",
+			},
+			{
+				"fieldname": "compliance_details",
+				"fieldtype": "Section Break",
+				"label": "Compliance Details",
+				"insert_after": "health_details",
+			},
+			{
+				"fieldname": "sd_aadhar_no",
+				"fieldtype": "Data",
+				"label": "Aadhar No",
+				"reqd": True,
+				"insert_after": "compliance_details",
+			},
+			{
+				"fieldname": "sd_pf",
+				"fieldtype": "Data",
+				"label": "PF",
+				"insert_after": "sd_aadhar_no",
+			},
+			{
+				"fieldname": "sd_pan",
+				"fieldtype": "Data",
+				"label": "PAN",
+				"insert_after": "sd_pf",
+			},
+			{
+				"fieldname": "sd_name_as_per_pan",
+				"fieldtype": "Data",
+				"label": "Name as PER PAN",
+				"insert_after": "sd_pan",
+			},
+			{
+				'fieldname':'compliance_col_break',
+				'fieldtype':'Column Break',
+				'label':"",
+				'insert_after':'sd_name_as_per_pan',
+			},
+{
+				"fieldname": "sd_uan",
+				"fieldtype": "Data",
+				"label": "UAN",
+				"insert_after": "compliance_col_break",
+			},
+			{
+				"fieldname": "sd_esic",
+				"fieldtype": "Data",
+				"label": "ESIC",
+				"insert_after": "sd_uan",
+			},
+			{
+				"fieldname": "sd_esi_employee_dispensary",
+				"fieldtype": "Data",
+				"label": "ESI Employee Dispensary",
+				"insert_after": "sd_esic",
+			},
+			{
+				"fieldname": "sd_esi_family_dispensary",
+				"fieldtype": "Data",
+				"label": "ESI Family Dispensary",
+				"insert_after": "sd_esi_employee_dispensary",
+			},
+			{
+				"fieldname": "family_details_section",
+				"fieldtype": "Section Break",
+				"label": "Family Details",
+				"insert_after": "sd_esi_family_dispensary",
+			},
+			{
+				"fieldname": "sd_family_details",
+				"fieldtype": "Table",
+				"label": "Family Details",
+				'options':'Family Detail',
+				"insert_after": "family_details_section",
+			},
+			{
+				"fieldname": "upload_documents_section",
+				"fieldtype": "Section Break",
+				"label": "Upload Documents",
+				"insert_after": "sd_family_details",
+			},
+			{
+				'fieldname':'sd_upload_aadhar_front',
+				'fieldtype':'Attach Image',
+				'label':'Upload Aadhar Front',
+				'insert_after':'upload_documents_section',
+			},
+			{
+				'fieldname':'sd_upload_aadhar_back',
+				'fieldtype':'Attach Image',
+				'label':'Upload Aadhar Back',
+				'insert_after':'sd_upload_aadhar_front',
+			},
+			{
+				'fieldname':'sd_upload_pan',
+				'fieldtype':'Attach Image',
+				'label':'Upload PAN',
+				'insert_after':'sd_upload_aadhar_back',
+			},
+			{
+				'fieldname':'upload_documents_col_break',
+				'fieldtype':'Column Break',
+				'label':"",
+				'insert_after':'sd_upload_pan',
+			},
+			{
+				'fieldname':'sd_upload_cheque_leaf',
+				'fieldtype':'Attach Image',
+				'label':'Upload Cheque Leaf',
+				'insert_after':'upload_documents_col_break',
+			},
+			{
+				'fieldname':'sd_upload_passbook',
+				'fieldtype':'Attach Image',
+				'label':'Upload Passbook',
+				'insert_after':'sd_upload_cheque_leaf',
+			},
+			{
+				'fieldname':'sd_signature_upload',
+				'fieldtype':'Attach Image',
+				'label':'Upload Signature',
+				'insert_after':'sd_upload_passbook',
 			},
 			{
 				"fieldname": "sd_remarks_section",
@@ -111,7 +247,7 @@ def make_custom_field():
 				"fieldtype": "Long Text",
 				"label": "Remarks",
 				"insert_after": "sd_remarks_section",
-			}
+			},
 		],
 		'Attendance': [
 			{
@@ -148,6 +284,34 @@ def make_custom_field():
 				"label": "Shift Time Mapping",
 				"options": "Shift Time Mapping",
 				"insert_after": "sd_allowed_early_entry"
+			}
+		],
+		'Department': [
+			{
+				'fieldname':'sd_short_form',
+				'fieldtype':'Data',
+				'label':'SD Short Form',
+				'insert_after':'department_name'
+			},
+			{
+				'fieldname':'sd_text_color',
+				'fieldtype':'Color',
+				'label':'SD Text Color',
+				'insert_after':'sd_short_form'
+			},
+			{
+				'fieldname': 'sd_color',
+				'fieldtype': 'Color',
+				'label':'SD Color',
+				'insert_after': 'company',
+			}
+		],
+		'Branch':[
+			{
+				'fieldname':'branch_address',
+				'fieldtype':'Long Text',
+				'label':'Branch Address',
+				'reqd': True,
 			}
 		]
 	}

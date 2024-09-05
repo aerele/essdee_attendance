@@ -15,7 +15,7 @@ def get_employees(**args):
 def get_selected_employees(**args):
     employees = args.get('employees')
     employees = json.loads(employees)
-    fields = ['name', 'first_name', 'last_name', 'gender', 'date_of_birth', 'status', 'company', 'department','person_to_be_contacted','blood_group','emergency_phone_number','image','sd_signature_upload','father_or_spouse','relation_'] 
+    fields = ['name', 'first_name', 'last_name', 'gender', 'date_of_birth', 'status', 'company', 'department','person_to_be_contacted','blood_group','emergency_phone_number','image','sd_signature_upload','father_or_spouse','relation','branch_address','nature_of_employee','branch','date_of_joining','current_address','permanent_address'] 
     temp = frappe.get_list('Employee',filters={'name': ['in', employees]}, fields=fields)
     return temp
 
@@ -31,24 +31,34 @@ def store_employees(**args):
     employees = args['Employees']
     employees = json.loads(employees)
     doc = frappe.get_single('Employee ID Card')
-    doc.child_table=[]
+    doc.child_table = []
+
     for employee in employees:
-        doc.append('child_table',{
-            'employee_id':employee['name'],
-            'first_name':employee['first_name'],
-            'gender':employee['gender'],
-            'date_of_birth':employee['date_of_birth'],
-            'status':employee['status'],
-            'company':employee['company'],
-            'department':employee['department'],
-            'person_to_be_contacted':employee['person_to_be_contacted'],
-            'father_or_spouse':employee['father_or_spouse'],
-            'blood_group':employee['blood_group'],
-            'emergency_phone_number':employee['emergency_phone_number'],
-            'image':employee['image'],
-            'sd_signature_upload':employee['sd_signature_upload'],
-            'relation': employee['relation_']
+        print(employee)
+        doc.append('child_table', {
+            'employee_id': employee['name'],
+            'first_name': employee['first_name'],
+            'gender': employee['gender'],
+            'date_of_birth': employee['date_of_birth'],
+            'status': employee['status'],
+            'company': employee['company'],
+            'department': employee['department'],
+            'person_to_be_contacted': employee['person_to_be_contacted'],
+            'father_or_spouse': employee['father_or_spouse'],
+            'blood_group': employee['blood_group'],
+            'emergency_phone_number': employee['emergency_phone_number'],
+            'image': employee['image'],
+            'sd_signature_upload': employee['sd_signature_upload'],
+            'relation': employee['relation'],
+			'branch_address':employee['branch_address'],
+			'employee_nature':employee['nature_of_employee'],
+			'branch':employee['branch'],
+			'date_of_joining':employee['date_of_joining'],
+			'current_address':employee['current_address'],
+			'permanent_address':employee['permanent_address'],
         })
+
+
     doc.save(ignore_permissions=True) 
     return True
 
@@ -71,6 +81,12 @@ SUPPORTED_FIELD_TYPES = [
 	"Currency",
 ]
 
+@frappe.whitelist()
+def get_branch_address(branch_name):
+	doctype = frappe.qb.DocType("Branch")
+	query = frappe.qb.from_(doctype).select(doctype.branch_address).where(doctype.name == branch_name)
+	result = query.run(as_list=True)
+	return result[0]
 
 @frappe.whitelist()
 def get_current_user_info() -> dict:

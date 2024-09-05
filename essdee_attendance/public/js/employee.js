@@ -33,5 +33,18 @@ frappe.ui.form.on("Employee", {
 			args: {employee:frm.doc},
 			freeze: true
 		})
+	},
+	branch(frm){
+		if(frm.doc.branch){
+			frappe.call({
+				method:'essdee_attendance.api.get_branch_address',
+				args: {
+					'branch_name': frm.doc.branch,
+				},
+				callback: function(r){
+					frm.set_value('branch_address',r.message[0])
+				}
+			})
+		}
 	}
 });

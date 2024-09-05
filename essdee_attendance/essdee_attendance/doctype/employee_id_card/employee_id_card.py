@@ -1,7 +1,7 @@
 # Copyright (c) 2024, Aerele and contributors
 # For license information, please see license.txt
 
-# import frappe
+import frappe
 from frappe.model.document import Document
 
 class EmployeeIDCard(Document):
@@ -11,7 +11,6 @@ def generate_qr_code(qr_text, scale=5):
     import pyqrcode
     d = pyqrcode.create(qr_text).png_as_base64_str(scale=scale, quiet_zone=1)
     return f'<img src="data:image/png;base64,{d}">'
-
 
 def generate_barcode(data):
     from io import BytesIO

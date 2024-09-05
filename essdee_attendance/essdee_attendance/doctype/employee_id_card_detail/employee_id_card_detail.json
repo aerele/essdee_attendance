@@ -10,6 +10,7 @@
   "first_name",
   "gender",
   "date_of_birth",
+  "date_of_joining",
   "status",
   "company",
   "department",
@@ -19,7 +20,12 @@
   "image",
   "sd_signature_upload",
   "father_or_spouse",
-  "relation"
+  "relation",
+  "branch",
+  "branch_address",
+  "employee_nature",
+  "current_address",
+  "permanent_address"
  ],
  "fields": [
   {
@@ -102,12 +108,43 @@
    "fieldname": "relation",
    "fieldtype": "Data",
    "label": "Relation"
+  },
+  {
+   "fieldname": "branch_address",
+   "fieldtype": "Long Text",
+   "label": "Branch Address"
+  },
+  {
+   "fieldname": "employee_nature",
+   "fieldtype": "Data",
+   "label": "Employee Nature"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch"
+  },
+  {
+   "fieldname": "date_of_joining",
+   "fieldtype": "Date",
+   "label": "Date of joining"
+  },
+  {
+   "fieldname": "current_address",
+   "fieldtype": "Long Text",
+   "label": "Current Address"
+  },
+  {
+   "fieldname": "permanent_address",
+   "fieldtype": "Long Text",
+   "label": "Permanent Address"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-04-18 18:58:53.689580",
+ "modified": "2024-09-05 14:43:46.608942",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Employee ID Card Detail",

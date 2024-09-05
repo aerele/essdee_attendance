@@ -1,0 +1,60 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-09-05 12:15:07.982477",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "name1",
+  "dob",
+  "relationship",
+  "sd_aadhar_no",
+  "is_nominee"
+ ],
+ "fields": [
+  {
+   "fieldname": "name1",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Name"
+  },
+  {
+   "fieldname": "dob",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "DOB"
+  },
+  {
+   "fieldname": "relationship",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Relationship"
+  },
+  {
+   "fieldname": "sd_aadhar_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Aadhar No"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_nominee",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Is Nominee"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-09-05 12:16:30.594393",
+ "modified_by": "Administrator",
+ "module": "Essdee Attendance",
+ "name": "Family Detail",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
