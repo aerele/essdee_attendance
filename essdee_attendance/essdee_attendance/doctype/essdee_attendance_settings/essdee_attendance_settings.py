@@ -95,10 +95,18 @@ def make_custom_field():
 				'insert_after':'employee_number'
 			},
 			{
+				'fieldname':'branch_title',
+				'fieldtype':'Data',
+				'label':'Branch Address Title',
+				'insert_after':'branch',
+				'read_only': True,
+			},
+			{
 				'fieldname':'branch_address',
 				'fieldtype':'Long Text',
 				'label':"Branch Address",
-				'insert_after':'Branch'
+				'insert_after':'branch_title',
+				'read_only': True,
 			},
 			{
 				'fieldname':'nature_of_employee',
@@ -106,6 +114,7 @@ def make_custom_field():
 				'options':'Permanent\nTemporary\nContract',
 				'label':"Nature of Employee",
 				'insert_after':'salutation',
+				'default':'Permanent',
 			},
 			{
 				"fieldname": "father_or_spouse",
@@ -151,7 +160,7 @@ def make_custom_field():
 				'label':"",
 				'insert_after':'sd_name_as_per_pan',
 			},
-{
+			{
 				"fieldname": "sd_uan",
 				"fieldtype": "Data",
 				"label": "UAN",
@@ -307,6 +316,12 @@ def make_custom_field():
 			}
 		],
 		'Branch':[
+			{
+				'fieldname':'branch_address_title',
+				'fieldtype':'Data',
+				'label':'Branch Address Title',
+				'reqd': True,
+			},
 			{
 				'fieldname':'branch_address',
 				'fieldtype':'Long Text',

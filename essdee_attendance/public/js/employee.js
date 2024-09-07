@@ -42,7 +42,8 @@ frappe.ui.form.on("Employee", {
 					'branch_name': frm.doc.branch,
 				},
 				callback: function(r){
-					frm.set_value('branch_address',r.message[0])
+					frm.set_value('branch_title',r.message[0])
+					frm.set_value('branch_address',r.message[1])
 				}
 			})
 		}

@@ -9,6 +9,8 @@
   "filter_area_html",
   "apply_filter",
   "section_break_sslb",
+  "front_header",
+  "back_header",
   "employee_list_html",
   "child_table"
  ],
@@ -44,12 +46,22 @@
    "fieldname": "filter_area_html",
    "fieldtype": "HTML",
    "label": "Filter Area"
+  },
+  {
+   "fieldname": "front_header",
+   "fieldtype": "Data",
+   "label": "Front Header"
+  },
+  {
+   "fieldname": "back_header",
+   "fieldtype": "Data",
+   "label": "Back Header"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-04-02 00:00:31.602220",
+ "modified": "2024-09-07 12:22:45.828603",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Employee ID Card",

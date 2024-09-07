@@ -1,3 +1,4 @@
 frappe
 pyzk
 pickledb
+python-barcode

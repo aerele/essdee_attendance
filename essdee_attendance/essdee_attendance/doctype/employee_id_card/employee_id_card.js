@@ -14,7 +14,7 @@ frappe.ui.form.on("Employee ID Card", {
                 }
             }
         });
-        frm.disable_save();
+        // frm.disable_save();
         frm.add_custom_button('Print', () => show_page(frm))
         var filterWrapper = frm.fields_dict["filter_area_html"].$wrapper;
         filterWrapper.html('');

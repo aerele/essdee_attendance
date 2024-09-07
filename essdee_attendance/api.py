@@ -15,7 +15,7 @@ def get_employees(**args):
 def get_selected_employees(**args):
     employees = args.get('employees')
     employees = json.loads(employees)
-    fields = ['name', 'first_name', 'last_name', 'gender', 'date_of_birth', 'status', 'company', 'department','person_to_be_contacted','blood_group','emergency_phone_number','image','sd_signature_upload','father_or_spouse','relation','branch_address','nature_of_employee','branch','date_of_joining','current_address','permanent_address'] 
+    fields = ['name', 'first_name', 'last_name', 'gender', 'date_of_birth', 'status', 'company', 'department','person_to_be_contacted','blood_group','emergency_phone_number','image','sd_signature_upload','father_or_spouse','relation','branch_address','nature_of_employee','branch','date_of_joining','current_address','permanent_address','branch_title'] 
     temp = frappe.get_list('Employee',filters={'name': ['in', employees]}, fields=fields)
     return temp
 
@@ -32,9 +32,7 @@ def store_employees(**args):
     employees = json.loads(employees)
     doc = frappe.get_single('Employee ID Card')
     doc.child_table = []
-
     for employee in employees:
-        print(employee)
         doc.append('child_table', {
             'employee_id': employee['name'],
             'first_name': employee['first_name'],
@@ -56,6 +54,7 @@ def store_employees(**args):
 			'date_of_joining':employee['date_of_joining'],
 			'current_address':employee['current_address'],
 			'permanent_address':employee['permanent_address'],
+			'branch_title':employee['branch_title'],
         })
 
 
@@ -84,7 +83,7 @@ SUPPORTED_FIELD_TYPES = [
 @frappe.whitelist()
 def get_branch_address(branch_name):
 	doctype = frappe.qb.DocType("Branch")
-	query = frappe.qb.from_(doctype).select(doctype.branch_address).where(doctype.name == branch_name)
+	query = frappe.qb.from_(doctype).select(doctype.branch_address_title,doctype.branch_address).where(doctype.name == branch_name)
 	result = query.run(as_list=True)
 	return result[0]
 
