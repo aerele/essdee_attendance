@@ -6,7 +6,7 @@ let employeesByID = reactive({})
 let employeesByUserID = reactive({})
 
 export const employees = createResource({
-	url: "essdee_attendance.api.get_all_employees",
+	url: "hrms.api.get_all_employees",
 	auto: true,
 	transform(data) {
 		return data.map((employee) => {

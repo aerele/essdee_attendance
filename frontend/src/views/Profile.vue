@@ -243,7 +243,7 @@ const employeeDoc = createDocumentResource({
 })
 
 const employeeDocType = createResource({
-	url: "essdee_attendance.api.get_doctype_fields",
+	url: "hrms.api.get_doctype_fields",
 	params: { doctype: DOCTYPE },
 	auto: true,
 })

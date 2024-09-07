@@ -22,7 +22,7 @@ export const myPermissions = createResource({
 		limit: 10,
 	},
 	auto: true,
-	cache: "hrms:my_permissions",
+	cache: "essdee_attendance:my_permissions",
 	transform(data) {
 		return transformPermissionData(data)
 	},
@@ -37,9 +37,8 @@ export const teamPermissions = createResource({
 		limit: 10,
 	},
 	auto: true,
-	cache: "hrms:team_permissions",
+	cache: "essdee_attendance:team_permissions",
 	transform(data) {
-		console.log(data)
 		return transformPermissionData(data)
 	},
 })
@@ -50,7 +49,7 @@ export const permissionBalance = createResource({
 		employee: employeeResource.data.name,
 	},
 	auto: true,
-	cache: "hrms:permission_balance",
+	cache: "essdee_attendance:permission_balance",
 	transform: (data) => {
 		return data
 	},

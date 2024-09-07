@@ -3,7 +3,7 @@ import { employeeResource } from "./employee"
 import { reactive } from "vue"
 
 export const expenseClaimSummary = createResource({
-	url: "essdee_attendance.api.get_expense_claim_summary",
+	url: "hrms.api.get_expense_claim_summary",
 	params: {
 		employee: employeeResource.data.name,
 	},
@@ -19,7 +19,7 @@ const transformClaimData = (data) => {
 }
 
 export const myClaims = createResource({
-	url: "essdee_attendance.api.get_expense_claims",
+	url: "hrms.api.get_expense_claims",
 	params: {
 		employee: employeeResource.data.name,
 		limit: 10,
@@ -35,7 +35,7 @@ export const myClaims = createResource({
 })
 
 export const teamClaims = createResource({
-	url: "essdee_attendance.api.get_expense_claims",
+	url: "hrms.api.get_expense_claims",
 	params: {
 		employee: employeeResource.data.name,
 		approver_id: employeeResource.data.user_id,
@@ -52,7 +52,7 @@ export const teamClaims = createResource({
 export let claimTypesByID = reactive({})
 
 export const claimTypesResource = createResource({
-	url: "essdee_attendance.api.get_expense_claim_types",
+	url: "hrms.api.get_expense_claim_types",
 	auto: true,
 	transform(data) {
 		return data.map((row) => {

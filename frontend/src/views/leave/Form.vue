@@ -38,7 +38,7 @@ const leaveApplication = ref({})
 
 // get form fields
 const formFields = createResource({
-	url: "essdee_attendance.api.get_doctype_fields",
+	url: "hrms.api.get_doctype_fields",
 	params: { doctype: "Leave Application" },
 	transform(data) {
 		let fields = getFilteredFields(data)
@@ -59,7 +59,7 @@ const formFields = createResource({
 formFields.reload()
 
 const leaveApprovalDetails = createResource({
-	url: "essdee_attendance.api.get_leave_approval_details",
+	url: "hrms.api.get_leave_approval_details",
 	params: { employee: employee.data.name },
 	onSuccess(data) {
 		setLeaveApprovers(data)
@@ -67,7 +67,7 @@ const leaveApprovalDetails = createResource({
 })
 
 const leaveTypes = createResource({
-	url: "essdee_attendance.api.get_leave_types",
+	url: "hrms.api.get_leave_types",
 	params: {
 		employee: employee.data.name,
 		date: today,

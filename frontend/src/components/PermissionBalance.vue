@@ -49,11 +49,6 @@
 import { permissionBalance } from "@/data/permissions"
 
 // const getChartColor = (index) => {
-
-	// note: tw colors - rose-400, pink-400 & purple-500 of the old frappeui palette #918ef5
-	// const chartColors = ["text-[#fb7185]", "text-[#f472b6]", "text-[#918ef5]"]
-	// return chartColors[index % chartColors.length]
-
 // 	// note: tw colors - rose-400, pink-400 & purple-500 of the old frappeui palette #918ef5
 // 	const chartColors = ["text-[#fb7185]", "text-[#f472b6]", "text-[#918ef5]"]
 // 	return chartColors[index % chartColors.length]

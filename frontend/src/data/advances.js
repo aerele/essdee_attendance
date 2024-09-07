@@ -9,7 +9,7 @@ const transformAdvanceData = (data) => {
 }
 
 export const advanceBalance = createResource({
-	url: "essdee_attendance.api.get_employee_advance_balance",
+	url: "hrms.api.get_employee_advance_balance",
 	params: {
 		employee: employeeResource.data.name,
 	},

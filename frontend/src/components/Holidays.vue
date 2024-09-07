@@ -78,7 +78,7 @@ const employee = inject("$employee")
 const dayjs = inject("$dayjs")
 
 const holidays = createResource({
-	url: "essdee_attendance.api.get_holidays_for_employee",
+	url: "hrms.api.get_holidays_for_employee",
 	params: {
 		employee: employee.data.name,
 	},

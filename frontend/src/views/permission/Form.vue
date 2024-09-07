@@ -38,7 +38,7 @@ const essdeePermissionApplication = ref({})
 
 // get form fields
 const formFields = createResource({
-	url: "essdee_attendance.api.get_doctype_fields",
+	url: "hrms.api.get_doctype_fields",
 	params: { doctype: "Essdee Permission Application" },
 	transform(data) {
 		let fields = getFilteredFields(data)
