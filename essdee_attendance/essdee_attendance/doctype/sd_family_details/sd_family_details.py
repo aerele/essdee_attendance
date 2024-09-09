@@ -5,5 +5,5 @@
 from frappe.model.document import Document
 
 
-class FamilyDetail(Document):
+class SDFamilyDetails(Document):
 	pass

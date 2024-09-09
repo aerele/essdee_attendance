@@ -1,7 +1,7 @@
 [pre_model_sync]
 
 [post_model_sync]
-essdee_attendance.patches.v1_0.custom_field #16
+essdee_attendance.patches.v1_0.custom_field #20
 essdee_attendance.patches.v1_0.add_permission_in_employee
 essdee_attendance.patches.v1_0.update_sd_salary_slip 
 essdee_attendance.patches.v1_0.fix_pay_later_entries 
