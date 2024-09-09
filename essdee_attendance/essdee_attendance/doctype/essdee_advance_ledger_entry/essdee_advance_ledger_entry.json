@@ -31,7 +31,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Type",
-   "options": "Advance\nPay Later",
+   "options": "Advance\nPay Later\nMonthly Salary",
    "reqd": 1
   },
   {
@@ -93,7 +93,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-05-17 22:35:56.322942",
+ "modified": "2024-09-09 17:13:04.579597",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Advance Ledger Entry",

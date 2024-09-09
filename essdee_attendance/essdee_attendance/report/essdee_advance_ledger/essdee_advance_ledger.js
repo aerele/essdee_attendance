@@ -25,7 +25,7 @@ frappe.query_reports["Essdee Advance Ledger"] = {
 			"fieldname" : "type",
 			"label" : __("Type"),
 			"fieldtype":"Select",
-			"options":"\nAdvance\nPay Later"
+			"options":"\nAdvance\nPay Later\nMonthly Salary"
 		},
 		{
 			"fieldname":"department",

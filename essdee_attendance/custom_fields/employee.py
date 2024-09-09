@@ -151,6 +151,14 @@ attendance_tab_fields = [
 
 salary_tab_fields = [
     {
+        "fieldname": "sd_default_salary_slip_method",
+        "fieldtype": "Select",
+        "label": "Default Salary Slip Method",
+        "options": "Regular\nPay Later\nMonthly Salary",
+        "insert_after": "salary_mode",
+        "default": "Regular",
+    },
+    {
         "fieldname": "sd_bank_account_name",
         "fieldtype": "Data",
         "label": "Bank Account Name",

@@ -169,10 +169,12 @@
    "search_index": 1
   },
   {
+   "fetch_from": "employee.sd_default_salary_slip_method",
+   "fetch_if_empty": 1,
    "fieldname": "method",
    "fieldtype": "Select",
    "label": "Method",
-   "options": "\nRegular\nPay Later"
+   "options": "\nRegular\nPay Later\nMonthly Salary"
   },
   {
    "default": "Now",
@@ -207,7 +209,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-13 12:18:48.432711",
+ "modified": "2024-09-09 17:25:28.823206",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "SD Salary Slip",

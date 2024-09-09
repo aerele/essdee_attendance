@@ -24,7 +24,7 @@ class SDSalarySlip(Document):
 	def calculate_total(self):
 		self.total_deductions = (get_float(self.advance) + get_float(self.canteen) + get_float(self.esi_pf) + get_float(self.other_deductions) + get_float(self.leave) + get_float(self.via_cash))
 		total = get_float(self.salary_amount) + (get_float(self.other_additions)) - (get_float(self.total_deductions))
-		if self.method == 'Pay Later':
+		if self.method ['Pay Later', 'Monthly Salary']:
 			self.pay_later_amount = total
 			self.total_amount = 0
 		else:
@@ -54,14 +54,14 @@ def get_float(num):
 
 def get_ledger_entry(doc):
 	entries = []
-	if doc.method == 'Pay Later':
+	if doc.method in ['Pay Later', 'Monthly Salary']:
 		entry = {
 			"employee" : doc.employee,
 			"posting_date" : doc.date,
 			"posting_time" : doc.posting_time,
 			"posting_datetime": doc.posting_datetime,
 			"amount": doc.pay_later_amount,
-			"type":"Pay Later",
+			"type": doc.method,
 			"doctype" : "SD Salary Slip",
 			"docname" : doc.name
 		}
@@ -74,7 +74,7 @@ def get_ledger_entry(doc):
 			"posting_time" : doc.posting_time,
 			"posting_datetime": doc.posting_datetime,
 			"amount": flt(doc.advance) * flt(-1) ,
-			"type":"Advance",
+			"type": "Advance",
 			"doctype" : "SD Salary Slip",
 			"docname" : doc.name
 		}
