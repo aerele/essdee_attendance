@@ -24,7 +24,7 @@ class SDSalarySlip(Document):
 	def calculate_total(self):
 		self.total_deductions = (get_float(self.advance) + get_float(self.canteen) + get_float(self.esi_pf) + get_float(self.other_deductions) + get_float(self.leave) + get_float(self.via_cash))
 		total = get_float(self.salary_amount) + (get_float(self.other_additions)) - (get_float(self.total_deductions))
-		if self.method ['Pay Later', 'Monthly Salary']:
+		if self.method in ['Pay Later', 'Monthly Salary']:
 			self.pay_later_amount = total
 			self.total_amount = 0
 		else:
