@@ -44,6 +44,13 @@ overview_tab_fields = [
         'insert_after':'employee_number'
     },
     {
+        'fieldname':'sd_referred_by',
+        "fieldtype":'Link',
+        'label': 'Referred By',
+        'options': 'Employee',
+        'insert_after':'reports_to'
+    },
+    {
         'fieldname':'sd_branch_title',
         'fieldtype':'Data',
         'label':'Branch Address Title',

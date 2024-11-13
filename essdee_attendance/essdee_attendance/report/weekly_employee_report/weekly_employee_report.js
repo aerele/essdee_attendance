@@ -44,14 +44,14 @@ frappe.query_reports["Weekly Employee Report"] = {
 			"label": __("From Date"),
 			"fieldtype": "Date",
 			"reqd": 1,
-			"default": frappe.datetime.add_days(frappe.datetime.week_start(), -1)
+			"default": frappe.datetime.add_days(frappe.datetime.week_start(), -2)
 		},
 		{
 			"fieldname":"to_date",
 			"label": __("To Date"),
 			"fieldtype": "Date",
 			"reqd": 1,
-			"default": frappe.datetime.add_days(frappe.datetime.week_end(), -1)
+			"default": frappe.datetime.add_days(frappe.datetime.week_end(), -2)
 		},
 		{
 			"fieldname":"employee",
