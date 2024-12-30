@@ -163,5 +163,6 @@ jinja = {
 	"methods": [
   		"essdee_attendance.essdee_attendance.doctype.employee_id_card.employee_id_card.generate_qr_code",
   		"essdee_attendance.essdee_attendance.doctype.employee_id_card.employee_id_card.generate_barcode",
+  		"essdee_attendance.essdee_attendance.doctype.time_card_generator.time_card_generator.get_dict_object",  
  	],
 }

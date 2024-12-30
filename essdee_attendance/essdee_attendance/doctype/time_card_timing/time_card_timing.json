@@ -1,0 +1,119 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-12-23 16:07:32.733389",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "employee",
+  "date",
+  "status",
+  "in_time",
+  "out_time",
+  "working_hours",
+  "shifts",
+  "ot_working_hours",
+  "ot_hours",
+  "ot_shift",
+  "month",
+  "year",
+  "worker_type"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "in_time",
+   "fieldtype": "Data",
+   "label": "In Time"
+  },
+  {
+   "fieldname": "out_time",
+   "fieldtype": "Data",
+   "label": "Out Time"
+  },
+  {
+   "fieldname": "date",
+   "fieldtype": "Data",
+   "label": "Date"
+  },
+  {
+   "fieldname": "month",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Month",
+   "options": "\nJanuary\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember"
+  },
+  {
+   "fieldname": "year",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Year",
+   "options": "\n2023\n2024"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Data",
+   "label": "Status"
+  },
+  {
+   "fieldname": "working_hours",
+   "fieldtype": "Data",
+   "label": "Working Hours"
+  },
+  {
+   "fieldname": "shifts",
+   "fieldtype": "Float",
+   "label": "Shifts"
+  },
+  {
+   "fieldname": "ot_shift",
+   "fieldtype": "Float",
+   "label": "OT Shift"
+  },
+  {
+   "fieldname": "ot_working_hours",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "OT Working Hours"
+  },
+  {
+   "fieldname": "ot_hours",
+   "fieldtype": "Float",
+   "label": "OT Hours"
+  },
+  {
+   "fieldname": "worker_type",
+   "fieldtype": "Data",
+   "label": "Worker Type"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-12-30 14:51:20.843272",
+ "modified_by": "Administrator",
+ "module": "Essdee Attendance",
+ "name": "Time Card Timing",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

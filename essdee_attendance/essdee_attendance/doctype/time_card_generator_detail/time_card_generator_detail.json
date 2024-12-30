@@ -1,0 +1,62 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-12-23 10:36:42.991391",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "in_time",
+  "out_time",
+  "shift_hours",
+  "break_hours",
+  "probability"
+ ],
+ "fields": [
+  {
+   "fieldname": "in_time",
+   "fieldtype": "Time",
+   "in_list_view": 1,
+   "label": "In Time"
+  },
+  {
+   "fieldname": "out_time",
+   "fieldtype": "Time",
+   "in_list_view": 1,
+   "label": "Out Time"
+  },
+  {
+   "fieldname": "shift_hours",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Shift Hours",
+   "precision": "2"
+  },
+  {
+   "fieldname": "probability",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Probability",
+   "precision": "2"
+  },
+  {
+   "fieldname": "break_hours",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Break Hours",
+   "precision": "2"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-12-24 10:49:17.489903",
+ "modified_by": "Administrator",
+ "module": "Essdee Attendance",
+ "name": "Time Card Generator Detail",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

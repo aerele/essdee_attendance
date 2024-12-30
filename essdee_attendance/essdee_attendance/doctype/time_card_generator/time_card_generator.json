@@ -1,0 +1,150 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-12-23 10:35:12.456158",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "month",
+  "shift_start_time",
+  "in_time_start_range",
+  "in_time_end_range",
+  "month_start",
+  "upload_file",
+  "column_break_zwno",
+  "year",
+  "shift_end_time",
+  "out_time_start_range",
+  "out_time_end_range",
+  "month_end",
+  "type",
+  "section_break_jaza",
+  "time_card_generator_details",
+  "print_details_json"
+ ],
+ "fields": [
+  {
+   "fieldname": "month",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Month",
+   "options": "\nJanuary\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_zwno",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "year",
+   "fieldtype": "Select",
+   "label": "Year",
+   "options": "\n2023\n2024",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_jaza",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "upload_file",
+   "fieldtype": "Attach",
+   "label": "Upload File"
+  },
+  {
+   "fieldname": "time_card_generator_details",
+   "fieldtype": "Table",
+   "label": "Time Card Generator Details",
+   "options": "Time Card Generator Detail"
+  },
+  {
+   "fieldname": "in_time_start_range",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "In Time Start Range",
+   "reqd": 1
+  },
+  {
+   "fieldname": "in_time_end_range",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "In Time End Range",
+   "non_negative": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "out_time_start_range",
+   "fieldtype": "Int",
+   "label": "Out Time Start Range",
+   "reqd": 1
+  },
+  {
+   "fieldname": "out_time_end_range",
+   "fieldtype": "Int",
+   "label": "Out Time End Range",
+   "non_negative": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "print_details_json",
+   "fieldtype": "JSON",
+   "hidden": 1,
+   "label": "Print Details JSON"
+  },
+  {
+   "fieldname": "month_start",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Month Start"
+  },
+  {
+   "fieldname": "month_end",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Month End"
+  },
+  {
+   "fieldname": "shift_start_time",
+   "fieldtype": "Time",
+   "in_list_view": 1,
+   "label": "Shift Start Time",
+   "reqd": 1
+  },
+  {
+   "fieldname": "shift_end_time",
+   "fieldtype": "Time",
+   "label": "Shift End Time",
+   "reqd": 1
+  },
+  {
+   "fieldname": "type",
+   "fieldtype": "Select",
+   "label": "Type",
+   "options": "\nStaff\nWorker",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2024-12-25 15:19:18.323105",
+ "modified_by": "Administrator",
+ "module": "Essdee Attendance",
+ "name": "Time Card Generator",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
