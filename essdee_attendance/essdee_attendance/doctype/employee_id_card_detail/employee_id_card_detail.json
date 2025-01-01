@@ -26,7 +26,8 @@
   "employee_nature",
   "current_address",
   "permanent_address",
-  "branch_title"
+  "branch_title",
+  "designation"
  ],
  "fields": [
   {
@@ -145,12 +146,18 @@
    "fieldname": "branch_title",
    "fieldtype": "Data",
    "label": "Branch Title"
+  },
+  {
+   "fieldname": "designation",
+   "fieldtype": "Link",
+   "label": "Designation",
+   "options": "Designation"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-09-05 18:43:39.223731",
+ "modified": "2025-01-01 11:22:43.628491",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Employee ID Card Detail",

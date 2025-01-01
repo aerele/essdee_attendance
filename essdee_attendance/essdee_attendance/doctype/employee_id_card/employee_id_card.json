@@ -9,6 +9,7 @@
   "filter_area_html",
   "apply_filter",
   "section_break_sslb",
+  "print_designation",
   "front_header",
   "back_header",
   "employee_list_html",
@@ -56,12 +57,18 @@
    "fieldname": "back_header",
    "fieldtype": "Data",
    "label": "Back Header"
+  },
+  {
+   "default": "0",
+   "fieldname": "print_designation",
+   "fieldtype": "Check",
+   "label": "Print Designation"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-09-07 12:22:45.828603",
+ "modified": "2025-01-01 11:18:52.349994",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Employee ID Card",

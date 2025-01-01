@@ -14,8 +14,9 @@ def get_selected_employees(**args):
     employees = args.get('employees')
     employees = json.loads(employees)
     fields = [
-		'name', 'first_name', 'last_name', 'gender', 'date_of_birth', 'status', 'company', 'department','person_to_be_contacted','blood_group','emergency_phone_number',
-		'image','sd_signature_upload','father_or_spouse','relation_','sd_nature_of_employee','branch','date_of_joining','current_address','permanent_address'
+		'name', 'first_name', 'last_name', 'gender', 'date_of_birth', 'status', 'company', 'department', 'designation',
+		'person_to_be_contacted', 'blood_group', 'emergency_phone_number', 'image', 'sd_signature_upload',
+		'father_or_spouse', 'relation_', 'sd_nature_of_employee', 'branch', 'date_of_joining', 'current_address', 'permanent_address'
 	] 
     temp = frappe.get_list('Employee',filters={'name': ['in', employees]}, fields=fields)
     return temp
@@ -40,6 +41,7 @@ def store_employees(**args):
             'first_name':employee['first_name'],
             'gender':employee['gender'],
             'date_of_birth':employee['date_of_birth'],
+			'designation':employee['designation'],
             'status':employee['status'],
             'company':employee['company'],
             'department':employee['department'],
