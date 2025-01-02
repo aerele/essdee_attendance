@@ -17,20 +17,18 @@ def generate_barcode(data):
     from barcode import Code128
     from barcode.writer import ImageWriter
     import base64
-    
-    # if isinstance(data, str):
-    #     data = get_numbers_from_last(data)
-    
+  
     stream = BytesIO()
     Code128(str(data), writer=ImageWriter()).write(
         stream,
         {
             "module_width": 0.5,
             "module_height": 18.0,
-            "text_distance": 0,
-            "foreground": "#330223",
-            "quiet_zone": 6.5,
-        	"write_text": False,
+            "text_distance": 10,
+            "foreground": "black",
+            "quiet_zone": 10.5,
+        	"write_text": True,
+            "font_size":20,
         },
     )
     barcode_base64 = base64.b64encode(stream.getbuffer()).decode()
