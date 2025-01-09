@@ -15,6 +15,20 @@ overview_tab_fields = [
         "precision": 2
     },
     {
+        "fieldname": "sd_shift_wages",
+        "fieldtype": "Currency",
+        "label": "Shift Wages",
+        "insert_after": "sd_shift_rate",
+        "precision": 2
+    },
+    {
+        "fieldname": "sd_minimum_wages",
+        "fieldtype": "Currency",
+        "label": "Minimum Wages",
+        "insert_after": "sd_shift_wages",
+        "precision": 2
+    },
+    {
         'fieldname':'sd_nature_of_employee',
         'fieldtype':'Select',
         'options':'Permanent\nTemporary\nContract',

@@ -1,0 +1,74 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-01-07 15:19:13.117644",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "start_date",
+  "shift_type",
+  "column_break_gxmr",
+  "end_date",
+  "section_break_ymbs",
+  "essdee_shift_calculation_extra_ot_details"
+ ],
+ "fields": [
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Start Date"
+  },
+  {
+   "fieldname": "column_break_gxmr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "End Date"
+  },
+  {
+   "fieldname": "shift_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Shift Type",
+   "options": "Shift Type"
+  },
+  {
+   "fieldname": "section_break_ymbs",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "essdee_shift_calculation_extra_ot_details",
+   "fieldtype": "Table",
+   "label": "Essdee Shift Calculation Extra OT Details",
+   "options": "Essdee Shift Calculation Extra OT"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-01-09 14:31:43.324870",
+ "modified_by": "Administrator",
+ "module": "Essdee Attendance",
+ "name": "Essdee Shift Calculation",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
