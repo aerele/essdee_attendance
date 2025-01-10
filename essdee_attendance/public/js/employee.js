@@ -1,4 +1,13 @@
 frappe.ui.form.on("Employee", {
+	refresh(frm){
+		let user_roles = frappe.user_roles
+		let index = user_roles.indexOf("HR Manager")
+		if(index == -1){
+			frm.set_df_property("sd_shift_rate","hidden",true)
+			frm.set_df_property("sd_shift_wages","hidden", true)
+			frm.set_df_property("sd_minimum_wages","hidden", true)
+		}
+	},
     enroll_fingerprint: function(frm){
 		let d = new frappe.ui.Dialog({
 			title: __('Enroll Fingerprint'),

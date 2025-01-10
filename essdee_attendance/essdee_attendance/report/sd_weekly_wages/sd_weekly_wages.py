@@ -14,12 +14,12 @@ def execute(filters=None):
 
 def get_columns():
 	return [
-		{
-			"label": _("Serial No."),
-			"fieldname": "serial",
-			"fieldtype": "data",
-			"width": 115,
-		},
+		# {
+		# 	"label": _("Serial No."),
+		# 	"fieldname": "serial",
+		# 	"fieldtype": "data",
+		# 	"width": 115,
+		# },
 		{
 			"label": _("Salary Batch"),
 			"fieldname": "salary_batch",
@@ -177,6 +177,18 @@ def get_columns():
 			"fieldtype": "Data",
 			"width": 70
 		},
+		{
+			"label":_("No of Days Worked"),
+			"fieldname":"no_of_days_worked",
+			"fieldtype":"Int",
+			"width":100,
+		},
+		{
+			"label": _("Current Advance Balance"),
+			"fieldname": "current_advance_balance",
+			"fieldtype": "Currency",
+			"width": 120,
+		},
 	]
 
 def get_all_active_employees(filters = None):
@@ -184,7 +196,7 @@ def get_all_active_employees(filters = None):
 	q = (
 		frappe.qb.from_(Employee)
 		.select(
-			Employee.sd_attendance_book_serial.as_("serial"),
+			# Employee.sd_attendance_book_serial.as_("serial"),
 			Employee.sd_salary_batch.as_("salary_batch"),
 			Employee.name.as_("employee"),
 			Employee.employee_name,
@@ -213,8 +225,8 @@ def get_all_active_employees(filters = None):
 		q = q.where(Employee.salary_mode == filters.get('salary_mode'))
 
 	q = q.where(Employee.status == 'Active')
-	q = q.orderby(Employee.sd_attendance_book_serial.isnull())
-	q = q.orderby(Employee.sd_attendance_book_serial)
+	# q = q.orderby(Employee.sd_attendance_book_serial.isnull())
+	# q = q.orderby(Employee.sd_attendance_book_serial)
 	q = q.orderby(Employee.sd_salary_batch)
 	q = q.orderby(Employee.name)
 
@@ -308,6 +320,24 @@ def get_data(filters=None):
 	previous_canteen = get_previous_canteen_amount(filters)
 	multiple_entry = []
 	for employee in employees:
+		attendance_list = frappe.get_list("Attendance", filters={
+				"employee": employee.employee,
+				"attendance_date":["between", [filters.from_date,filters.to_date]],
+				"docstatus": 1,
+				"status":["in",["Present","Work From Home","Half Day"]]
+			}
+		)
+		res = frappe.db.sql(
+			f"""
+				WITH ranked_entries AS (
+					SELECT running_balance, ROW_NUMBER() OVER (PARTITION BY employee,type ORDER BY posting_datetime DESC) AS rn
+					FROM `tabEssdee Advance Ledger Entry` where is_cancelled=0 and employee='{employee.employee}'
+					and type = 'Advance' and posting_date <= '{filters.to_date}'
+				)
+				SELECT running_balance FROM ranked_entries WHERE rn = 1
+			""",as_dict=True
+		)
+		advance_balance = res[0] if res else 0
 		if employee.employee in salary_slips:
 			if len(salary_slips[employee.employee]) > 1:
 				multiple_entry.append(employee.employee)
@@ -328,6 +358,10 @@ def get_data(filters=None):
 					"total_amount": ss.total_amount,
 					"docstatus": ss.docstatus,
 				})
+		employee.update({
+			"no_of_days_worked": len(attendance_list),
+			"current_advance_balance": advance_balance,
+		})		
 		if employee.employee in previous_canteen:
 			employee.update({
 				"previous_canteen": previous_canteen[employee.employee].canteen,

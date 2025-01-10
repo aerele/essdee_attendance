@@ -13,12 +13,12 @@ def execute(filters=None):
 
 def get_columns():
 	return [
-		{
-			"label": _("Serial No."),
-			"fieldname": "serial",
-			"fieldtype": "data",
-			"width": 115,
-		},
+		# {
+		# 	"label": _("Serial No."),
+		# 	"fieldname": "serial",
+		# 	"fieldtype": "data",
+		# 	"width": 115,
+		# },
 		{
 			"label": _("Salary Batch"),
 			"fieldname": "salary_batch",
@@ -98,7 +98,7 @@ def get_data(filters):
 		frappe.qb.from_(SalarySlip)
 		.left_join(Employee).on(Employee.name == SalarySlip.employee)
 		.select(
-			Employee.sd_attendance_book_serial.as_("serial"),
+			# Employee.sd_attendance_book_serial.as_("serial"),
 			Employee.sd_salary_batch.as_("salary_batch"),
 			Employee.name.as_("employee"),
 			Employee.employee_name,
@@ -134,8 +134,8 @@ def get_data(filters):
 			q = q.where(Employee.sd_salary_batch == filters.get('salary_batch'))
 	
 	q = q.where(Employee.status == 'Active')
-	q = q.orderby(Employee.sd_attendance_book_serial.isnull())
-	q = q.orderby(Employee.sd_attendance_book_serial)
+	# q = q.orderby(Employee.sd_attendance_book_serial.isnull())
+	# q = q.orderby(Employee.sd_attendance_book_serial)
 	q = q.orderby(Employee.sd_salary_batch)
 	q = q.orderby(Employee.name)
 

@@ -174,7 +174,7 @@
    "fieldname": "method",
    "fieldtype": "Select",
    "label": "Method",
-   "options": "\nRegular\nPay Later\nMonthly Salary"
+   "options": "\nRegular\nPay Later\nMonthly Salary\nMonthly Salary - Pay"
   },
   {
    "default": "Now",
@@ -202,14 +202,13 @@
    "fieldname": "pay_later_amount",
    "fieldtype": "Currency",
    "label": "Pay Later Amount",
-   "non_negative": 1,
    "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-09 17:25:28.823206",
+ "modified": "2025-01-10 16:39:40.452293",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "SD Salary Slip",

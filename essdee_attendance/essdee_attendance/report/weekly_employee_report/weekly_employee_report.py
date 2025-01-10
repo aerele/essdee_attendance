@@ -19,20 +19,12 @@ def execute(filters=None):
 	
 def get_columns(filters):
 	columns = [
-		{
-			"label": _("Serial No."),
-			"fieldname": "serial",
-			"fieldtype": "data",
-			"width": 115,
-		},
-		{
-			"label": _("Employee"),
-			"fieldname": "employee",
-			"fieldtype": "Link",
-			"options": "Employee",
-			"width": 115,
-		},
+		# {"label": _("Serial No."),"fieldname": "serial","fieldtype": "data","width": 115},
+		{"label": _("Employee"),"fieldname": "employee","fieldtype": "Link","options": "Employee","width": 115},
 		{"label": _("Employee Name"), "fieldname": "employee_name", "fieldtype": "Data", "width": 120},
+		{"label": _("Department"), "fieldname":"department","fieldtype":"Link","options":"Department","width": 120},
+		{"label": _("Designation"), "fieldname":"designation","fieldtype":"Link","options":"Designation","width": 120},
+		{"label": _("Employment Type"), "fieldname":"employment_type","fieldtype":"Link","options":"Employment Type","width": 120},
 	]
 	if filters.pf_view:
 		columns.extend([
@@ -84,9 +76,12 @@ def get_data(filters):
 	attendance_records = get_checkin_map(attendance_records, filters)
 	for employee in employees:
 		d = {
-			'serial': employee.serial,
+			# 'serial': employee.serial,
 			'employee': employee.name,
-			'employee_name': employee.employee_name
+			'employee_name': employee.employee_name,
+			"department":employee.department,
+			"designation":employee.designation,
+			"employment_type":employee.employment_type,
 		}
 		if filters.pf_view:
 			get_pf_detail(d, filters, employee, attendance_records.get(employee.name))
@@ -178,10 +173,19 @@ def get_employee_detail(data, filters, employee, attendance_records):
 def get_employees(filters):
 	Employee = frappe.qb.DocType("Employee")
 	
-	query = frappe.qb.from_(Employee).select(Employee.sd_attendance_book_serial.as_("serial"),Employee.name, Employee.employee_name, Employee.sd_shift_rate, Employee.sd_shift_wages)
+	query = frappe.qb.from_(Employee).select(
+		# Employee.sd_attendance_book_serial.as_("serial"),
+		Employee.name, 
+		Employee.employee_name, 
+		Employee.sd_shift_rate, 
+		Employee.sd_shift_wages,
+		Employee.department,
+		Employee.designation,
+		Employee.employment_type,
+	)
 	query = apply_employee_filters(query, filters, Employee)
-	query = query.orderby(Employee.sd_attendance_book_serial.isnull())
-	query = query.orderby(Employee.sd_attendance_book_serial)
+	# query = query.orderby(Employee.sd_attendance_book_serial.isnull())
+	# query = query.orderby(Employee.sd_attendance_book_serial)
 	return query.run(as_dict = 1)
 
 def get_attendance_map(filters):

@@ -1,0 +1,29 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2025-01-10 12:17:09.105086",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letterhead": null,
+ "modified": "2025-01-10 12:18:56.786299",
+ "modified_by": "Administrator",
+ "module": "Essdee Attendance",
+ "name": "SD Salary Slip Aggregate Report",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "SD Salary Slip",
+ "report_name": "SD Salary Slip Aggregate Report",
+ "report_type": "Script Report",
+ "roles": [
+  {
+   "role": "HR Manager"
+  },
+  {
+   "role": "HR User"
+  }
+ ]
+}

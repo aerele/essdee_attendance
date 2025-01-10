@@ -36,19 +36,20 @@ overview_tab_fields = [
         'insert_after':'salutation',
         'default':'Permanent',
     },
-    {
-        "fieldname": "sd_attendance_book_serial",
-        "fieldtype": "Data",
-        "label": "Attendance Book Serial",
-        "insert_after": "employment_type",
-        "unique": 1,
-    },
+    # {
+    #     "fieldname": "sd_attendance_book_serial",
+    #     "fieldtype": "Data",
+    #     "label": "Attendance Book Serial",
+    #     "insert_after": "employment_type",
+    #     "unique": 1,
+    # },
     {
         "fieldname": "sd_salary_batch",
         "fieldtype": "Link",
         "label": "Salary Batch",
         "options": "SD Salary Batch",
-        "insert_after": "sd_attendance_book_serial",
+        "insert_after": "employment_type",
+        "reqd":True
     },
     {
         'fieldname':'essdee_employee_operations',
