@@ -10,6 +10,9 @@ class EssdeeShiftCalculation(Document):
 
 @frappe.whitelist()
 def calculate_wages(doc_name):
+	frappe.enqueue(calc, doc_name=doc_name)
+
+def calc(doc_name):
 	doc = frappe.get_doc("Essdee Shift Calculation", doc_name)
 	from_date = str(getdate(doc.start_date))
 	to_date = str(getdate(doc.end_date))
@@ -38,11 +41,8 @@ def calculate_wages(doc_name):
 			if attendance_data.get(date):
 				original_shifts.append(attendance_data[date])
 				total_shifts += attendance_data[date]
-				if attendance_data[date] == 2:
-					alter_shifts.append(0)
-					complete_alter_shifts.append(1)
-					total_alter_shifts += 1
-				elif attendance_data[date] > 1:
+
+				if attendance_data[date] > 1:
 					alter_shifts.append(0)
 					complete_alter_shifts.append(1)
 					total_alter_shifts += 1
@@ -60,8 +60,8 @@ def calculate_wages(doc_name):
 		old_value = total_shifts * shift_rate
 		new_shifts = old_value/ shift_wages
 		additional_shifts = new_shifts - total_alter_shifts
-		changed_indexs = []
-		i = 0
+		changed_indexes = []
+		index = 0
 		length = 0
 		for alt in alter_shifts:
 			if alt not in [None]:
@@ -77,101 +77,62 @@ def calculate_wages(doc_name):
 					equal_to_two += 1
 				elif flt(og) < 2 and flt(og) > 1:
 					less_than_two += 1
+			x = True
+			changed_indexes = []
 			while True:
-				if alter_shifts[i] not in [None]:
-					if i not in changed_indexs:
-						changed_indexs.append(i)
-						alter_shifts[i] += 0.25
-						additional_shifts -= 0.25
-						if additional_shifts < 0:
-							break
-						i = i + 2
-					else:
-						i = i + 1
-					if i >= len(alter_shifts):
-						i = int(i / len(alter_shifts)) 	
+				if alter_shifts[index] not in [None]:
+					index, additional_shifts, x, check = update_shift(index, changed_indexes, alter_shifts, additional_shifts, x)
+					if check:
+						break
 				else:
-					i = i + 1		
-					if i >= len(alter_shifts):
-						i = int(i / len(alter_shifts))
-				if len(changed_indexs) == length:
+					index, x = update_index(index, alter_shifts, x)
+				if len(changed_indexes) == length:
 					break
+
 			while additional_shifts > -0.25:
 				check = False
-				i = 0
+				index = 0
+				x = True
 				if greater_than_two > 0:
-					changed_indexs = []
+					changed_indexes = []
 					while True:
-						if alter_shifts[i] not in [None] and original_shifts[i] > flt(2):
-							if i not in changed_indexs:
-								changed_indexs.append(i)
-								alter_shifts[i] += 0.25
-								additional_shifts -= 0.25
-								if additional_shifts < 0:
-									check = True
-									break
-								i = i + 2
-							else:
-								i = i + 1
-							if i >= len(alter_shifts):
-								i = int(i / len(alter_shifts)) 	
+						if alter_shifts[index] not in [None] and original_shifts[index] > flt(2):
+							index, additional_shifts, x, check = update_shift(index, changed_indexes, alter_shifts, additional_shifts, x)
+							if check:
+								break
 						else:
-							i = i + 1		
-							if i >= len(alter_shifts):
-								i = int(i / len(alter_shifts))
-						if len(changed_indexs) >= greater_than_two:
+							index, x = update_index(index, alter_shifts, x)
+						if len(changed_indexes) >= greater_than_two:
 							break
 				if check:
 					break
-
+				x = True
 				if equal_to_two > 0:
-					i = 0
-					changed_indexs = []
+					index = 0
+					changed_indexes = []
 					while True:
-						if alter_shifts[i] not in [None] and original_shifts[i] == flt(2):
-							if i not in changed_indexs:
-								changed_indexs.append(i)
-								alter_shifts[i] += 0.25
-								additional_shifts -= 0.25
-								if additional_shifts < 0:
-									check = True
-									break
-								i = i + 2
-							else:
-								i = i + 1
-							if i >= len(alter_shifts):
-								i = int(i / len(alter_shifts)) 	
+						if alter_shifts[index] not in [None] and original_shifts[index] == flt(2):
+							index, additional_shifts, x, check = update_shift(index, changed_indexes, alter_shifts, additional_shifts, x)
+							if check:
+								break
 						else:
-							i = i + 1		
-							if i >= len(alter_shifts):
-								i = int(i / len(alter_shifts))
-						if len(changed_indexs) >= equal_to_two:
+							index, x = update_index(index, alter_shifts, x)
+						if len(changed_indexes) >= equal_to_two:
 							break
 				if check:
 					break
-
+				x = True
 				if less_than_two > 0:
-					i = 0
-					changed_indexs = []
+					index = 0
+					changed_indexes = []
 					while True:
-						if alter_shifts[i] not in [None] and original_shifts[i] < flt(2) and original_shifts[i] > flt(1):
-							if i not in changed_indexs:
-								changed_indexs.append(i)
-								alter_shifts[i] += 0.25
-								additional_shifts -= 0.25
-								if additional_shifts < 0:
-									check = True
-									break
-								i = i + 2
-							else:
-								i = i + 1
-							if i >= len(alter_shifts):
-								i = int(i / len(alter_shifts)) 	
+						if alter_shifts[index] not in [None] and original_shifts[index] < flt(2) and original_shifts[index] > flt(1):
+							index, additional_shifts, x, check = update_shift(index, changed_indexes, alter_shifts, additional_shifts, x)
+							if check:
+								break	
 						else:
-							i = i + 1		
-							if i >= len(alter_shifts):
-								i = int(i / len(alter_shifts))
-						if len(changed_indexs) >= less_than_two:
+							index, x = update_index(index, alter_shifts, x)
+						if len(changed_indexes) >= less_than_two:
 							break
 				if check:
 					break
@@ -196,3 +157,33 @@ def calculate_wages(doc_name):
 					)
 	doc.set("essdee_shift_calculation_extra_ot_details", total_attendance_list)	
 	doc.save()	
+
+def update_shift(index, changed_indexes, alter_shifts, additional_shifts, x):
+	if index not in changed_indexes:
+		changed_indexes.append(index)
+		alter_shifts[index] += 0.25
+		additional_shifts -= 0.25
+		if additional_shifts < 0:
+			return index, additional_shifts, x, True
+		index = index + 2
+	else:
+		index = index + 1
+	if index >= len(alter_shifts):
+		if x:
+			index = 1
+			x = False
+		else:
+			index = 0
+			x = True	
+	return index, additional_shifts, x, False	
+
+def update_index(index, alter_shifts, x):
+	index = index + 1		
+	if index >= len(alter_shifts):
+		if x:
+			index = 1
+			x = False
+		else:
+			index = 0
+			x = True
+	return index, x

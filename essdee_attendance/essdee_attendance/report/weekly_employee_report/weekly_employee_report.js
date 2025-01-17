@@ -105,8 +105,8 @@ frappe.query_reports["Weekly Employee Report"] = {
 			"fieldname":"select",
 			"label":"Select",
 			"fieldtype":"Select",
-			"options":"\nDay Wise Report\nSummarized Report",
-			"default":"",
+			"options":"Day Wise Report\nSummarized Report",
+			"default":"Day Wise Report",
 			on_change: ()=> {
 				if(frappe.query_report.get_filter_value("select") == "Day Wise Report"){
 					frappe.query_report.set_filter_value("pf_view", 0)
@@ -205,9 +205,6 @@ frappe.query_reports["Weekly Employee Report"] = {
 			"default": "Active",
 		},
 	],
-	onload(report) {
-		frappe.query_report.set_filter_value("select","")
-	},
 	get_datatable_options(options) {
 		let rows = get_rows();
 		return Object.assign(options, {
