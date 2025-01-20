@@ -20,7 +20,7 @@ frappe.query_reports["SD Salary Slip Aggregate Report"] = {
 			"fieldtype":"Select",
 			"label":"Salary Slip Method",
 			"options":"\nRegular\nPay Later\nMonthly Salary",
-			"default":"Regular"
+			"default":"Monthly Salary"
 		}
 	]
 };

@@ -94,6 +94,12 @@ def get_columns():
 			"width": 120,
 		},
 		{
+			"label": _("Salary Slip Method"),
+			"fieldname": "salary_slip_method",
+			"fieldtype": "Data",
+			"width": 120,
+		},
+		{
 			"label": _("DocStatus"),
 			"fieldname": "docstatus",
 			"fieldtype": "Data",
@@ -200,6 +206,7 @@ def get_all_active_employees(filters = None):
 			Employee.sd_salary_batch.as_("salary_batch"),
 			Employee.name.as_("employee"),
 			Employee.employee_name,
+			Employee.sd_default_salary_slip_method,
 			Employee.nick_name,
 			Employee.sd_shift_rate.as_("shift_rate"),
 			Employee.status,
@@ -332,12 +339,12 @@ def get_data(filters=None):
 				WITH ranked_entries AS (
 					SELECT running_balance, ROW_NUMBER() OVER (PARTITION BY employee,type ORDER BY posting_datetime DESC) AS rn
 					FROM `tabEssdee Advance Ledger Entry` where is_cancelled=0 and employee='{employee.employee}'
-					and type = 'Advance' and posting_date <= '{filters.to_date}'
+					and type = 'Advance'
 				)
 				SELECT running_balance FROM ranked_entries WHERE rn = 1
 			""",as_dict=True
 		)
-		advance_balance = res[0] if res else 0
+		advance_balance = res[0].running_balance if res else 0
 		if employee.employee in salary_slips:
 			if len(salary_slips[employee.employee]) > 1:
 				multiple_entry.append(employee.employee)
@@ -359,6 +366,7 @@ def get_data(filters=None):
 					"docstatus": ss.docstatus,
 				})
 		employee.update({
+			"salary_slip_method":employee.sd_default_salary_slip_method,
 			"no_of_days_worked": len(attendance_list),
 			"current_advance_balance": advance_balance,
 		})		

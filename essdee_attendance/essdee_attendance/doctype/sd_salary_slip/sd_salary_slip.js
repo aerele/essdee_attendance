@@ -49,7 +49,12 @@ function calculate_all(frm) {
     if (frm.doc.method == "Pay Later" || frm.doc.method == "Monthly Salary") {
         frm.doc.pay_later_amount = total;
         frm.doc.total_amount = 0;
-    } else {
+    } 
+    else if(frm.doc.method == "Monthly Salary - Pay"){
+        frm.doc.pay_later_amount = total * -1;
+        frm.doc.total_amount = total;
+    }
+    else {
         frm.doc.pay_later_amount = 0;
         frm.doc.total_amount = total;
     }

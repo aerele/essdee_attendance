@@ -7,8 +7,11 @@
  "field_order": [
   "start_date",
   "shift_type",
+  "calculating",
   "column_break_gxmr",
   "end_date",
+  "calculation_loader",
+  "status",
   "section_break_ymbs",
   "essdee_shift_calculation_extra_ot_details"
  ],
@@ -45,11 +48,30 @@
    "fieldtype": "Table",
    "label": "Essdee Shift Calculation Extra OT Details",
    "options": "Essdee Shift Calculation Extra OT"
+  },
+  {
+   "default": "0",
+   "fieldname": "calculating",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Calculating"
+  },
+  {
+   "fieldname": "calculation_loader",
+   "fieldtype": "HTML",
+   "label": "Calculation Loader"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Status",
+   "options": "\nSuccess\nFailed"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-09 14:31:43.324870",
+ "modified": "2025-01-20 15:35:55.763710",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Shift Calculation",
