@@ -178,9 +178,11 @@ def calc(doc_name):
 		doc.calculating = 0
 		doc.save()	
 	except Exception as e:
+		err_doc = frappe.log_error("Essdee Shift Calculation Failed")
 		doc = frappe.get_doc("Essdee Shift Calculation", doc_name)
 		doc.status = "Failed"							
 		doc.calculating = 0
+		doc.last_error = err_doc.name
 		doc.save()
 
 def update_shift(index, changed_indexes, alter_shifts, additional_shifts, x):

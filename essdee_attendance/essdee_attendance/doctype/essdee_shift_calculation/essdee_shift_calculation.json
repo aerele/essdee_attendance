@@ -8,6 +8,7 @@
   "start_date",
   "shift_type",
   "calculating",
+  "last_error",
   "column_break_gxmr",
   "end_date",
   "calculation_loader",
@@ -67,11 +68,17 @@
    "hidden": 1,
    "label": "Status",
    "options": "\nSuccess\nFailed"
+  },
+  {
+   "fieldname": "last_error",
+   "fieldtype": "Link",
+   "label": "Last Error",
+   "options": "Error Log"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-20 15:35:55.763710",
+ "modified": "2025-01-21 15:43:42.681693",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Shift Calculation",
