@@ -4,6 +4,7 @@
 import frappe
 from frappe.model.document import Document
 from frappe.utils import add_days, getdate, flt
+from frappe.query_builder.functions import Sum
 
 class EssdeeShiftCalculation(Document):
 	pass
@@ -24,17 +25,39 @@ def calc(doc_name):
 		employeeTab = frappe.qb.DocType("Employee")
 		attendanceTab = frappe.qb.DocType("Attendance")
 		employees = (
-			frappe.qb.from_(employeeTab).select(employeeTab.name).join(attendanceTab)
-				.on(attendanceTab.employee == employeeTab.name)
-				.where(
-					(employeeTab.default_shift == shift_type)
-					& (attendanceTab.attendance_date >= from_date)
-					& (attendanceTab.attendance_date <= to_date)
-				)
-				.groupby(employeeTab.name)
-				.run(as_list=True)
+			frappe.qb.from_(employeeTab).select(employeeTab.name)
+			.join(attendanceTab)
+			.on(attendanceTab.employee == employeeTab.name)
+			.where(
+				(employeeTab.default_shift == shift_type)
+				& (attendanceTab.attendance_date >= from_date)
+				& (attendanceTab.attendance_date <= to_date)
+				& (attendanceTab.status.notin(["Absent", "On Leave"]))
+			)
+			.groupby(employeeTab.name)
+			.having(Sum(attendanceTab.sd_no_of_shifts) > 0)
+			.run(as_list=True)
 		)
 		# employee_list = frappe.get_list("Employee", filters={"default_shift":shift_type}, pluck="name")
+		no_shift_rate = []
+		no_shift_wages = []
+		if not employees:
+			frappe.throw("No employess had attendance on this selected range")
+		for employee in employees:
+			employee = employee[0]
+			shift_rate, shift_wages = frappe.get_value("Employee",employee,["sd_shift_rate", "sd_shift_wages"])
+			if not shift_rate:
+				no_shift_rate.append(employee)
+			if not shift_wages:
+				no_shift_wages.append(employee)
+
+		if no_shift_rate:
+			x = ", ".join(no_shift_rate)
+			frappe.throw(f"These employees has Shift rate as Zero\n{x}")
+		if no_shift_wages:
+			x = ", ".join(no_shift_wages)
+			frappe.throw(f"These employees has Shift Wages as Zero\n{x}")
+
 		total_attendance_list = []
 		for employee in employees:
 			employee = employee[0]
@@ -59,7 +82,6 @@ def calc(doc_name):
 				if attendance_data.get(date):
 					original_shifts.append(attendance_data[date])
 					total_shifts += attendance_data[date]
-
 					if attendance_data[date] > 1:
 						alter_shifts.append(0)
 						complete_alter_shifts.append(1)
@@ -176,6 +198,8 @@ def calc(doc_name):
 		doc.status = "Success"	
 		doc.set("essdee_shift_calculation_extra_ot_details", total_attendance_list)	
 		doc.calculating = 0
+		doc.last_error = None
+		doc.error_reason = None
 		doc.save()	
 	except Exception as e:
 		err_doc = frappe.log_error("Essdee Shift Calculation Failed")
@@ -183,6 +207,7 @@ def calc(doc_name):
 		doc.status = "Failed"							
 		doc.calculating = 0
 		doc.last_error = err_doc.name
+		doc.error_reason = e
 		doc.save()
 
 def update_shift(index, changed_indexes, alter_shifts, additional_shifts, x):

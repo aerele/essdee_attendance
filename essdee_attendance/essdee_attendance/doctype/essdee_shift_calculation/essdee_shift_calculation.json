@@ -14,7 +14,8 @@
   "calculation_loader",
   "status",
   "section_break_ymbs",
-  "essdee_shift_calculation_extra_ot_details"
+  "essdee_shift_calculation_extra_ot_details",
+  "error_reason"
  ],
  "fields": [
   {
@@ -73,12 +74,19 @@
    "fieldname": "last_error",
    "fieldtype": "Link",
    "label": "Last Error",
-   "options": "Error Log"
+   "options": "Error Log",
+   "read_only": 1
+  },
+  {
+   "fieldname": "error_reason",
+   "fieldtype": "Small Text",
+   "label": "Error Reason",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-21 15:43:42.681693",
+ "modified": "2025-01-22 16:02:24.832420",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Shift Calculation",
