@@ -42,6 +42,10 @@ frappe.ui.form.on("Employee", {
 			frm.set_df_property("sd_shift_rate","hidden",true)
 			frm.set_df_property("sd_shift_wages","hidden", true)
 		}
+		else{
+			frm.set_df_property("sd_shift_rate","hidden",false)
+			frm.set_df_property("sd_shift_wages","hidden", false)
+		}
 	},
     sync_now: function(frm){
 		frappe.call({
