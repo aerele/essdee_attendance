@@ -63,7 +63,7 @@ def calc(doc_name):
 			employee = employee[0]
 			attendance_list = frappe.db.sql(
 				f"""
-					SELECT name FROM `tabAttendance` WHERE employee = '{employee}' AND attendance_date >= '{from_date}' AND attendance_date <= '{to_date}'
+					SELECT name FROM `tabAttendance` WHERE employee = '{employee}' AND attendance_date >= '{from_date}' AND attendance_date <= '{to_date}' AND docstatus = 1
 					ORDER BY attendance_date ASC
 				""", as_list= True
 			)
