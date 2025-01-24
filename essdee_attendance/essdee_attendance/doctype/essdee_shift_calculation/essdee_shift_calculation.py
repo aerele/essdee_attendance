@@ -149,7 +149,7 @@ def calc(doc_name):
 								index, x = update_index(index, alter_shifts, x)
 							if len(changed_indexes) >= greater_than_two:
 								break
-					logger.debug("Greater than two Completed")		
+					# logger.debug("Greater than two Completed")
 					if check:
 						break
 					x = True
@@ -165,7 +165,7 @@ def calc(doc_name):
 								index, x = update_index(index, alter_shifts, x)
 							if len(changed_indexes) >= equal_to_two:
 								break
-					logger.debug("Equal to two Completed")		
+					# logger.debug("Equal to two Completed")		
 					
 					if check:
 						break
@@ -182,7 +182,7 @@ def calc(doc_name):
 								index, x = update_index(index, alter_shifts, x)
 							if len(changed_indexes) >= less_than_two:
 								break
-					logger.debug("Less than two Completed")		
+					# logger.debug("Less than two Completed")		
 					if check:
 						break
 				for idx, attendance in enumerate(attendance_list):
