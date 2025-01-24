@@ -15,8 +15,8 @@ def calculate_wages(doc_name):
 	doc = frappe.get_doc("Essdee Shift Calculation", doc_name)
 	doc.calculating = 1
 	doc.save()
-	calc(doc_name)
-	# frappe.enqueue(calc, doc_name=doc_name, timeout=216000)
+	# calc(doc_name)
+	frappe.enqueue(calc, doc_name=doc_name, timeout=600)
 
 def calc(doc_name):
 	try:
