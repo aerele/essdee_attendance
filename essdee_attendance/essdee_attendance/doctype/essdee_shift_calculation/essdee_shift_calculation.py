@@ -5,6 +5,7 @@ import frappe
 from frappe.model.document import Document
 from frappe.utils import add_days, getdate, flt
 from frappe.query_builder.functions import Sum
+from essdee_attendance.essdee_attendance.hrms_logger import get_module_logger
 
 class EssdeeShiftCalculation(Document):
 	pass
@@ -18,6 +19,7 @@ def calculate_wages(doc_name):
 
 def calc(doc_name):
 	try:
+		logger = get_module_logger()
 		doc = frappe.get_doc("Essdee Shift Calculation", doc_name)
 		from_date = str(getdate(doc.start_date))
 		to_date = str(getdate(doc.end_date))
@@ -57,10 +59,11 @@ def calc(doc_name):
 		if no_shift_wages:
 			x = ", ".join(no_shift_wages)
 			frappe.throw(f"These employees has Shift Wages as Zero\n{x}")
-
+		logger.debug(f"{len(employees)} Employees")
 		total_attendance_list = []
 		for employee in employees:
 			employee = employee[0]
+			logger.debug(f"<---------{employee}--------->")
 			attendance_list = frappe.db.sql(
 				f"""
 					SELECT name FROM `tabAttendance` WHERE employee = '{employee}' AND attendance_date >= '{from_date}' AND attendance_date <= '{to_date}' AND docstatus = 1
@@ -96,6 +99,7 @@ def calc(doc_name):
 					alter_shifts.append(None)
 					complete_alter_shifts.append(None)
 				date = add_days(date, 1)	
+			logger.debug("Shifts Calculated")
 			shift_rate, shift_wages = frappe.get_value("Employee",employee,["sd_shift_rate", "sd_shift_wages"])
 			old_value = total_shifts * shift_rate
 			new_shifts = old_value/ shift_wages
@@ -126,8 +130,9 @@ def calc(doc_name):
 							break
 					else:
 						index, x = update_index(index, alter_shifts, x)
-					if len(changed_indexes) == length:
+					if len(changed_indexes) >= length:
 						break
+				logger.debug("Initial 0.25 Update Completed")
 
 				while additional_shifts > -0.25:
 					check = False
@@ -144,6 +149,7 @@ def calc(doc_name):
 								index, x = update_index(index, alter_shifts, x)
 							if len(changed_indexes) >= greater_than_two:
 								break
+					logger.debug("Greater than two Completed")		
 					if check:
 						break
 					x = True
@@ -159,6 +165,8 @@ def calc(doc_name):
 								index, x = update_index(index, alter_shifts, x)
 							if len(changed_indexes) >= equal_to_two:
 								break
+					logger.debug("Equal to two Completed")		
+					
 					if check:
 						break
 					x = True
@@ -174,6 +182,7 @@ def calc(doc_name):
 								index, x = update_index(index, alter_shifts, x)
 							if len(changed_indexes) >= less_than_two:
 								break
+					logger.debug("Less than two Completed")		
 					if check:
 						break
 				for idx, attendance in enumerate(attendance_list):
@@ -195,6 +204,7 @@ def calc(doc_name):
 								where name = '{attendance[0]}'
 							"""
 						)
+				logger.debug("Process Completed")		
 		doc.status = "Success"	
 		doc.set("essdee_shift_calculation_extra_ot_details", total_attendance_list)	
 		doc.calculating = 0
