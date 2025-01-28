@@ -54,6 +54,17 @@ app_include_css = "hrms.bundle.css"
 website_route_rules = [
 	{"from_route": "/sd_hrms/<path:app_path>", "to_route": "sd_hrms"},
 ]
+
+fixtures = [
+	{
+    "doctype": "Custom DocPerm",
+	"filters": {
+		"role": ["in",["HR User","HR Manager"]],
+        "parent" : ["=","Holiday List"]
+		}
+	}
+]
+
 # Generators
 # ----------
 
@@ -164,5 +175,6 @@ jinja = {
   		"essdee_attendance.essdee_attendance.doctype.employee_id_card.employee_id_card.generate_qr_code",
   		"essdee_attendance.essdee_attendance.doctype.employee_id_card.employee_id_card.generate_barcode",
   		"essdee_attendance.essdee_attendance.doctype.time_card_generator.time_card_generator.get_dict_object",  
+        "essdee_attendance.utils.employee.get_date",
  	],
 }
