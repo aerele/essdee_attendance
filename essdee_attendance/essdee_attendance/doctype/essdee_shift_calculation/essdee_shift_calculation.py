@@ -8,22 +8,32 @@ from frappe.query_builder.functions import Sum
 from essdee_attendance.essdee_attendance.hrms_logger import get_module_logger
 
 class EssdeeShiftCalculation(Document):
-	pass
+	def onload(self):
+		custom_field_list = frappe.get_list("Custom Field", filters={"dt":"Employee","fieldname":"sd_attendance_book_serial"},pluck="name")
+		try:
+			frappe.delete_doc("Custom Field",custom_field_list[0])
+			print("Custom Field Deleted")
+		except:    
+			print("Custom Field is Already Deleted")
 
 @frappe.whitelist()
 def calculate_wages(doc_name):
 	doc = frappe.get_doc("Essdee Shift Calculation", doc_name)
 	doc.calculating = 1
 	doc.save()
-	frappe.enqueue(calc, doc_name=doc_name, timeout=216000)
+	# calc(doc_name)
+	frappe.enqueue(calc, doc_name=doc_name, timeout=600)
 
 def calc(doc_name):
 	try:
 		logger = get_module_logger()
 		doc = frappe.get_doc("Essdee Shift Calculation", doc_name)
+		employee_list = frappe.get_list("Employee", filters=doc.filters_json, pluck="name")
+		# employee_list = doc.employee_list.split(",")
+		logger.debug(employee_list)
 		from_date = str(getdate(doc.start_date))
 		to_date = str(getdate(doc.end_date))
-		shift_type = doc.shift_type
+		# shift_type = doc.shift_type
 		employeeTab = frappe.qb.DocType("Employee")
 		attendanceTab = frappe.qb.DocType("Attendance")
 		employees = (
@@ -31,15 +41,17 @@ def calc(doc_name):
 			.join(attendanceTab)
 			.on(attendanceTab.employee == employeeTab.name)
 			.where(
-				(employeeTab.default_shift == shift_type)
-				& (attendanceTab.attendance_date >= from_date)
+				# (employeeTab.default_shift == shift_type)
+				(attendanceTab.attendance_date >= from_date)
 				& (attendanceTab.attendance_date <= to_date)
 				& (attendanceTab.status.notin(["Absent", "On Leave"]))
+				& (employeeTab.name.isin(employee_list))
 			)
 			.groupby(employeeTab.name)
 			.having(Sum(attendanceTab.sd_no_of_shifts) > 0)
 			.run(as_list=True)
 		)
+		logger.debug(employees)
 		# employee_list = frappe.get_list("Employee", filters={"default_shift":shift_type}, pluck="name")
 		no_shift_rate = []
 		no_shift_wages = []
@@ -99,7 +111,6 @@ def calc(doc_name):
 					alter_shifts.append(None)
 					complete_alter_shifts.append(None)
 				date = add_days(date, 1)	
-			logger.debug("Shifts Calculated")
 			shift_rate, shift_wages = frappe.get_value("Employee",employee,["sd_shift_rate", "sd_shift_wages"])
 			old_value = total_shifts * shift_rate
 			new_shifts = old_value/ shift_wages
@@ -110,7 +121,7 @@ def calc(doc_name):
 			for alt in alter_shifts:
 				if alt not in [None]:
 					length += 1
-			if alter_shifts:
+			if alter_shifts and additional_shifts > 0:
 				greater_than_two = 0
 				equal_to_two = 0
 				less_than_two = 0
@@ -132,7 +143,6 @@ def calc(doc_name):
 						index, x = update_index(index, alter_shifts, x)
 					if len(changed_indexes) >= length:
 						break
-				logger.debug("Initial 0.25 Update Completed")
 
 				while additional_shifts > -0.25:
 					check = False
@@ -149,7 +159,6 @@ def calc(doc_name):
 								index, x = update_index(index, alter_shifts, x)
 							if len(changed_indexes) >= greater_than_two:
 								break
-					# logger.debug("Greater than two Completed")
 					if check:
 						break
 					x = True
@@ -165,7 +174,6 @@ def calc(doc_name):
 								index, x = update_index(index, alter_shifts, x)
 							if len(changed_indexes) >= equal_to_two:
 								break
-					# logger.debug("Equal to two Completed")		
 					
 					if check:
 						break
@@ -182,7 +190,6 @@ def calc(doc_name):
 								index, x = update_index(index, alter_shifts, x)
 							if len(changed_indexes) >= less_than_two:
 								break
-					# logger.debug("Less than two Completed")		
 					if check:
 						break
 				for idx, attendance in enumerate(attendance_list):
@@ -204,7 +211,22 @@ def calc(doc_name):
 								where name = '{attendance[0]}'
 							"""
 						)
-				logger.debug("Process Completed")		
+				logger.debug("IF Part Process Completed")	
+			else:
+				for idx, attendance in enumerate(attendance_list):
+					if complete_alter_shifts[idx] not in [None]:
+						ot = complete_alter_shifts[idx] - 1
+						x = 0
+						if ot > 0:
+							x = ot
+						frappe.db.sql(
+							f"""
+								Update `tabAttendance` set sd_general_shifts = '{complete_alter_shifts[idx]}', sd_ot_shifts = '{x}'
+								where name = '{attendance[0]}'
+							"""
+						)
+				logger.debug("ELSE Part Process Completed")	
+				
 		doc.status = "Success"	
 		doc.set("essdee_shift_calculation_extra_ot_details", total_attendance_list)	
 		doc.calculating = 0
@@ -216,6 +238,7 @@ def calc(doc_name):
 		doc = frappe.get_doc("Essdee Shift Calculation", doc_name)
 		doc.status = "Failed"							
 		doc.calculating = 0
+		doc.essdee_shift_calculation_extra_ot_details = []
 		doc.last_error = err_doc.name
 		doc.error_reason = e
 		doc.save()
