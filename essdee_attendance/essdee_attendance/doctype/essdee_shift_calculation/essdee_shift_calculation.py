@@ -8,7 +8,13 @@ from frappe.query_builder.functions import Sum
 from essdee_attendance.essdee_attendance.hrms_logger import get_module_logger
 
 class EssdeeShiftCalculation(Document):
-	pass
+	def onload(self):
+		custom_field_list = frappe.get_list("Custom Field", filters={"dt":"Employee","fieldname":"sd_attendance_book_serial"},pluck="name")
+		try:
+			frappe.delete_doc("Custom Field",custom_field_list[0])
+			print("Custom Field Deleted")
+		except:    
+			print("Custom Field is Already Deleted")
 
 @frappe.whitelist()
 def calculate_wages(doc_name):
@@ -22,9 +28,12 @@ def calc(doc_name):
 	try:
 		logger = get_module_logger()
 		doc = frappe.get_doc("Essdee Shift Calculation", doc_name)
+		employee_list = frappe.get_list("Employee", filters=doc.filters_json, pluck="name")
+		# employee_list = doc.employee_list.split(",")
+		logger.debug(employee_list)
 		from_date = str(getdate(doc.start_date))
 		to_date = str(getdate(doc.end_date))
-		shift_type = doc.shift_type
+		# shift_type = doc.shift_type
 		employeeTab = frappe.qb.DocType("Employee")
 		attendanceTab = frappe.qb.DocType("Attendance")
 		employees = (
@@ -32,15 +41,17 @@ def calc(doc_name):
 			.join(attendanceTab)
 			.on(attendanceTab.employee == employeeTab.name)
 			.where(
-				(employeeTab.default_shift == shift_type)
-				& (attendanceTab.attendance_date >= from_date)
+				# (employeeTab.default_shift == shift_type)
+				(attendanceTab.attendance_date >= from_date)
 				& (attendanceTab.attendance_date <= to_date)
 				& (attendanceTab.status.notin(["Absent", "On Leave"]))
+				& (employeeTab.name.isin(employee_list))
 			)
 			.groupby(employeeTab.name)
 			.having(Sum(attendanceTab.sd_no_of_shifts) > 0)
 			.run(as_list=True)
 		)
+		logger.debug(employees)
 		# employee_list = frappe.get_list("Employee", filters={"default_shift":shift_type}, pluck="name")
 		no_shift_rate = []
 		no_shift_wages = []
@@ -227,6 +238,7 @@ def calc(doc_name):
 		doc = frappe.get_doc("Essdee Shift Calculation", doc_name)
 		doc.status = "Failed"							
 		doc.calculating = 0
+		doc.essdee_shift_calculation_extra_ot_details = []
 		doc.last_error = err_doc.name
 		doc.error_reason = e
 		doc.save()

@@ -31,6 +31,7 @@ def get_columns(filters):
 			{"label": _("Shift"), "fieldname": "shift", "fieldtype": "Data", "width": 65},
 			{"label": _("No. of Shifts"), "fieldname": "shift_count", "fieldtype": "Float", "width": 120},
 			{"label": _("Rate"), "fieldname": "rate", "fieldtype": "Float", "width": 120},
+			{"label": _("Minimum Wages"), "fieldname": "minimum_wages", "fieldtype": "Float", "width": 120},
 			{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Float", "width": 120},
 			{"label": _("General Shift"), "fieldname": "general_shifts", "fieldtype": "Float", "width": 120},
 			{"label": _("OT Shift"), "fieldname": "ot_shifts", "fieldtype": "Float", "width": 120},
@@ -113,12 +114,12 @@ def get_pf_detail(data, filters, employee, attendance_records):
 			general_shift += (value.get('general_shifts') or 0)
 			ot_shift += (value.get('ot_shifts') or 0)
 		total_shift = general_shift + ot_shift
-		hra_rate = employee.sd_shift_wages - employee.sd_shift_rate
+		hra_rate = employee.sd_shift_wages - employee.sd_minimum_wages if employee.sd_minimum_wages else 0
 		pf_salary = employee.sd_shift_rate * general_shift
 		hra = total_shift * hra_rate
 		esi_salary = pf_salary + hra
-		pf = pf_salary * 0.12
-		esi = esi_salary * 0.75
+		pf = pf_salary * 0.12 if employee.sd_uan else 0
+		esi = esi_salary * 0.75 if employee.sd_uan else 0
 		esi = esi/ 100
 		old_total = no_of_shifts * (employee.sd_shift_rate or 0)
 		new_total = total_shift * (employee.sd_shift_wages or 0)
@@ -129,6 +130,7 @@ def get_pf_detail(data, filters, employee, attendance_records):
 		data.update({
 			"shift_count":no_of_shifts,
 			"rate":employee.sd_shift_rate,
+			"minimum_wages":employee.sd_minimum_wages,
 			"amount":old_total,
 			'general_shifts': general_shift,
 			'ot_shifts':ot_shift,
@@ -179,9 +181,11 @@ def get_employees(filters):
 		Employee.employee_name, 
 		Employee.sd_shift_rate, 
 		Employee.sd_shift_wages,
+		Employee.sd_minimum_wages,
 		Employee.department,
 		Employee.designation,
 		Employee.employment_type,
+		Employee.sd_uan,
 	)
 	query = apply_employee_filters(query, filters, Employee)
 	# query = query.orderby(Employee.sd_attendance_book_serial.isnull())
