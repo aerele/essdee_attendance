@@ -4,7 +4,7 @@
 
 let cur_cell_height = 1;
 function get_cell_height(rows) {
-	let cellHeights = [33, 33, 50, 66, 83]
+	let cellHeights = [33, 33, 50, 75, 90]
 	if (rows < 0 ) {
 		return 33;
 	} else if (rows >= 0 && rows < cellHeights.length) {
@@ -13,7 +13,6 @@ function get_cell_height(rows) {
 		return 83;
 	}
 }
-
 
 function set_cell_height() {
 	if (!frappe.query_report.datatable) return;
@@ -26,9 +25,11 @@ function set_cell_height() {
 }
 
 function get_rows() {
-	if (frappe.query_report.get_filter_value('summarized_view')) return 1;
+	if (frappe.query_report.get_filter_value('pf_view')) {
+		return 1;
+	}
 	let rows = 0;
-	let x = ['show_in_out', 'show_time_logs', 'show_hours', 'show_shift'];
+	let x = ['show_in_out', 'show_time_logs', 'show_hours', 'show_shift',"show_general_ot_shift"];
 	for (let i = 0; i < x.length; i++) {
 		if (frappe.query_report.get_filter_value(x[i])) {
 			rows += 1;
@@ -36,6 +37,7 @@ function get_rows() {
 	}
 	return rows || 1;
 }
+
 
 frappe.query_reports["Weekly Employee Report"] = {
 	"filters": [
@@ -100,8 +102,44 @@ frappe.query_reports["Weekly Employee Report"] = {
 			"reqd": 1
 		},
 		{
-			"fieldname":"summarized_view",
-			"label": __("Summarized View"),
+			"fieldname":"select",
+			"label":"Select",
+			"fieldtype":"Select",
+			"options":"Day Wise Report\nSummarized Report",
+			"default":"Day Wise Report",
+			on_change: ()=> {
+				if(frappe.query_report.get_filter_value("select") == "Day Wise Report"){
+					frappe.query_report.set_filter_value("pf_view", 0)
+					frappe.query_report.filters[9].toggle(0)
+					frappe.query_report.filters[10].toggle(1)
+					frappe.query_report.filters[11].toggle(1)
+					frappe.query_report.filters[12].toggle(1)
+					frappe.query_report.filters[13].toggle(1)
+					frappe.query_report.filters[14].toggle(1)
+				}
+				else if(frappe.query_report.get_filter_value("select") == "Summarized Report"){
+					frappe.query_report.set_filter_value("pf_view", 0)
+					frappe.query_report.filters[9].toggle(1)
+					frappe.query_report.filters[10].toggle(0)
+					frappe.query_report.filters[11].toggle(0)
+					frappe.query_report.filters[12].toggle(0)
+					frappe.query_report.filters[13].toggle(0)
+					frappe.query_report.filters[14].toggle(0)
+				}
+				else{
+					frappe.query_report.filters[9].toggle(0)
+					frappe.query_report.filters[10].toggle(0)
+					frappe.query_report.filters[11].toggle(0)
+					frappe.query_report.filters[12].toggle(0)
+					frappe.query_report.filters[13].toggle(0)
+					frappe.query_report.filters[14].toggle(0)
+				}
+				frappe.query_report.refresh();
+			}
+		},
+		{
+			"fieldname":"pf_view",
+			"label": __("PF View"),
 			"fieldtype": "Check",
 			"default": 0,
 			on_change: () => {
@@ -150,6 +188,16 @@ frappe.query_reports["Weekly Employee Report"] = {
 			}
 		},
 		{
+			"fieldname":"show_general_ot_shift",
+			"label": __("Show General OT Shift"),
+			"fieldtype": "Check",
+			"default": 1,
+			on_change: () => {
+				set_cell_height();
+				frappe.query_report.refresh();
+			}
+		},
+		{
 			"fieldname":"status",
 			"label": __("Employment Status"),
 			"fieldtype": "Select",
@@ -157,7 +205,6 @@ frappe.query_reports["Weekly Employee Report"] = {
 			"default": "Active",
 		},
 	],
-
 	get_datatable_options(options) {
 		let rows = get_rows();
 		return Object.assign(options, {

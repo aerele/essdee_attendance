@@ -51,9 +51,8 @@ def get_columns():
 		},
 		{
 			'fieldname':'transaction_type',
-			'fieldtype': 'Link',
+			'fieldtype': 'Data',
 			'label': 'Transaction Type',
-			"options": "DocType",
 			'width':200
 		},
 		{

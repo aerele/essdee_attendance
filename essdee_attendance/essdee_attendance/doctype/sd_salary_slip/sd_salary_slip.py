@@ -17,6 +17,7 @@ class SDSalarySlip(Document):
 		self.naming_series = f'SS-{year}{current_week:02}-'
 
 	def validate(self):
+		
 		self.posting_datetime = get_combine_datetime(self.date, self.posting_time)
 		self.calculate_total()
 		self.validate_employee()
@@ -27,6 +28,8 @@ class SDSalarySlip(Document):
 		if self.method in ['Pay Later', 'Monthly Salary']:
 			self.pay_later_amount = total
 			self.total_amount = 0
+		elif self.method == "Monthly Salary - Pay":
+			self.pay_later_amount = -1 * total	
 		else:
 			self.pay_later_amount = 0
 			self.total_amount = total
@@ -66,6 +69,18 @@ def get_ledger_entry(doc):
 			"docname" : doc.name
 		}
 		entries.append(entry)	
+	if doc.method == "Monthly Salary - Pay":
+		entry = {
+			"employee" : doc.employee,
+			"posting_date" : doc.date,
+			"posting_time" : doc.posting_time,
+			"posting_datetime": doc.posting_datetime,
+			"amount": doc.pay_later_amount,
+			"type": "Monthly Salary",
+			"doctype" : "SD Salary Slip",
+			"docname" : doc.name
+		}
+		entries.append(entry)
 
 	if doc.advance:
 		entry = {

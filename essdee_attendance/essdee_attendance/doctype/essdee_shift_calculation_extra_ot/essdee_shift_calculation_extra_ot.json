@@ -1,0 +1,74 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-01-08 15:15:37.081563",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "attendance",
+  "employee",
+  "no_of_shifts",
+  "general_shifts",
+  "ot_shifts",
+  "total_shifts"
+ ],
+ "fields": [
+  {
+   "fieldname": "attendance",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Attendance",
+   "options": "Attendance",
+   "read_only": 1
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Employee",
+   "options": "Employee",
+   "read_only": 1
+  },
+  {
+   "fieldname": "no_of_shifts",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "No of Shifts",
+   "read_only": 1
+  },
+  {
+   "fieldname": "general_shifts",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "General Shifts",
+   "read_only": 1
+  },
+  {
+   "fieldname": "ot_shifts",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "OT Shifts",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_shifts",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Total Shifts",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-01-08 17:00:18.470974",
+ "modified_by": "Administrator",
+ "module": "Essdee Attendance",
+ "name": "Essdee Shift Calculation Extra OT",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

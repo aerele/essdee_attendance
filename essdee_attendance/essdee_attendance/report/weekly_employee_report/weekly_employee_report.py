@@ -19,30 +19,43 @@ def execute(filters=None):
 	
 def get_columns(filters):
 	columns = [
-		{
-			"label": _("Serial No."),
-			"fieldname": "serial",
-			"fieldtype": "data",
-			"width": 115,
-		},
-		{
-			"label": _("Employee"),
-			"fieldname": "employee",
-			"fieldtype": "Link",
-			"options": "Employee",
-			"width": 115,
-		},
+		# {"label": _("Serial No."),"fieldname": "serial","fieldtype": "data","width": 115},
+		{"label": _("Employee"),"fieldname": "employee","fieldtype": "Link","options": "Employee","width": 115},
 		{"label": _("Employee Name"), "fieldname": "employee_name", "fieldtype": "Data", "width": 120},
+		{"label": _("Department"), "fieldname":"department","fieldtype":"Link","options":"Department","width": 120},
+		{"label": _("Designation"), "fieldname":"designation","fieldtype":"Link","options":"Designation","width": 120},
+		{"label": _("Employment Type"), "fieldname":"employment_type","fieldtype":"Link","options":"Employment Type","width": 120},
 	]
-	if not filters.summarized_view:
-		columns.extend(get_columns_for_days(filters))
-	else:
+	if filters.pf_view:
+		columns.extend([
+			{"label": _("Shift"), "fieldname": "shift", "fieldtype": "Data", "width": 65},
+			{"label": _("No. of Shifts"), "fieldname": "shift_count", "fieldtype": "Float", "width": 120},
+			{"label": _("Rate"), "fieldname": "rate", "fieldtype": "Float", "width": 120},
+			{"label": _("Minimum Wages"), "fieldname": "minimum_wages", "fieldtype": "Float", "width": 120},
+			{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Float", "width": 120},
+			{"label": _("General Shift"), "fieldname": "general_shifts", "fieldtype": "Float", "width": 120},
+			{"label": _("OT Shift"), "fieldname": "ot_shifts", "fieldtype": "Float", "width": 120},
+			{"label": _("PF Rate"), "fieldname": "pf_rate", "fieldtype": "Float", "width": 120},
+			{"label": _("PF Amount"), "fieldname": "pf_amount", "fieldtype": "Float", "width": 120},
+			{"label":_("HRA Rate"),"fieldname":"hra_rate","fieldtype":"Currency","width":100},
+			{"label":_("PF Salary"),"fieldname":"pf_salary","fieldtype":"Currency","width":100},
+			{"label":_("HRA"),"fieldname":"hra","fieldtype":"Currency","width":100},
+			{"label":_("ESI Salary"),"fieldname":"esi_salary","fieldtype":"Currency","width":100},
+			{"label":_("PF"),"fieldname":"pf","fieldtype":"Currency","width":100},
+			{"label":_("ESI"),"fieldname":"esi","fieldtype":"Currency","width":100},
+			{"label":_("Other Deductions"),"fieldname":"other_deductions","fieldtype":"Currency","width":100},
+			{"label":_("Deductions"),"fieldname":"deductions","fieldtype":"Currency","width":100},
+			{"label":_("Net Salary"),"fieldname":"net_salary","fieldtype":"Currency","width":100},
+		])
+	elif filters.select == "Summarized Report":
 		columns.extend([
 			{"label": _("Shift"), "fieldname": "shift", "fieldtype": "Data", "width": 65},
 			{"label": _("No. of Shifts"), "fieldname": "shift_count", "fieldtype": "Float", "width": 120},
 			{"label": _("Rate"), "fieldname": "rate", "fieldtype": "Float", "width": 120},
 			{"label": _("Amount"), "fieldname": "amount", "fieldtype": "Float", "width": 120},
 		])
+	else:
+		columns.extend(get_columns_for_days(filters))	
 	return columns
 
 def get_columns_for_days(filters):
@@ -64,14 +77,19 @@ def get_data(filters):
 	attendance_records = get_checkin_map(attendance_records, filters)
 	for employee in employees:
 		d = {
-			'serial': employee.serial,
+			# 'serial': employee.serial,
 			'employee': employee.name,
-			'employee_name': employee.employee_name
+			'employee_name': employee.employee_name,
+			"department":employee.department,
+			"designation":employee.designation,
+			"employment_type":employee.employment_type,
 		}
-		if not filters.summarized_view:
-			get_employee_detail(d, filters, employee, attendance_records.get(employee.name))
-		else:
+		if filters.pf_view:
+			get_pf_detail(d, filters, employee, attendance_records.get(employee.name))
+		elif filters.select == "Summarized Report":
 			get_summarized_detail(d, filters, employee, attendance_records.get(employee.name))
+		elif filters.select == "Day Wise Report":
+			get_employee_detail(d, filters, employee, attendance_records.get(employee.name))	
 		data.append(d)
 	return data
 
@@ -84,6 +102,49 @@ def get_summarized_detail(data, filters, employee, attendance_records):
 			'shift_count': total_shift,
 			'rate': employee.sd_shift_rate,
 			'amount': total_shift * (employee.sd_shift_rate or 0)
+		})
+
+def get_pf_detail(data, filters, employee, attendance_records):
+	if attendance_records:
+		general_shift = 0
+		ot_shift = 0
+		no_of_shifts = 0
+		for date, value in attendance_records.items():
+			no_of_shifts += (value.get('sd_no_of_shifts') or 0)
+			general_shift += (value.get('general_shifts') or 0)
+			ot_shift += (value.get('ot_shifts') or 0)
+		total_shift = general_shift + ot_shift
+		hra_rate = employee.sd_shift_wages - employee.sd_minimum_wages if employee.sd_minimum_wages else 0
+		pf_salary = employee.sd_shift_rate * general_shift
+		hra = total_shift * hra_rate
+		esi_salary = pf_salary + hra
+		pf = pf_salary * 0.12 if employee.sd_uan else 0
+		esi = esi_salary * 0.75 if employee.sd_uan else 0
+		esi = esi/ 100
+		old_total = no_of_shifts * (employee.sd_shift_rate or 0)
+		new_total = total_shift * (employee.sd_shift_wages or 0)
+		other_deductions = new_total - old_total
+		deductions = pf + esi + other_deductions
+		net_salary = new_total - deductions
+
+		data.update({
+			"shift_count":no_of_shifts,
+			"rate":employee.sd_shift_rate,
+			"minimum_wages":employee.sd_minimum_wages,
+			"amount":old_total,
+			'general_shifts': general_shift,
+			'ot_shifts':ot_shift,
+			"pf_rate": employee.sd_shift_wages,
+			'pf_amount': new_total,
+			"hra_rate":hra_rate,
+			"pf_salary":pf_salary,
+			"hra":hra,
+			"esi_salary":esi_salary,
+			"pf":pf,
+			"esi":esi,
+			"other_deductions":other_deductions,
+			"deductions":deductions,
+			"net_salary":net_salary
 		})
 
 def get_employee_detail(data, filters, employee, attendance_records):
@@ -104,15 +165,31 @@ def get_employee_detail(data, filters, employee, attendance_records):
 				detail.append("{} - {} hrs".format(value.get('status') or '', value.get('working_hours') or 0))
 			if filters.show_shift:
 				detail.append(str(value.get('sd_no_of_shifts') or 0))
+			if filters.show_general_ot_shift:
+				str1 = str(value.get('general_shifts') or 0) 
+				str2 = str(value.get('ot_shifts') or 0)
+				str3 = str1 + "-" + str2
+				detail.append(str3)
 			data[date] = "<br>".join(detail)
 
 def get_employees(filters):
 	Employee = frappe.qb.DocType("Employee")
 	
-	query = frappe.qb.from_(Employee).select(Employee.sd_attendance_book_serial.as_("serial"),Employee.name, Employee.employee_name, Employee.sd_shift_rate)
+	query = frappe.qb.from_(Employee).select(
+		# Employee.sd_attendance_book_serial.as_("serial"),
+		Employee.name, 
+		Employee.employee_name, 
+		Employee.sd_shift_rate, 
+		Employee.sd_shift_wages,
+		Employee.sd_minimum_wages,
+		Employee.department,
+		Employee.designation,
+		Employee.employment_type,
+		Employee.sd_uan,
+	)
 	query = apply_employee_filters(query, filters, Employee)
-	query = query.orderby(Employee.sd_attendance_book_serial.isnull())
-	query = query.orderby(Employee.sd_attendance_book_serial)
+	# query = query.orderby(Employee.sd_attendance_book_serial.isnull())
+	# query = query.orderby(Employee.sd_attendance_book_serial)
 	return query.run(as_dict = 1)
 
 def get_attendance_map(filters):
@@ -129,6 +206,8 @@ def get_attendance_map(filters):
 			'in_time': d.in_time,
 			'out_time': d.out_time,
 			'working_hours': d.working_hours,
+			'general_shifts': d.sd_general_shifts,
+			'ot_shifts':d.sd_ot_shifts,
 		}
 
 	return attendance_map
@@ -148,6 +227,8 @@ def get_attendance_records(filters):
 			Attendance.in_time,
 			Attendance.out_time,
 			Attendance.working_hours,
+			Attendance.sd_general_shifts,
+			Attendance.sd_ot_shifts,
 		).where(
 			(Attendance.docstatus == 1)
 			& (Attendance.company == filters.company)

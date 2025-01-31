@@ -15,6 +15,20 @@ overview_tab_fields = [
         "precision": 2
     },
     {
+        "fieldname": "sd_shift_wages",
+        "fieldtype": "Currency",
+        "label": "Shift Wages",
+        "insert_after": "sd_shift_rate",
+        "precision": 2
+    },
+    {
+        "fieldname": "sd_minimum_wages",
+        "fieldtype": "Currency",
+        "label": "Minimum Wages",
+        "insert_after": "sd_shift_wages",
+        "precision": 2
+    },
+    {
         'fieldname':'sd_nature_of_employee',
         'fieldtype':'Select',
         'options':'Permanent\nTemporary\nContract',
@@ -23,18 +37,12 @@ overview_tab_fields = [
         'default':'Permanent',
     },
     {
-        "fieldname": "sd_attendance_book_serial",
-        "fieldtype": "Data",
-        "label": "Attendance Book Serial",
-        "insert_after": "employment_type",
-        "unique": 1,
-    },
-    {
         "fieldname": "sd_salary_batch",
         "fieldtype": "Link",
         "label": "Salary Batch",
         "options": "SD Salary Batch",
-        "insert_after": "sd_attendance_book_serial",
+        "insert_after": "employment_type",
+        "reqd":True
     },
     {
         'fieldname':'essdee_employee_operations',

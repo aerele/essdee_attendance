@@ -1,0 +1,168 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-01-07 15:19:13.117644",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "filters_html",
+  "apply_filter",
+  "filters_json",
+  "section_break_niru",
+  "start_date",
+  "shift_type",
+  "frozen",
+  "calculating",
+  "last_error",
+  "column_break_gxmr",
+  "end_date",
+  "employee_list",
+  "calculation_loader",
+  "status",
+  "section_break_ymbs",
+  "essdee_shift_calculation_extra_ot_details",
+  "error_reason"
+ ],
+ "fields": [
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Start Date",
+   "read_only_depends_on": "eval: doc.frozen"
+  },
+  {
+   "fieldname": "column_break_gxmr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "End Date",
+   "read_only_depends_on": "eval: doc.frozen"
+  },
+  {
+   "fieldname": "shift_type",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Shift Type",
+   "options": "Shift Type",
+   "read_only_depends_on": "eval: doc.frozen"
+  },
+  {
+   "fieldname": "section_break_ymbs",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "essdee_shift_calculation_extra_ot_details",
+   "fieldtype": "Table",
+   "label": "Essdee Shift Calculation Extra OT Details",
+   "options": "Essdee Shift Calculation Extra OT",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "calculating",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Calculating"
+  },
+  {
+   "fieldname": "calculation_loader",
+   "fieldtype": "HTML",
+   "label": "Calculation Loader"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Status",
+   "options": "\nSuccess\nFailed"
+  },
+  {
+   "fieldname": "last_error",
+   "fieldtype": "Link",
+   "label": "Last Error",
+   "options": "Error Log",
+   "read_only": 1
+  },
+  {
+   "fieldname": "error_reason",
+   "fieldtype": "Small Text",
+   "label": "Error Reason",
+   "read_only": 1
+  },
+  {
+   "fieldname": "employee_list",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Employee List(Comma Separate)",
+   "read_only_depends_on": "eval: doc.frozen"
+  },
+  {
+   "default": "0",
+   "fieldname": "frozen",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Frozen",
+   "read_only": 1
+  },
+  {
+   "fieldname": "filters_html",
+   "fieldtype": "HTML",
+   "label": "Filters HTML"
+  },
+  {
+   "fieldname": "section_break_niru",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "apply_filter",
+   "fieldtype": "Button",
+   "label": "Apply Filter"
+  },
+  {
+   "fieldname": "filters_json",
+   "fieldtype": "JSON",
+   "hidden": 1,
+   "label": "Filters JSON"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-01-30 14:34:39.068988",
+ "modified_by": "Administrator",
+ "module": "Essdee Attendance",
+ "name": "Essdee Shift Calculation",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
