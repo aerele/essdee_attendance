@@ -23,11 +23,9 @@ def calc(doc_name):
 		logger = get_module_logger()
 		doc = frappe.get_doc("Essdee Shift Calculation", doc_name)
 		employee_list = frappe.get_list("Employee", filters=doc.filters_json, pluck="name")
-		# employee_list = doc.employee_list.split(",")
 		logger.debug(employee_list)
 		from_date = str(getdate(doc.start_date))
 		to_date = str(getdate(doc.end_date))
-		# shift_type = doc.shift_type
 		employeeTab = frappe.qb.DocType("Employee")
 		attendanceTab = frappe.qb.DocType("Attendance")
 		employees = (
@@ -69,6 +67,7 @@ def calc(doc_name):
 		total_attendance_list = []
 		for employee in employees:
 			employee = employee[0]
+			shift_type = frappe.get_value("Employee",employee,"default_shift")
 			logger.debug(f"<---------{employee}--------->")
 			attendance_list = frappe.db.sql(
 				f"""
@@ -76,11 +75,37 @@ def calc(doc_name):
 					ORDER BY attendance_date ASC
 				""", as_list= True
 			)
+			holiday = frappe.get_value("Shift Type", shift_type, "holiday_list")
+			holiday_doc = frappe.get_doc("Holiday List", holiday)
+			holiday_data = {}
+			for day in holiday_doc.holidays:
+				d = getdate(day.holiday_date)
+				holiday_data[str(d)] = day.weekly_off
+
+			extra_shifts = 0
 			attendance_data = {}
+			dates = []
 			for attendance in attendance_list:
 				shifts, attendance_date = frappe.get_value("Attendance", attendance,["sd_no_of_shifts","attendance_date"])
 				d = getdate(attendance_date)
-				attendance_data[str(d)] = shifts
+				if holiday_data.get(str(d)):
+					att_doc = frappe.get_doc("Attendance", attendance)
+					att_doc.sd_general_shifts = 0
+					att_doc.sd_ot_shifts = 0
+					att_doc.save()
+					extra_shifts += shifts
+				elif str(d) in holiday_data:
+					if shifts > 1:
+						extra_shifts = extra_shifts + shifts - 1
+						att_doc = frappe.get_doc("Attendance", attendance)
+						att_doc.sd_general_shifts = 1
+						att_doc.sd_ot_shifts = 0
+						att_doc.save()
+				else:
+					dates.append(attendance)
+					attendance_data[str(d)] = shifts
+			
+			attendance_list = dates		
 			date = from_date
 			original_shifts = []
 			complete_alter_shifts = []
@@ -105,7 +130,9 @@ def calc(doc_name):
 					alter_shifts.append(None)
 					complete_alter_shifts.append(None)
 				date = add_days(date, 1)	
-			shift_rate, shift_wages = frappe.get_value("Employee",employee,["sd_shift_rate", "sd_shift_wages"])
+		
+			total_shifts = total_shifts + extra_shifts
+			shift_rate, shift_wages, minimum_wages = frappe.get_value("Employee",employee,["sd_shift_rate", "sd_shift_wages","sd_minimum_wages"])
 			old_value = total_shifts * shift_rate
 			new_shifts = old_value/ shift_wages
 			additional_shifts = new_shifts - total_alter_shifts
@@ -201,7 +228,8 @@ def calc(doc_name):
 					if complete_alter_shifts[idx] not in [None]:
 						frappe.db.sql(
 							f"""
-								Update `tabAttendance` set sd_general_shifts = '{complete_alter_shifts[idx]}', sd_ot_shifts = '{x}'
+								Update `tabAttendance` set sd_general_shifts = '{complete_alter_shifts[idx]}', sd_ot_shifts = '{x}',
+								sd_shift_rate = {shift_rate}, sd_shift_wages = {shift_wages}, sd_minimum_wages = {minimum_wages}
 								where name = '{attendance[0]}'
 							"""
 						)
@@ -215,7 +243,8 @@ def calc(doc_name):
 							x = ot
 						frappe.db.sql(
 							f"""
-								Update `tabAttendance` set sd_general_shifts = '{complete_alter_shifts[idx]}', sd_ot_shifts = '{x}'
+								Update `tabAttendance` set sd_general_shifts = '{complete_alter_shifts[idx]}', sd_ot_shifts = '{x}',
+								sd_shift_rate = {shift_rate}, sd_shift_wages = {shift_wages}, sd_minimum_wages = {minimum_wages}
 								where name = '{attendance[0]}'
 							"""
 						)
