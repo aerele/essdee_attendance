@@ -4,18 +4,11 @@
 frappe.query_reports["SD Weekly Wages Summary"] = {
 	"filters": [
 		{
-			"fieldname": "from_date",
-			"label": __("From Date"),
+			"fieldname": "report_date",
+			"label": __("Report Date"),
 			"fieldtype": "Date",
 			"reqd": 1,
-			"default": frappe.datetime.week_start(),
-		},
-		{
-			"fieldname": "to_date",
-			"label": __("To Date"),
-			"fieldtype": "Date",
-			"reqd": 1,
-			"default": frappe.datetime.week_end(),
+			"default": frappe.datetime.now_date(),
 		},
 		{
 			"fieldname": "employee",
@@ -59,5 +52,18 @@ frappe.query_reports["SD Weekly Wages Summary"] = {
 			"fieldtype": "Link",
 			"options": "SD Salary Batch",
 		},
+		{
+			"fieldname":"method",
+			"label":__("Method"),
+			"fieldtype":"Select",
+			"options":"\nRegular\nPay Later\nMonthly Salary\nMonthly Salary - Pay\nStaff Salary",
+			"default":"Regular"
+		},
+		{
+			"fieldname":"hide_zero_amount",
+			"label":__("Hide Zero Amount"),
+			"fieldtype":"Check",
+			"default":1,
+		}
 	]
 };

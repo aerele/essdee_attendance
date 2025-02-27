@@ -94,7 +94,7 @@ def get_columns():
 			"width": 120,
 		},
 		{
-			"label": _("Salary Slip Method"),
+			"label": _("Method"),
 			"fieldname": "salary_slip_method",
 			"fieldtype": "Data",
 			"width": 120,
@@ -184,7 +184,7 @@ def get_columns():
 			"width": 70
 		},
 		{
-			"label":_("No of Days Worked"),
+			"label":_("Worked Days"),
 			"fieldname":"no_of_days_worked",
 			"fieldtype":"Int",
 			"width":100,
@@ -272,7 +272,7 @@ def get_previous_canteen_amount(filters):
 			q1 += " and e.branch = %(branch)s"
 			values['branch'] = filters.get('branch')
 		if filters.get('salary_mode'):
-			q1 += " and e.salary_mode = %(salary_mode)s"
+			q1 += " and s.salary_mode = %(salary_mode)s"
 			values['salary_mode'] = filters.get('salary_mode')
 	results = frappe.db.sql(q1+q2, values=values, as_dict=1)
 	d = {}
@@ -308,6 +308,8 @@ def get_salary_slips(employees=None, filters=None):
 			q = q.where(SalarySlip.date >= filters.get('from_date'))
 		if filters.get('to_date'):
 			q = q.where(SalarySlip.date <= filters.get('to_date'))
+		if filters.get("salary_mode"):
+			q = q.where(SalarySlip.salary_mode == filters.get("salary_mode"))	
 	if employees:
 		q = q.where(SalarySlip.employee.isin(employees))
 	

@@ -7,6 +7,7 @@
  "engine": "InnoDB",
  "field_order": [
   "employee",
+  "salary_mode",
   "type",
   "amount"
  ],
@@ -33,12 +34,19 @@
    "label": "Employee",
    "options": "Employee",
    "reqd": 1
+  },
+  {
+   "fieldname": "salary_mode",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Salary Mode",
+   "options": "\nCash\nBank\nCheque"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-09-09 17:13:17.006630",
+ "modified": "2025-02-27 11:03:37.196356",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Advance Entry Detail",

@@ -13,12 +13,6 @@ def execute(filters=None):
 
 def get_columns():
 	return [
-		# {
-		# 	"label": _("Serial No."),
-		# 	"fieldname": "serial",
-		# 	"fieldtype": "data",
-		# 	"width": 115,
-		# },
 		{
 			"label": _("Salary Batch"),
 			"fieldname": "salary_batch",
@@ -76,6 +70,13 @@ def get_columns():
 			"width": 120,
 		},
 		{
+			"fieldname":"method",
+			"label":_("Method"),
+			"fieldtype":"Select",
+			"options":"\nRegular\nPay Later\nMonthly Salary\nMonthly Salary - Pay\nStaff Salary",
+			"default":"Regular"
+		},
+		{
 			"label": _("Salary Slip"),
 			"fieldname": "salary_slip_name",
 			"fieldtype": "Link",
@@ -98,7 +99,6 @@ def get_data(filters):
 		frappe.qb.from_(SalarySlip)
 		.left_join(Employee).on(Employee.name == SalarySlip.employee)
 		.select(
-			# Employee.sd_attendance_book_serial.as_("serial"),
 			Employee.sd_salary_batch.as_("salary_batch"),
 			Employee.name.as_("employee"),
 			Employee.employee_name,
@@ -106,18 +106,17 @@ def get_data(filters):
 			Employee.bank_ac_no,
 			Employee.ifsc_code,
 			Employee.sd_bank_account_status.as_("bank_account_status"),
-			Employee.salary_mode,
+			SalarySlip.salary_mode,
 			SalarySlip.total_amount,
+			SalarySlip.method,
 			SalarySlip.name.as_("salary_slip_name"),
 			SalarySlip.date.as_("salary_slip_date"),
 			SalarySlip.docstatus,
-		).where(SalarySlip.docstatus != 2)
+		).where(SalarySlip.docstatus == 1)
 	)
 	if filters:
-		if filters.get('from_date'):
-			q = q.where(SalarySlip.date >= filters.get('from_date'))
-		if filters.get('to_date'):
-			q = q.where(SalarySlip.date <= filters.get('to_date'))
+		if filters.get('report_date'):
+			q = q.where(SalarySlip.date == filters.get('report_date'))
 		if filters.get('employee'):
 			q = q.where(Employee.name == filters.get('employee'))
 		if filters.get('department'):
@@ -129,13 +128,16 @@ def get_data(filters):
 		if filters.get('branch'):
 			q = q.where(Employee.branch == filters.get('branch'))
 		if filters.get('salary_mode'):
-			q = q.where(Employee.salary_mode == filters.get('salary_mode'))
+			q = q.where(SalarySlip.salary_mode == filters.get('salary_mode'))
 		if filters.get('salary_batch'):
 			q = q.where(Employee.sd_salary_batch == filters.get('salary_batch'))
+		if filters.get("method"):
+			q = q.where(SalarySlip.method == filters.get("method"))
+		if filters.get("hide_zero_amount"):
+			q = q.where(SalarySlip.total_amount > 0)	
+
 	
 	q = q.where(Employee.status == 'Active')
-	# q = q.orderby(Employee.sd_attendance_book_serial.isnull())
-	# q = q.orderby(Employee.sd_attendance_book_serial)
 	q = q.orderby(Employee.sd_salary_batch)
 	q = q.orderby(Employee.name)
 

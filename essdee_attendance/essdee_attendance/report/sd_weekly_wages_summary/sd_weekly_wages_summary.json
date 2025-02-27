@@ -9,7 +9,7 @@
  "idx": 0,
  "is_standard": "Yes",
  "letterhead": null,
- "modified": "2024-03-07 17:55:12.104501",
+ "modified": "2025-02-27 09:51:51.624753",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "SD Weekly Wages Summary",
@@ -21,9 +21,6 @@
  "roles": [
   {
    "role": "HR Manager"
-  },
-  {
-   "role": "HR User"
   }
  ]
 }

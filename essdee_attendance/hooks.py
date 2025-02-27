@@ -167,7 +167,10 @@ override_whitelisted_methods = {
 #
 # auto_cancel_exempted_doctypes = ["Auto Repeat"]
 after_install = "essdee_attendance.custom_fields.make_custom_fields"
-doctype_js = {"Employee" : "public/js/employee.js"}
+doctype_js = {
+    "Employee" : "public/js/employee.js",
+	"Attendance" : "public/js/attendance.js"
+}
 
 
 jinja = {

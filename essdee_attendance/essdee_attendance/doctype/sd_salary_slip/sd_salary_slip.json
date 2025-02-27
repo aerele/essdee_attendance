@@ -13,6 +13,7 @@
   "posting_time",
   "naming_series",
   "section_break_rfdr",
+  "salary_mode",
   "salary_amount",
   "additions_section",
   "other_additions",
@@ -174,7 +175,7 @@
    "fieldname": "method",
    "fieldtype": "Select",
    "label": "Method",
-   "options": "\nRegular\nPay Later\nMonthly Salary\nMonthly Salary - Pay"
+   "options": "\nRegular\nPay Later\nMonthly Salary\nMonthly Salary - Pay\nStaff Salary"
   },
   {
    "default": "Now",
@@ -203,12 +204,18 @@
    "fieldtype": "Currency",
    "label": "Pay Later Amount",
    "read_only": 1
+  },
+  {
+   "fieldname": "salary_mode",
+   "fieldtype": "Select",
+   "label": "Salary Mode",
+   "options": "\nCash\nBank\nCheque"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-10 16:39:40.452293",
+ "modified": "2025-02-27 09:50:13.424351",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "SD Salary Slip",
@@ -226,21 +233,6 @@
    "read": 1,
    "report": 1,
    "role": "HR Manager",
-   "share": 1,
-   "submit": 1,
-   "write": 1
-  },
-  {
-   "amend": 1,
-   "cancel": 1,
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "HR User",
    "share": 1,
    "submit": 1,
    "write": 1
