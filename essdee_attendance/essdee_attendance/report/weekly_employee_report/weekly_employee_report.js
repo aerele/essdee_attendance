@@ -211,4 +211,11 @@ frappe.query_reports["Weekly Employee Report"] = {
 			cellHeight: get_cell_height(rows),
 		})
 	},
+	onload(){
+		if(frappe.query_report.get_filter_value("select") == "Day Wise Report"){
+			frappe.query_report.set_filter_value("pf_view", 0)
+			frappe.query_report.filters[9].toggle(0)
+		}
+		frappe.query_report.refresh();
+	}
 }

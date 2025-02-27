@@ -6,6 +6,9 @@ from frappe.model.document import Document
 from essdee_attendance.essdee_attendance.advance_ledger import make_ledger
 from essdee_attendance.essdee_attendance.advance_ledger import cancel_ledger
 from erpnext.stock.utils import get_combine_datetime
+import openpyxl
+from datetime import datetime
+from io import BytesIO
 
 class EssdeeAdvanceEntry(Document):
 	def validate(self):
@@ -33,3 +36,29 @@ def get_list(doc):
 		}
 		x.append(dic)		
 	return x	
+
+@frappe.whitelist()
+def download_entries(**args):
+	doc_name = args['doc_name']
+	columns = ['Employee','Employee Name','Amount', "Type",'Bank Account Status','Salary Mode', 'Advance Slip',"Date"]
+
+	entries = []
+	doc = frappe.get_doc('Essdee Advance Entry',doc_name)
+	for row in doc.essdee_advance_entry_details:
+		emp_name, bank_status = frappe.get_value("Employee", row.employee, ['employee_name', "sd_bank_account_status"])
+		entries.append([row.employee, emp_name, str(row.amount), row.type, bank_status, row.salary_mode, doc_name, str(doc.posting_date)])
+	
+	doc.downloaded_time = datetime.now()
+	doc.save()
+	wb = openpyxl.Workbook(write_only=True)
+	ws = wb.create_sheet("Sheet1", 0)
+	ws.append(columns)
+	for entry in entries:
+		ws.append(entry)  
+	 
+	xlsx_file = BytesIO()
+	wb.save(xlsx_file)
+
+	frappe.response["filename"] = doc_name + ".xlsx"
+	frappe.response["filecontent"] = xlsx_file.getvalue()
+	frappe.response["type"] = "binary"

@@ -12,7 +12,8 @@
   "posting_time",
   "section_break_umzy",
   "essdee_advance_entry_details",
-  "amended_from"
+  "amended_from",
+  "downloaded_time"
  ],
  "fields": [
   {
@@ -62,12 +63,19 @@
   {
    "fieldname": "section_break_umzy",
    "fieldtype": "Section Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "downloaded_time",
+   "fieldtype": "Datetime",
+   "label": "Downloaded Time",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-05-17 22:55:55.439510",
+ "modified": "2025-02-27 11:44:09.151559",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Advance Entry",
