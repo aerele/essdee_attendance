@@ -9,7 +9,7 @@
  "idx": 0,
  "is_standard": "Yes",
  "letterhead": null,
- "modified": "2025-01-10 12:18:56.786299",
+ "modified": "2025-02-27 09:47:42.511755",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "SD Salary Slip Aggregate Report",
@@ -21,9 +21,6 @@
  "roles": [
   {
    "role": "HR Manager"
-  },
-  {
-   "role": "HR User"
   }
  ]
 }

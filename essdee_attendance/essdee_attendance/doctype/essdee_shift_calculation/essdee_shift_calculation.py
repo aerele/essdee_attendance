@@ -63,6 +63,7 @@ def calc(doc_name):
 		if no_shift_wages:
 			x = ", ".join(no_shift_wages)
 			frappe.throw(f"These employees has Shift Wages as Zero\n{x}")
+			
 		logger.debug(f"{len(employees)} Employees")
 		total_attendance_list = []
 		for employee in employees:
@@ -85,23 +86,37 @@ def calc(doc_name):
 			extra_shifts = 0
 			attendance_data = {}
 			dates = []
+			main_shifts = 0
+			total_days = 0
 			for attendance in attendance_list:
 				shifts, attendance_date = frappe.get_value("Attendance", attendance,["sd_no_of_shifts","attendance_date"])
+				main_shifts += shifts
 				d = getdate(attendance_date)
 				if holiday_data.get(str(d)):
+					total_days += 1
 					att_doc = frappe.get_doc("Attendance", attendance)
 					att_doc.sd_general_shifts = 0
 					att_doc.sd_ot_shifts = 0
 					att_doc.save()
 					extra_shifts += shifts
 				elif str(d) in holiday_data:
+					total_days += 1
 					if shifts > 1:
 						extra_shifts = extra_shifts + shifts - 1
 						att_doc = frappe.get_doc("Attendance", attendance)
 						att_doc.sd_general_shifts = 1
 						att_doc.sd_ot_shifts = 0
 						att_doc.save()
+					elif shifts < 1:
+						x = 1 - shifts
+						extra_shifts = extra_shifts - x	
+						att_doc = frappe.get_doc("Attendance", attendance)
+						att_doc.sd_general_shifts = 1
+						att_doc.sd_ot_shifts = 0
+						att_doc.save()
 				else:
+					if shifts > 0:
+						total_days += 1
 					dates.append(attendance)
 					attendance_data[str(d)] = shifts
 			
@@ -137,6 +152,8 @@ def calc(doc_name):
 			new_shifts = old_value/ shift_wages
 			additional_shifts = new_shifts - total_alter_shifts
 			changed_indexes = []
+			max_total_salary = main_shifts * shift_rate
+			max_one_shift_salary = max_total_salary / total_days
 			index = 0
 			length = 0
 			for alt in alter_shifts:
@@ -223,7 +240,8 @@ def calc(doc_name):
 							"no_of_shifts": no_of_shifts,
 							"general_shifts": complete_alter_shifts[idx],
 							"ot_shifts": x,
-							"total_shifts": complete_alter_shifts[idx] + x
+							"total_shifts": complete_alter_shifts[idx] + x,
+							"required_extra": max_one_shift_salary,
 						})
 					if complete_alter_shifts[idx] not in [None]:
 						frappe.db.sql(

@@ -17,11 +17,13 @@ class SDSalarySlip(Document):
 		self.naming_series = f'SS-{year}{current_week:02}-'
 
 	def validate(self):
-		
 		self.posting_datetime = get_combine_datetime(self.date, self.posting_time)
 		self.calculate_total()
 		self.validate_employee()
-	
+		if self.is_new():
+			salary_mode = frappe.get_value("Employee", self.employee, "salary_mode")
+			self.salary_mode = salary_mode
+
 	def calculate_total(self):
 		self.total_deductions = (get_float(self.advance) + get_float(self.canteen) + get_float(self.esi_pf) + get_float(self.other_deductions) + get_float(self.leave) + get_float(self.via_cash))
 		total = get_float(self.salary_amount) + (get_float(self.other_additions)) - (get_float(self.total_deductions))

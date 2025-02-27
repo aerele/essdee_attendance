@@ -11,10 +11,12 @@
   "no_of_shifts",
   "general_shifts",
   "ot_shifts",
-  "total_shifts"
+  "total_shifts",
+  "required_extra"
  ],
  "fields": [
   {
+   "columns": 2,
    "fieldname": "attendance",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -23,6 +25,7 @@
    "read_only": 1
   },
   {
+   "columns": 2,
    "fieldname": "employee",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -31,6 +34,7 @@
    "read_only": 1
   },
   {
+   "columns": 1,
    "fieldname": "no_of_shifts",
    "fieldtype": "Float",
    "in_list_view": 1,
@@ -38,6 +42,7 @@
    "read_only": 1
   },
   {
+   "columns": 1,
    "fieldname": "general_shifts",
    "fieldtype": "Float",
    "in_list_view": 1,
@@ -45,6 +50,7 @@
    "read_only": 1
   },
   {
+   "columns": 1,
    "fieldname": "ot_shifts",
    "fieldtype": "Float",
    "in_list_view": 1,
@@ -52,17 +58,25 @@
    "read_only": 1
   },
   {
+   "columns": 1,
    "fieldname": "total_shifts",
    "fieldtype": "Float",
    "in_list_view": 1,
    "label": "Total Shifts",
    "read_only": 1
+  },
+  {
+   "columns": 2,
+   "fieldname": "required_extra",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Required Extra"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-01-08 17:00:18.470974",
+ "modified": "2025-02-27 12:49:48.318391",
  "modified_by": "Administrator",
  "module": "Essdee Attendance",
  "name": "Essdee Shift Calculation Extra OT",
