@@ -56,7 +56,7 @@ frappe.query_reports["SD Weekly Wages Summary"] = {
 			"fieldname":"method",
 			"label":__("Method"),
 			"fieldtype":"Select",
-			"options":"\nRegular\nPay Later\nMonthly Salary\nMonthly Salary - Pay\nStaff Salary",
+			"options":"\nRegular\nPay Later\nMonthly Salary\nMonthly Salary - Pay\nStaff Salary\nOthers",
 			"default":"Regular"
 		},
 		{
