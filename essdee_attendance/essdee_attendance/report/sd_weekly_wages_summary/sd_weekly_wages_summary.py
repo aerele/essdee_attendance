@@ -73,7 +73,7 @@ def get_columns():
 			"fieldname":"method",
 			"label":_("Method"),
 			"fieldtype":"Select",
-			"options":"\nRegular\nPay Later\nMonthly Salary\nMonthly Salary - Pay\nStaff Salary",
+			"options":"\nRegular\nPay Later\nMonthly Salary\nMonthly Salary - Pay\nStaff Salary\nOthers",
 			"default":"Regular"
 		},
 		{
